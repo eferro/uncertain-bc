@@ -20,6 +20,7 @@
 - **Keep the spec honest.** If behaviour changes, update `docs/SPEC.md` in the same commit; if a decision changes, add an ADR.
 - **Small functions, clear names.** Comments only explain *why* (package docs, non-obvious math, SPEC/ADR references); never *what*; none in tests (ADR 0017). Enforced by golangci-lint (ADR 0013): funlen 20 lines, gocyclo/gocognit 10, gofumpt; `//nolint` only with linter name and reason.
 - **English** for code, docs, commits and ADRs. Conversation with the user can be in Spanish.
+- **Pending work lives in GitHub issues** (ADR 0027): pick the lowest open `enhancement`/`documentation` issue unless told otherwise; close it from the commit with `Closes #N`.
 - **Ask when in doubt,** one question at a time.
 
 ## Go conventions
