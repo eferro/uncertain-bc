@@ -2,6 +2,7 @@ package main
 
 import (
 	"os"
+	"time"
 
 	"github.com/eferro/uncertain-bc/internal/adapters/cli"
 )
@@ -9,5 +10,10 @@ import (
 var version = "dev"
 
 func main() {
-	os.Exit(cli.App{Version: version}.Run(os.Args[1:], os.Stdin, os.Stdout, os.Stderr))
+	app := cli.App{Version: version, RandomSeed: clockSeed}
+	os.Exit(app.Run(os.Args[1:], os.Stdin, os.Stdout, os.Stderr))
+}
+
+func clockSeed() uint64 {
+	return uint64(time.Now().UnixNano())
 }

@@ -1,0 +1,5 @@
+exec ubc --random -e '1 to 2'
+stdout '^≈ '
+
+exec ubc --ascii -n 1000 -s 7 -e '10 to 20'
+stdout '^~ '

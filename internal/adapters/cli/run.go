@@ -21,13 +21,19 @@ const (
 )
 
 type App struct {
-	Version string
+	Version    string
+	RandomSeed func() uint64
 }
 
 type options struct {
 	expressions multiString
 	files       []string
 	version     bool
+	samples     int
+	seed        uint64
+	seedGiven   bool
+	random      bool
+	ascii       bool
 }
 
 type multiString []string
@@ -48,24 +54,57 @@ func (a App) Run(args []string, stdin io.Reader, stdout, stderr io.Writer) int {
 		fmt.Fprintf(stdout, "ubc %s\n", a.Version)
 		return exitOK
 	}
+	settings, err := a.settings(opts)
+	if err != nil {
+		fmt.Fprintf(stderr, "ubc: %v\n", err)
+		return exitUsageError
+	}
 	sources, err := collectSources(opts, stdin)
 	if err != nil {
 		fmt.Fprintf(stderr, "ubc: %v\n", err)
 		return exitEvalError
 	}
-	return evaluateAll(sources, stdout, stderr)
+	return evaluateAll(sources, settings, styleFor(opts), stdout, stderr)
 }
 
 func parseFlags(args []string, stderr io.Writer) (options, error) {
-	var opts options
+	opts := options{samples: application.DefaultSettings().Samples, seed: application.DefaultSettings().Seed}
 	fs := flag.NewFlagSet("ubc", flag.ContinueOnError)
 	fs.SetOutput(stderr)
-	fs.Var(&opts.expressions, "e", "evaluate EXPR (repeatable)")
-	fs.Var(&opts.expressions, "eval", "evaluate EXPR (repeatable)")
-	fs.BoolVar(&opts.version, "version", false, "print the version and exit")
+	registerFlags(fs, &opts)
 	err := fs.Parse(args)
 	opts.files = fs.Args()
+	fs.Visit(func(f *flag.Flag) { opts.seedGiven = opts.seedGiven || f.Name == "s" || f.Name == "seed" })
 	return opts, err
+}
+
+func registerFlags(fs *flag.FlagSet, opts *options) {
+	for _, name := range []string{"e", "eval"} {
+		fs.Var(&opts.expressions, name, "evaluate EXPR (repeatable)")
+	}
+	for _, name := range []string{"n", "samples"} {
+		fs.IntVar(&opts.samples, name, opts.samples, "Monte Carlo sample count")
+	}
+	for _, name := range []string{"s", "seed"} {
+		fs.Uint64Var(&opts.seed, name, opts.seed, "random seed")
+	}
+	fs.BoolVar(&opts.random, "random", false, "seed from the clock")
+	fs.BoolVar(&opts.ascii, "ascii", false, "print ASCII instead of Unicode")
+	fs.BoolVar(&opts.version, "version", false, "print the version and exit")
+}
+
+func (a App) settings(opts options) (application.Settings, error) {
+	if opts.samples <= 0 {
+		return application.Settings{}, fmt.Errorf("--samples must be positive, got %d", opts.samples)
+	}
+	if opts.random && opts.seedGiven {
+		return application.Settings{}, errors.New("--seed and --random cannot be combined")
+	}
+	seed := opts.seed
+	if opts.random {
+		seed = a.RandomSeed()
+	}
+	return application.Settings{Seed: seed, Samples: opts.samples}, nil
 }
 
 type source struct {
@@ -96,11 +135,11 @@ func collectSources(opts options, stdin io.Reader) ([]source, error) {
 	return []source{{program: string(content), prefixLines: true}}, nil
 }
 
-func evaluateAll(sources []source, stdout, stderr io.Writer) int {
-	session := application.NewSession(application.DefaultSettings())
+func evaluateAll(sources []source, settings application.Settings, st style, stdout, stderr io.Writer) int {
+	session := application.NewSession(settings)
 	for _, src := range sources {
 		results, err := session.Evaluate(src.program)
-		printExpressions(results, src.prefixLines, stdout)
+		printExpressions(results, src.prefixLines, st, stdout)
 		if err != nil {
 			reportError(src, err, stderr)
 			return exitCode(err)
@@ -109,7 +148,7 @@ func evaluateAll(sources []source, stdout, stderr io.Writer) int {
 	return exitOK
 }
 
-func printExpressions(results []domain.Result, prefixLines bool, stdout io.Writer) {
+func printExpressions(results []domain.Result, prefixLines bool, st style, stdout io.Writer) {
 	var expressions []domain.Result
 	for _, result := range results {
 		if result.Name == "" {
@@ -120,7 +159,7 @@ func printExpressions(results []domain.Result, prefixLines bool, stdout io.Write
 		if prefixLines && len(expressions) > 1 {
 			fmt.Fprintf(stdout, "L%d: ", result.Line)
 		}
-		fmt.Fprintln(stdout, format(result.Value))
+		fmt.Fprintln(stdout, format(result.Value, st))
 	}
 }
 

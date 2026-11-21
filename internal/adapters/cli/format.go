@@ -8,15 +8,33 @@ import (
 	"github.com/eferro/uncertain-bc/internal/domain"
 )
 
-func format(value domain.Value) string {
+type style struct {
+	approx   string
+	ellipsis string
+	blocks   []rune
+}
+
+var (
+	unicodeStyle = style{approx: "≈", ellipsis: "…", blocks: unicodeBlocks}
+	asciiStyle   = style{approx: "~", ellipsis: "...", blocks: asciiBlocks}
+)
+
+func styleFor(opts options) style {
+	if opts.ascii {
+		return asciiStyle
+	}
+	return unicodeStyle
+}
+
+func format(value domain.Value, st style) string {
 	switch v := value.(type) {
 	case domain.SampleSet:
 		if v.Quantile(0) == v.Quantile(1) {
-			return format(domain.Scalar(v[0]))
+			return format(domain.Scalar(v[0]), st)
 		}
-		return fmt.Sprintf("≈ %s   90%% [%s … %s]   %s",
-			significant(v.Quantile(0.5)), significant(v.Quantile(0.05)), significant(v.Quantile(0.95)),
-			sparkline(v, unicodeBlocks))
+		return fmt.Sprintf("%s %s   90%% [%s %s %s]   %s", st.approx,
+			significant(v.Quantile(0.5)), significant(v.Quantile(0.05)), st.ellipsis, significant(v.Quantile(0.95)),
+			sparkline(v, st.blocks))
 	case domain.Scalar:
 		return plain(float64(v))
 	case domain.Probability:
