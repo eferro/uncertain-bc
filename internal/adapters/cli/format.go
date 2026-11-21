@@ -4,19 +4,22 @@ import (
 	"fmt"
 	"math"
 	"strconv"
+	"strings"
 
 	"github.com/eferro/uncertain-bc/internal/domain"
 )
 
 type style struct {
-	approx   string
-	ellipsis string
-	blocks   []rune
-	axis     string
-	bar      string
-	plain    bool
-	json     bool
-	echo     bool
+	approx    string
+	ellipsis  string
+	blocks    []rune
+	axis      string
+	bar       string
+	plain     bool
+	json      bool
+	echo      bool
+	hist      bool
+	quantiles []float64
 }
 
 var (
@@ -32,7 +35,19 @@ func styleFor(opts options) style {
 	st.plain = opts.plain
 	st.json = opts.json
 	st.echo = opts.echo
+	st.hist = opts.hist
+	st.quantiles, _ = parseQuantiles(opts.quantiles)
 	return st
+}
+
+// display is a result's line, followed by its histogram with --hist.
+func display(result domain.Result, st style) string {
+	line := formatResult(result, st)
+	samples, uncertain := result.Value.(domain.SampleSet)
+	if !st.hist || !uncertain || samples.Dropped() == len(samples) || samples.Quantile(0) == samples.Quantile(1) {
+		return line
+	}
+	return line + "\n" + strings.TrimSuffix(histogramChart(samples, st), "\n")
 }
 
 // formatResult labels an assignment with its variable name.
@@ -41,7 +56,7 @@ func formatResult(result domain.Result, st style) string {
 	case result.Name == "":
 		return format(result.Value, st)
 	case st.json:
-		return jsonLine(result.Value, result.Name)
+		return jsonLine(result.Value, result.Name, st.quantiles)
 	}
 	return result.Name + " = " + format(result.Value, st)
 }
@@ -51,7 +66,7 @@ func format(value domain.Value, st style) string {
 		return centralValue(value)
 	}
 	if st.json {
-		return jsonLine(value, "")
+		return jsonLine(value, "", st.quantiles)
 	}
 	switch v := value.(type) {
 	case domain.SampleSet:
@@ -86,6 +101,14 @@ func summarise(v domain.SampleSet, st style) string {
 }
 
 func summaryNumbers(v domain.SampleSet, st style) string {
+	if len(st.quantiles) > 0 {
+		var line strings.Builder
+		fmt.Fprintf(&line, "%s %s", st.approx, significant(v.Quantile(0.5)))
+		for _, q := range st.quantiles {
+			fmt.Fprintf(&line, "   %s %s", quantileLabel(q), significant(v.Quantile(q/100)))
+		}
+		return line.String()
+	}
 	return fmt.Sprintf("%s %s   90%% [%s %s %s]", st.approx,
 		significant(v.Quantile(0.5)), significant(v.Quantile(0.05)), st.ellipsis, significant(v.Quantile(0.95)))
 }
@@ -151,4 +174,24 @@ func probability(p float64) string {
 		return ">0.99"
 	}
 	return strconv.FormatFloat(p, 'f', 2, 64)
+}
+
+// parseQuantiles reads a comma-separated list of percentages, such as 10,50,90.
+func parseQuantiles(list string) ([]float64, error) {
+	if list == "" {
+		return nil, nil
+	}
+	var quantiles []float64
+	for _, item := range strings.Split(list, ",") {
+		q, err := strconv.ParseFloat(item, 64)
+		if err != nil || q < 0 || q > 100 {
+			return nil, fmt.Errorf("--quantiles expects percentages between 0 and 100, got '%s'", list)
+		}
+		quantiles = append(quantiles, q)
+	}
+	return quantiles, nil
+}
+
+func quantileLabel(q float64) string {
+	return "p" + strconv.FormatFloat(q, 'f', -1, 64)
 }

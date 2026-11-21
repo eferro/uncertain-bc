@@ -21,6 +21,8 @@ cmd | ubc                   # read program from stdin (non-TTY), print results
 | `--random` | Use a time-based seed | off |
 | `--json` | One JSON object per printed result | off |
 | `--echo` | Also print assignments, as `name = summary` (ADR 0025) | off |
+| `--hist` | Draw the 20-row histogram under every uncertain result (not with `--json`/`--plain`) | off |
+| `--quantiles LIST` | Show these percentiles instead of the 90% interval, e.g. `10,50,90`; adds `quantiles` to JSON | |
 | `--plain` | Print only the central value (median) | off |
 | `--no-color` | Disable ANSI colour | auto (TTY only) |
 | `--ascii` | ASCII instead of Unicode (sparklines, `≈`, `…`) | off (ADR 0022) |

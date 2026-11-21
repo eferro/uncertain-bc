@@ -42,6 +42,8 @@ type options struct {
 	plain       bool
 	json        bool
 	echo        bool
+	hist        bool
+	quantiles   string
 }
 
 type multiString []string
@@ -68,6 +70,8 @@ Flags:
       --plain         print only the central value (median), for scripts
       --json          print one JSON object per result
       --echo          also print assignments, with their names
+      --hist          draw a histogram under every uncertain result
+      --quantiles L   show these percentiles instead of the 90% interval (10,50,90)
   -h, --help          show this help
       --version       print the version
 `
@@ -99,6 +103,21 @@ func (a App) execute(opts options, settings application.Settings, stdin io.Reade
 		return exitEvalError
 	}
 	return evaluateAll(sources, settings, styleFor(opts), stdout, stderr)
+}
+
+func validateFlags(opts options) error {
+	switch {
+	case opts.samples <= 0:
+		return fmt.Errorf("--samples must be positive, got %d", opts.samples)
+	case opts.json && opts.plain:
+		return errors.New("--json and --plain cannot be combined")
+	case opts.hist && (opts.json || opts.plain):
+		return errors.New("--hist cannot be combined with --json or --plain")
+	case opts.random && opts.seedGiven:
+		return errors.New("--seed and --random cannot be combined")
+	}
+	_, err := parseQuantiles(opts.quantiles)
+	return err
 }
 
 func readFlags(args []string, stdout, stderr io.Writer) (options, int, bool) {
@@ -149,18 +168,14 @@ func registerFlags(fs *flag.FlagSet, opts *options) {
 	fs.BoolVar(&opts.plain, "plain", false, "print only the central value")
 	fs.BoolVar(&opts.json, "json", false, "print one JSON object per result")
 	fs.BoolVar(&opts.echo, "echo", false, "also print assignments, with their names")
+	fs.BoolVar(&opts.hist, "hist", false, "draw a histogram under every uncertain result")
+	fs.StringVar(&opts.quantiles, "quantiles", "", "comma-separated percentiles to show instead of the 90% interval")
 	fs.BoolVar(&opts.version, "version", false, "print the version and exit")
 }
 
 func (a App) settings(opts options) (application.Settings, error) {
-	if opts.samples <= 0 {
-		return application.Settings{}, fmt.Errorf("--samples must be positive, got %d", opts.samples)
-	}
-	if opts.json && opts.plain {
-		return application.Settings{}, errors.New("--json and --plain cannot be combined")
-	}
-	if opts.random && opts.seedGiven {
-		return application.Settings{}, errors.New("--seed and --random cannot be combined")
+	if err := validateFlags(opts); err != nil {
+		return application.Settings{}, err
 	}
 	seed := opts.seed
 	if opts.random {
@@ -224,11 +239,11 @@ func printResults(results []domain.Result, prefixLines bool, st style, stdout io
 func resultLine(result domain.Result, prefix bool, st style) (string, bool) {
 	switch {
 	case result.Name != "":
-		return formatResult(result, st), st.echo
+		return display(result, st), st.echo
 	case prefix:
-		return fmt.Sprintf("L%d: %s", result.Line, format(result.Value, st)), true
+		return fmt.Sprintf("L%d: %s", result.Line, display(result, st)), true
 	}
-	return format(result.Value, st), true
+	return display(result, st), true
 }
 
 func countExpressions(results []domain.Result) int {

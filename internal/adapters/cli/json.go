@@ -14,25 +14,27 @@ type numberJSON struct {
 }
 
 type samplesJSON struct {
-	Name    string   `json:"name,omitempty"`
-	Kind    string   `json:"kind"`
-	Median  *float64 `json:"median"`
-	Mean    *float64 `json:"mean"`
-	Stdev   *float64 `json:"stdev"`
-	P5      *float64 `json:"p5"`
-	P95     *float64 `json:"p95"`
-	N       int      `json:"n"`
-	Dropped int      `json:"dropped"`
+	Name      string              `json:"name,omitempty"`
+	Kind      string              `json:"kind"`
+	Median    *float64            `json:"median"`
+	Mean      *float64            `json:"mean"`
+	Stdev     *float64            `json:"stdev"`
+	P5        *float64            `json:"p5"`
+	P95       *float64            `json:"p95"`
+	N         int                 `json:"n"`
+	Dropped   int                 `json:"dropped"`
+	Quantiles map[string]*float64 `json:"quantiles,omitempty"`
 }
 
 // jsonLine describes a result as one JSON object (SPEC §6).
-func jsonLine(value domain.Value, name string) string {
+func jsonLine(value domain.Value, name string, quantiles []float64) string {
 	var object any
 	switch v := value.(type) {
 	case domain.SampleSet:
 		object = samplesJSON{
 			Name: name, Kind: "samples", Median: finite(v.Quantile(0.5)), Mean: finite(v.Mean()), Stdev: finite(v.Stdev()),
 			P5: finite(v.Quantile(0.05)), P95: finite(v.Quantile(0.95)), N: len(v), Dropped: v.Dropped(),
+			Quantiles: quantilesJSON(v, quantiles),
 		}
 	case domain.Probability:
 		object = numberJSON{Name: name, Kind: "probability", Value: finite(float64(v))}
@@ -49,4 +51,15 @@ func finite(x float64) *float64 {
 		return nil
 	}
 	return &x
+}
+
+func quantilesJSON(v domain.SampleSet, quantiles []float64) map[string]*float64 {
+	if len(quantiles) == 0 {
+		return nil
+	}
+	values := make(map[string]*float64, len(quantiles))
+	for _, q := range quantiles {
+		values[quantileLabel(q)] = finite(v.Quantile(q / 100))
+	}
+	return values
 }

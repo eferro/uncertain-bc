@@ -16,6 +16,11 @@ After phase 4 the user asked for every improvement that makes `ubc` nicer to use
 - `--echo` makes files, stdin and `-e` print assignments too, as `name = summary`. Expressions keep their `L<n>:` prefix when a program prints more than one. With `--json`, an echoed assignment carries a `"name"` field. With `--plain`, it prints `name = value`.
 - `--echo` is off by default, so `$(ubc -e ...)` and existing scripts keep their output.
 
+**Charts and percentiles outside the REPL**
+
+- `--hist` prints the 20-row histogram (the one `:hist` draws) under every uncertain result, in files, stdin, `-e` and the REPL. It cannot be combined with `--json` or `--plain`, which are for machines.
+- `--quantiles 10,50,90` replaces `90% [p5 … p95]` with the listed percentiles (`p10 … p50 … p90 …`). In `--json` it adds a `"quantiles"` object and keeps the standard fields. An empty list means the default.
+
 ## Consequences
 
 - A model reads as a report (`ubc --echo model.ubc`) without repeating variable names at the end just to print them.
