@@ -14,7 +14,7 @@ GORELEASER_VERSION := v2.20.3
 GORELEASER := $(TOOLS)/goreleaser
 COVERAGE_PROFILE := coverage.out
 
-.PHONY: help local-setup test test-pkg coverage format lint check-test-style check-architecture secrets-scan validate build release-check release-snapshot
+.PHONY: help local-setup test test-pkg coverage format lint check-test-style check-architecture check-binary secrets-scan validate build release-check release-snapshot
 
 help: ## List available targets
 	@grep -hE '^[a-zA-Z_-]+:.*## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*## "} {printf "  %-20s %s\n", $$1, $$2}'
@@ -55,7 +55,11 @@ check-architecture: ## Fail when an import breaks the hexagonal dependency rule 
 secrets-scan: $(GITLEAKS) ## Scan git history for secrets; narrow it with LOG_OPTS="A..B" (ADR 0019)
 	$(GITLEAKS) git --no-banner --redact --log-opts="$(LOG_OPTS)" .
 
-validate: lint check-test-style check-architecture coverage ## Everything CI checks; run before every commit
+check-binary: ## Build the static binary with a known version and smoke-test it
+	$(MAKE) --no-print-directory build VERSION=v0.0.0-smoke
+	scripts/checks/binary-smoke.sh $(BIN) v0.0.0-smoke
+
+validate: lint check-test-style check-architecture coverage check-binary ## Everything CI checks; run before every commit
 
 build: ## Build a static binary in bin/
 	CGO_ENABLED=0 go build -trimpath -ldflags "-s -w -X main.version=$(VERSION)" -o $(BIN) ./cmd/ubc
