@@ -32,12 +32,10 @@ func parseOverrides(values []string) ([]override, error) {
 	return overrides, nil
 }
 
-// startSession applies the --set overrides, already validated with the other
-// flags, before any program runs.
+// startSession applies the --set overrides before any program runs.
 func startSession(opts options, settings application.Settings, stderr io.Writer) (*application.Session, int) {
 	session := application.NewSession(settings)
-	overrides, _ := parseOverrides(opts.sets)
-	for _, o := range overrides {
+	for _, o := range opts.overrides {
 		if err := session.Override(o.name, o.expr); err != nil {
 			reportError(source{name: "--set " + o.name}, err, stderr)
 			return nil, exitCode(err)

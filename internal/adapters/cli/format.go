@@ -36,7 +36,7 @@ func styleFor(opts options) style {
 	st.json = opts.json
 	st.echo = opts.echo
 	st.hist = opts.hist
-	st.quantiles, _ = parseQuantiles(opts.quantiles)
+	st.quantiles = opts.percentiles
 	return st
 }
 

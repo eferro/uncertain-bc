@@ -46,6 +46,8 @@ type options struct {
 	echo        bool
 	hist        bool
 	quantiles   string
+	percentiles []float64
+	overrides   []override
 	watch       bool
 	completion  string
 }
@@ -95,12 +97,12 @@ func (a App) Run(args []string, stdin io.Reader, stdout, stderr io.Writer) int {
 	if opts.completion != "" {
 		return printCompletion(opts.completion, stdout, stderr)
 	}
-	settings, err := a.settings(opts)
+	opts, err := resolveFlags(opts)
 	if err != nil {
 		fmt.Fprintf(stderr, "ubc: %v\n", err)
 		return exitUsageError
 	}
-	return a.execute(opts, settings, stdin, stdout, stderr)
+	return a.execute(opts, a.settings(opts), stdin, stdout, stderr)
 }
 
 func (a App) execute(opts options, settings application.Settings, stdin io.Reader, stdout, stderr io.Writer) int {
@@ -140,20 +142,23 @@ var flagRules = []struct {
 	{func(o options) bool { return o.watch && len(o.files) == 0 }, "--watch needs at least one file"},
 }
 
-func validateFlags(opts options) error {
+// resolveFlags checks the flags and parses the values that need it once, so
+// the rest of the adapter works with checked values.
+func resolveFlags(opts options) (options, error) {
 	if opts.samples <= 0 {
-		return fmt.Errorf("--samples must be positive, got %d", opts.samples)
+		return opts, fmt.Errorf("--samples must be positive, got %d", opts.samples)
 	}
 	for _, rule := range flagRules {
 		if rule.broken(opts) {
-			return errors.New(rule.message)
+			return opts, errors.New(rule.message)
 		}
 	}
-	if _, err := parseOverrides(opts.sets); err != nil {
-		return err
+	var err error
+	if opts.overrides, err = parseOverrides(opts.sets); err != nil {
+		return opts, err
 	}
-	_, err := parseQuantiles(opts.quantiles)
-	return err
+	opts.percentiles, err = parseQuantiles(opts.quantiles)
+	return opts, err
 }
 
 func readFlags(args []string, stdout, stderr io.Writer) (options, int, bool) {
@@ -220,15 +225,12 @@ func registerOutputFlags(fs *flag.FlagSet, opts *options) {
 	fs.StringVar(&opts.quantiles, "quantiles", "", "comma-separated percentiles to show instead of the 90% interval")
 }
 
-func (a App) settings(opts options) (application.Settings, error) {
-	if err := validateFlags(opts); err != nil {
-		return application.Settings{}, err
-	}
+func (a App) settings(opts options) application.Settings {
 	seed := opts.seed
 	if opts.random {
 		seed = a.RandomSeed()
 	}
-	return application.Settings{Seed: seed, Samples: opts.samples}, nil
+	return application.Settings{Seed: seed, Samples: opts.samples}
 }
 
 type source struct {
