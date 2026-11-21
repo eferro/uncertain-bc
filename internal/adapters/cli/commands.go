@@ -3,6 +3,7 @@ package cli
 import (
 	"errors"
 	"fmt"
+	"os"
 	"strconv"
 	"strings"
 
@@ -17,6 +18,8 @@ var commands = map[string]command{
 	"seed":    reseed,
 	"samples": resample,
 	"hist":    showHistogram,
+	"save":    save,
+	"load":    load,
 	"quit":    func(replSession, string) (bool, error) { return true, nil },
 }
 
@@ -26,6 +29,8 @@ const replHelp = `Commands:
   :hist EXPR     draw the distribution of EXPR
   :seed N        restart the random stream with seed N
   :samples N     change the sample count (clears variables)
+  :save FILE     write the statements that worked to FILE
+  :load FILE     evaluate FILE in this session
   :quit          leave the session (or Ctrl-D)
 
 Language:
@@ -99,5 +104,33 @@ func showHistogram(r replSession, expr string) (bool, error) {
 		return false, errors.New(":hist needs an uncertain value, got a plain number")
 	}
 	fmt.Fprint(r.stdout, histogramChart(samples, r.style))
+	return false, nil
+}
+
+func save(r replSession, path string) (bool, error) {
+	if path == "" {
+		return false, errors.New(":save expects a file name")
+	}
+	var content strings.Builder
+	for _, program := range r.session.Transcript() {
+		content.WriteString(program + "\n")
+	}
+	return false, os.WriteFile(path, []byte(content.String()), 0o644)
+}
+
+func load(r replSession, path string) (bool, error) {
+	if path == "" {
+		return false, errors.New(":load expects a file name")
+	}
+	content, err := os.ReadFile(path)
+	if err != nil {
+		return false, err
+	}
+	src := source{name: path, program: string(content), prefixLines: true}
+	results, err := r.session.Evaluate(src.program)
+	printExpressions(results, src.prefixLines, r.style, r.stdout)
+	if err != nil {
+		reportError(src, err, r.stderr)
+	}
 	return false, nil
 }

@@ -4,6 +4,7 @@ package application
 
 import (
 	"slices"
+	"strings"
 
 	"github.com/eferro/uncertain-bc/internal/domain"
 )
@@ -23,8 +24,9 @@ type Variable struct {
 }
 
 type Session struct {
-	env   domain.Env
-	names []string
+	env        domain.Env
+	names      []string
+	transcript []string
 }
 
 func NewSession(settings Settings) *Session {
@@ -38,7 +40,16 @@ func (s *Session) Evaluate(program string) ([]domain.Result, error) {
 			s.names = append(s.names, result.Name)
 		}
 	}
+	if err == nil && strings.TrimSpace(program) != "" {
+		s.transcript = append(s.transcript, program)
+	}
 	return results, err
+}
+
+// Transcript is every program that evaluated without errors, in order, so a
+// session can be saved and replayed.
+func (s *Session) Transcript() []string {
+	return s.transcript
 }
 
 func (s *Session) Variables() []Variable {
@@ -57,4 +68,5 @@ func (s *Session) Reseed(seed uint64) {
 func (s *Session) SetSamples(samples int) {
 	s.env = s.env.WithSamples(samples)
 	s.names = nil
+	s.transcript = nil
 }

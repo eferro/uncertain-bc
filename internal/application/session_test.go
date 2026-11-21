@@ -94,3 +94,22 @@ func TestSession_SetSamples_ChangesTheSampleCountAndClearsVariables(t *testing.T
 	_, err = session.Evaluate("x")
 	assert.Error(t, err)
 }
+
+func TestSession_RecordsOnlyTheProgramsThatSucceeded(t *testing.T) {
+	session := application.NewSession(application.DefaultSettings())
+	for _, program := range []string{"x = 2", "y", "  ", "x * 3"} {
+		_, _ = session.Evaluate(program)
+	}
+
+	assert.Equal(t, []string{"x = 2", "x * 3"}, session.Transcript())
+}
+
+func TestSession_SetSamples_StartsANewTranscript(t *testing.T) {
+	session := application.NewSession(application.DefaultSettings())
+	_, err := session.Evaluate("x = 2")
+	require.NoError(t, err)
+
+	session.SetSamples(10)
+
+	assert.Empty(t, session.Transcript())
+}

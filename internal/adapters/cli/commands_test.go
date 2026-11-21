@@ -1,10 +1,13 @@
 package cli_test
 
 import (
+	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestQuit_EndsTheSessionAtOnce(t *testing.T) {
@@ -85,6 +88,47 @@ func TestHist_ReportsWhatItCannotDraw(t *testing.T) {
 		":hist 5":   "ubc: :hist needs an uncertain value, got a plain number\n",
 		":hist 1>0": "ubc: :hist needs an uncertain value, got a plain number\n",
 		":hist y":   "ubc: line 1, col 1: unknown variable 'y'\n",
+	}
+	for input, message := range cases {
+		t.Run(input, func(t *testing.T) {
+			assert.Equal(t, message, interactive(t, input+"\n").stderr)
+		})
+	}
+}
+
+func TestSave_WritesTheSuccessfulStatementsToAFile(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "model.ubc")
+
+	got := interactive(t, "x = 2\ny\nx * 3\n:save "+path+"\n")
+
+	saved, err := os.ReadFile(path)
+	require.NoError(t, err)
+	assert.Equal(t, "x = 2\nx * 3\n", string(saved))
+	assert.Equal(t, 0, got.code)
+}
+
+func TestLoad_EvaluatesAFileIntoTheSession(t *testing.T) {
+	path := writeFile(t, "model.ubc", "a = 4\na + 1\n")
+
+	assert.Equal(t, outcome{code: 0, stdout: "ubc> 5\nubc> 4\nubc> \n"}, interactive(t, ":load "+path+"\na\n"))
+}
+
+func TestLoad_NamesTheFile_WhenItHasAnError(t *testing.T) {
+	path := writeFile(t, "model.ubc", "1\ny\n")
+
+	got := interactive(t, ":load "+path+"\n")
+
+	assert.Equal(t, "ubc> 1\nubc> \n", got.stdout)
+	assert.Equal(t, "ubc: "+path+": line 2, col 1: unknown variable 'y'\n", got.stderr)
+}
+
+func TestSaveAndLoad_ReportFileProblems(t *testing.T) {
+	missing := filepath.Join(t.TempDir(), "missing.ubc")
+	cases := map[string]string{
+		":save":                     "ubc: :save expects a file name\n",
+		":load":                     "ubc: :load expects a file name\n",
+		":load " + missing:          "ubc: open " + missing + ": no such file or directory\n",
+		":save " + missing + "/x/y": "ubc: open " + missing + "/x/y: no such file or directory\n",
 	}
 	for input, message := range cases {
 		t.Run(input, func(t *testing.T) {
