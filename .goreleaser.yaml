@@ -48,8 +48,10 @@ homebrew_casks:
     repository:
       owner: eferro
       name: homebrew-tap
-      token: '{{ envOrDefault "TAP_GITHUB_TOKEN" "" }}'
-    skip_upload: '{{ if eq (envOrDefault "TAP_GITHUB_TOKEN" "") "" }}true{{ end }}'
+      # The token field only accepts a bare {{ .Env.X }}; skip_upload uses the
+      # full template engine and skips publishing when the secret is empty.
+      token: "{{ .Env.TAP_GITHUB_TOKEN }}"
+    skip_upload: '{{ if not (isEnvSet "TAP_GITHUB_TOKEN") }}true{{ end }}'
     homepage: https://github.com/eferro/uncertain-bc
     description: bc for numbers you are not sure about, a Monte Carlo calculator for ranges.
     license: MIT
@@ -74,8 +76,10 @@ scoops:
     repository:
       owner: eferro
       name: scoop-bucket
-      token: '{{ envOrDefault "TAP_GITHUB_TOKEN" "" }}'
-    skip_upload: '{{ if eq (envOrDefault "TAP_GITHUB_TOKEN" "") "" }}true{{ end }}'
+      # The token field only accepts a bare {{ .Env.X }}; skip_upload uses the
+      # full template engine and skips publishing when the secret is empty.
+      token: "{{ .Env.TAP_GITHUB_TOKEN }}"
+    skip_upload: '{{ if not (isEnvSet "TAP_GITHUB_TOKEN") }}true{{ end }}'
     homepage: https://github.com/eferro/uncertain-bc
     description: bc for numbers you are not sure about, a Monte Carlo calculator for ranges.
     license: MIT
