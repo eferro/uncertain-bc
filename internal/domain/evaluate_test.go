@@ -26,9 +26,3 @@ func TestEvaluate_ReturnsTheNumber_WhenTheProgramIsANumberLiteral(t *testing.T) 
 		})
 	}
 }
-
-func TestEvaluate_Fails_WhenTheProgramIsNotANumber(t *testing.T) {
-	_, err := domain.Evaluate("forty-two")
-
-	assert.Error(t, err)
-}

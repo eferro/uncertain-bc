@@ -1,3 +1,3 @@
 ! exec ubc -e forty-two
 ! stdout .
-stderr '^ubc: '
+stderr '^ubc: line 1, col 1: unexpected character ''f''\n$'
