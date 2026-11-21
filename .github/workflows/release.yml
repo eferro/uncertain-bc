@@ -25,3 +25,50 @@ jobs:
           args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  install-check:
+    needs: release
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Install with install.sh
+        env:
+          UBC_VERSION: ${{ github.ref_name }}
+        run: |
+          UBC_INSTALL_DIR="$RUNNER_TEMP/bin" sh install.sh
+          "$RUNNER_TEMP/bin/ubc" --version | grep -F "ubc ${UBC_VERSION#v}"
+          test "$("$RUNNER_TEMP/bin/ubc" -e '1 + 2')" = 3
+
+  install-check-windows:
+    needs: release
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Install with install.ps1
+        shell: pwsh
+        env:
+          UBC_VERSION: ${{ github.ref_name }}
+        run: |
+          $env:UBC_INSTALL_DIR = Join-Path $env:RUNNER_TEMP 'ubc'
+          ./install.ps1
+          $version = & (Join-Path $env:UBC_INSTALL_DIR 'ubc.exe') --version
+          if ($version -ne "ubc $($env:UBC_VERSION.TrimStart('v'))") { throw "unexpected version: $version" }
+
+  go-install-check:
+    needs: release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-go@d8cbb8045d7f43706b9177cceb36c1f91a6644d5 # v7.1.0
+        with:
+          go-version: stable
+      - name: Install with go install
+        env:
+          GOPROXY: direct
+          TAG: ${{ github.ref_name }}
+        run: |
+          go install "github.com/eferro/uncertain-bc/cmd/ubc@$TAG"
+          "$(go env GOPATH)/bin/ubc" --version | grep -F "ubc ${TAG#v}"

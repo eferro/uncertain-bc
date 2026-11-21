@@ -30,6 +30,7 @@ jobs:
       - run: make local-setup
       - run: make secrets-scan
       - run: make validate
+      - run: make check-scripts
       - run: make test-mutation
       - run: make build
       - run: make release-check

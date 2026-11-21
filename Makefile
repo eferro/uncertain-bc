@@ -18,7 +18,7 @@ GREMLINS := $(TOOLS)/gremlins
 MUTATION_MIN := 85
 MUTATION_MEMORY_KB := 4000000
 
-.PHONY: help local-setup test test-pkg coverage format lint check-test-style check-architecture check-binary secrets-scan test-mutation validate build release-check release-snapshot
+.PHONY: help local-setup test test-pkg coverage format lint check-test-style check-architecture check-binary check-scripts secrets-scan test-mutation validate build release-check release-snapshot
 
 help: ## List available targets
 	@grep -hE '^[a-zA-Z_-]+:.*## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*## "} {printf "  %-20s %s\n", $$1, $$2}'
@@ -62,6 +62,9 @@ secrets-scan: $(GITLEAKS) ## Scan git history for secrets; narrow it with LOG_OP
 check-binary: ## Build the static binary with a known version and smoke-test it
 	$(MAKE) --no-print-directory build VERSION=v0.0.0-smoke
 	scripts/checks/binary-smoke.sh $(BIN) v0.0.0-smoke
+
+check-scripts: ## Lint every shell script with shellcheck (runs in CI, where shellcheck is installed)
+	shellcheck install.sh scripts/hooks/* scripts/checks/*.sh
 
 validate: lint check-test-style check-architecture coverage check-binary ## Everything CI checks; run before every commit
 
