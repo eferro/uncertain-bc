@@ -45,10 +45,26 @@ func (m *multiString) Set(value string) error {
 	return nil
 }
 
+const usage = `Usage:
+  ubc [flags] [FILE...]
+
+Evaluates expressions with uncertain numbers. Without -e or files, it reads
+the program from stdin. Flags go before files.
+
+Flags:
+  -e, --eval EXPR     evaluate EXPR (repeatable)
+  -n, --samples N     Monte Carlo sample count (default 5000)
+  -s, --seed N        random seed (default 1)
+      --random        seed from the clock
+      --ascii         print ASCII instead of Unicode
+  -h, --help          show this help
+      --version       print the version
+`
+
 func (a App) Run(args []string, stdin io.Reader, stdout, stderr io.Writer) int {
-	opts, err := parseFlags(args, stderr)
-	if err != nil {
-		return exitUsageError
+	opts, code, proceed := readFlags(args, stdout, stderr)
+	if !proceed {
+		return code
 	}
 	if opts.version {
 		fmt.Fprintf(stdout, "ubc %s\n", a.Version)
@@ -67,10 +83,24 @@ func (a App) Run(args []string, stdin io.Reader, stdout, stderr io.Writer) int {
 	return evaluateAll(sources, settings, styleFor(opts), stdout, stderr)
 }
 
+func readFlags(args []string, stdout, stderr io.Writer) (options, int, bool) {
+	opts, err := parseFlags(args, stderr)
+	switch {
+	case errors.Is(err, flag.ErrHelp):
+		fmt.Fprint(stdout, usage)
+		return opts, exitOK, false
+	case err != nil:
+		fmt.Fprint(stderr, usage)
+		return opts, exitUsageError, false
+	}
+	return opts, exitOK, true
+}
+
 func parseFlags(args []string, stderr io.Writer) (options, error) {
 	opts := options{samples: application.DefaultSettings().Samples, seed: application.DefaultSettings().Seed}
 	fs := flag.NewFlagSet("ubc", flag.ContinueOnError)
 	fs.SetOutput(stderr)
+	fs.Usage = func() {}
 	registerFlags(fs, &opts)
 	err := fs.Parse(args)
 	opts.files = fs.Args()

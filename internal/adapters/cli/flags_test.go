@@ -58,3 +58,22 @@ func TestRun_PrintsOnlyAscii_WhenAsked(t *testing.T) {
 	assert.Equal(t, 0, got.code)
 	assert.Regexp(t, `^~ \S+   90% \[\S+ \.\.\. \S+\]   [ .:\-=+*#]{16}\n$`, got.stdout)
 }
+
+func TestRun_PrintsUsage_WhenHelpIsRequested(t *testing.T) {
+	for _, flag := range []string{"-h", "--help"} {
+		got := run(t, "", flag)
+
+		assert.Equal(t, 0, got.code, flag)
+		assert.Contains(t, got.stdout, "Usage:", flag)
+		assert.Contains(t, got.stdout, "-n, --samples N", flag)
+		assert.Empty(t, got.stderr, flag)
+	}
+}
+
+func TestRun_PrintsUsageToStderr_WhenAFlagIsWrong(t *testing.T) {
+	got := run(t, "", "--nope")
+
+	assert.Equal(t, 2, got.code)
+	assert.Contains(t, got.stderr, "flag provided but not defined: -nope")
+	assert.Contains(t, got.stderr, "Usage:")
+}
