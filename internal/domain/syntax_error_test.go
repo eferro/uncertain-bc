@@ -22,12 +22,6 @@ func TestEvaluate_ReportsWhereTheSyntaxIsWrong(t *testing.T) {
 		{"A", 1, "unexpected 'A'"},
 		{"Z", 1, "unexpected 'Z'"},
 		{"_x9", 1, "unexpected '_x9'"},
-		{"@", 1, "unexpected character '@'"},
-		{"[", 1, "unexpected character '['"},
-		{"`", 1, "unexpected character '`'"},
-		{"{", 1, "unexpected character '{'"},
-		{"/", 1, "unexpected character '/'"},
-		{":", 1, "unexpected character ':'"},
 		{"1 to", 5, "unexpected end of input"},
 		{"1 +", 4, "unexpected end of input"},
 		{"", 1, "unexpected end of input"},
@@ -52,4 +46,16 @@ func TestSyntaxError_ReadsAsLineColumnAndMessage(t *testing.T) {
 	err := &domain.SyntaxError{Line: 2, Col: 5, Msg: "unexpected '+'"}
 
 	assert.EqualError(t, err, "line 2, col 5: unexpected '+'")
+}
+
+func TestEvaluate_RejectsTheCharactersJustOutsideDigitAndLetterRanges(t *testing.T) {
+	for _, neighbour := range []string{"/", ":", "@", "[", "`", "{"} {
+		t.Run(neighbour, func(t *testing.T) {
+			_, err := domain.Evaluate(neighbour, domain.NewEnv(1, samples))
+
+			var syntaxErr *domain.SyntaxError
+			require.ErrorAs(t, err, &syntaxErr)
+			assert.Equal(t, "unexpected character '"+neighbour+"'", syntaxErr.Msg)
+		})
+	}
 }
