@@ -15,6 +15,7 @@ type style struct {
 	axis     string
 	bar      string
 	plain    bool
+	json     bool
 }
 
 var (
@@ -28,12 +29,16 @@ func styleFor(opts options) style {
 		st = asciiStyle
 	}
 	st.plain = opts.plain
+	st.json = opts.json
 	return st
 }
 
 func format(value domain.Value, st style) string {
 	if st.plain {
 		return centralValue(value)
+	}
+	if st.json {
+		return jsonLine(value)
 	}
 	switch v := value.(type) {
 	case domain.SampleSet:

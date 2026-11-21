@@ -1,6 +1,7 @@
 package domain_test
 
 import (
+	"math"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -31,4 +32,11 @@ func TestSampleSet_Quantile_LeavesTheSamplesInTheirOriginalOrder(t *testing.T) {
 	s.Quantile(0.5)
 
 	assert.Equal(t, domain.SampleSet{3, 1, 2}, s)
+}
+
+func TestSampleSet_MeanAndStdev_IgnoreNonFiniteSamples(t *testing.T) {
+	s := domain.SampleSet{2, 4, 4, 4, 5, 5, 7, 9, math.NaN(), math.Inf(1)}
+
+	assert.Equal(t, 5.0, s.Mean())
+	assert.Equal(t, 2.0, s.Stdev())
 }

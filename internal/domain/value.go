@@ -38,6 +38,10 @@ func (s SampleSet) Quantile(q float64) float64 {
 	return sorted[lower] + (h-float64(lower))*(sorted[lower+1]-sorted[lower])
 }
 
+func (s SampleSet) Mean() float64 { return mean(s) }
+
+func (s SampleSet) Stdev() float64 { return stdev(s) }
+
 func (s SampleSet) Dropped() int {
 	return len(s) - len(s.finite())
 }

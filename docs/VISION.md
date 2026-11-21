@@ -49,7 +49,7 @@ Pipes and scripts:
 $ echo '(0.12 to 0.25) * 24 * 365 * (12 to 30) / 1000' | ubc
 ≈ 37    90% [19 … 70]     ▂▆█▆▃▂▁▁
 
-$ ubc --json -e '1k to 5k' | jq .p50
+$ ubc --json -e '1k to 5k' | jq .median
 2236
 ```
 
@@ -157,7 +157,7 @@ Key decisions:
 | 0. Walking skeleton ✅ (v0.1.0) | `ubc -e '1 + 2'` and `ubc -e '10 to 20'` print a result; CI, release binaries with goreleaser |
 | 1. Calculator MVP ✅ (v0.2.0) | Lexer, parser, scalar + sample-set evaluation, `to`, suffixes, arithmetic, summaries, `P(...)`, default output line with sparkline, stdin and file modes |
 | 2. REPL ✅ (v0.3.0) | History, persistent variables, `last`, `:` commands, `:hist` |
-| 3. Sharing | `--json` (`--plain` landed in phase 1), `:plot` to SVG/PNG, model files |
+| 3. Sharing | `--json` ✅ (`--plain` landed in phase 1), `:plot` to SVG/PNG, model files |
 | 4. Expressiveness | User functions, more distributions, empirical data |
 | 5. Maybe | Units, interactive sliders (Guesstimate-style "calculators") in a TUI |
 
