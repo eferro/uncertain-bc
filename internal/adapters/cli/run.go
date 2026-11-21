@@ -38,14 +38,22 @@ func (a App) Run(args []string, stdout, stderr io.Writer) int {
 	return evaluate(*expr, stdout, stderr)
 }
 
-func evaluate(expr string, stdout, stderr io.Writer) int {
-	value, err := application.NewSession(application.DefaultSettings()).Evaluate(expr)
+func evaluate(program string, stdout, stderr io.Writer) int {
+	results, err := application.NewSession(application.DefaultSettings()).Evaluate(program)
+	printExpressions(results, stdout)
 	if err != nil {
 		fmt.Fprintf(stderr, "ubc: %v\n", err)
 		return exitCode(err)
 	}
-	fmt.Fprintln(stdout, format(value))
 	return exitOK
+}
+
+func printExpressions(results []domain.Result, stdout io.Writer) {
+	for _, result := range results {
+		if result.Name == "" {
+			fmt.Fprintln(stdout, format(result.Value))
+		}
+	}
 }
 
 func exitCode(err error) int {

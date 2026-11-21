@@ -30,12 +30,13 @@ func (s SampleSet) Quantile(q float64) float64 {
 }
 
 type Env struct {
-	rng     *rand.Rand
-	samples int
+	rng       *rand.Rand
+	samples   int
+	variables map[string]Value
 }
 
 func NewEnv(seed uint64, samples int) Env {
-	return Env{rng: rand.New(rand.NewPCG(seed, seed)), samples: samples}
+	return Env{rng: rand.New(rand.NewPCG(seed, seed)), samples: samples, variables: map[string]Value{}}
 }
 
 func (e Env) draw(sample func(*rand.Rand) float64) SampleSet {

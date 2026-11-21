@@ -21,6 +21,6 @@ func NewSession(settings Settings) *Session {
 	return &Session{env: domain.NewEnv(settings.Seed, settings.Samples)}
 }
 
-func (s *Session) Evaluate(statement string) (domain.Value, error) {
-	return domain.Evaluate(statement, s.env)
+func (s *Session) Evaluate(program string) ([]domain.Result, error) {
+	return domain.Evaluate(program, s.env)
 }

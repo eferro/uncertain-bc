@@ -34,7 +34,7 @@ func TestRun_ExitsWithUsageError_WhenAFlagIsUnknown(t *testing.T) {
 func TestRun_ExitsWithParseError_WhenTheExpressionIsNotValid(t *testing.T) {
 	var stdout, stderr bytes.Buffer
 
-	code := app.Run([]string{"-e", "forty"}, &stdout, &stderr)
+	code := app.Run([]string{"-e", "1 +"}, &stdout, &stderr)
 
 	assert.Equal(t, 3, code)
 	assert.Empty(t, stdout.String())
@@ -68,4 +68,32 @@ func TestRun_PrintsTheVersion_WhenAskedFor(t *testing.T) {
 	assert.Equal(t, 0, code)
 	assert.Equal(t, "ubc v1.2.3\n", stdout.String())
 	assert.Empty(t, stderr.String())
+}
+
+func TestRun_PrintsEveryExpressionButNoAssignment(t *testing.T) {
+	var stdout, stderr bytes.Buffer
+
+	code := app.Run([]string{"-e", "x = 2; x * 3; y = x; y + 1"}, &stdout, &stderr)
+
+	assert.Equal(t, 0, code)
+	assert.Equal(t, "6\n3\n", stdout.String())
+}
+
+func TestRun_PrintsAPlainNumber_WhenEverySampleIsTheSame(t *testing.T) {
+	var stdout, stderr bytes.Buffer
+
+	code := app.Run([]string{"-e", "x = 1 to 5; x - x"}, &stdout, &stderr)
+
+	assert.Equal(t, 0, code)
+	assert.Equal(t, "0\n", stdout.String())
+}
+
+func TestRun_PrintsTheResultsBeforeAnError(t *testing.T) {
+	var stdout, stderr bytes.Buffer
+
+	code := app.Run([]string{"-e", "1; 10 to 5; 3"}, &stdout, &stderr)
+
+	assert.Equal(t, 1, code)
+	assert.Equal(t, "1\n", stdout.String())
+	assert.Equal(t, "ubc: line 1, col 7: range start 10 must be below its end 5\n", stderr.String())
 }

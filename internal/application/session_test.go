@@ -10,25 +10,25 @@ import (
 	"github.com/eferro/uncertain-bc/internal/domain"
 )
 
-func TestSession_EvaluatesAStatement(t *testing.T) {
+func TestSession_EvaluatesAProgram(t *testing.T) {
 	session := application.NewSession(application.DefaultSettings())
 
-	value, err := session.Evaluate("1 + 2")
+	results, err := session.Evaluate("1 + 2")
 
 	require.NoError(t, err)
-	assert.Equal(t, domain.Scalar(3), value)
+	assert.Equal(t, []domain.Result{{Line: 1, Value: domain.Scalar(3)}}, results)
 }
 
 func TestSession_DrawsTheConfiguredNumberOfSamples(t *testing.T) {
 	session := application.NewSession(application.Settings{Seed: 1, Samples: 10})
 
-	value, err := session.Evaluate("1 to 2")
+	results, err := session.Evaluate("1 to 2")
 
 	require.NoError(t, err)
-	assert.Len(t, value, 10)
+	assert.Len(t, results[0].Value, 10)
 }
 
-func TestSession_KeepsOneRandomStreamAcrossStatements(t *testing.T) {
+func TestSession_KeepsOneRandomStreamAcrossPrograms(t *testing.T) {
 	session := application.NewSession(application.DefaultSettings())
 
 	first, err := session.Evaluate("1 to 2")
@@ -36,7 +36,18 @@ func TestSession_KeepsOneRandomStreamAcrossStatements(t *testing.T) {
 	second, err := session.Evaluate("1 to 2")
 	require.NoError(t, err)
 
-	assert.NotEqual(t, first, second)
+	assert.NotEqual(t, first[0].Value, second[0].Value)
+}
+
+func TestSession_KeepsVariablesAcrossPrograms(t *testing.T) {
+	session := application.NewSession(application.DefaultSettings())
+	_, err := session.Evaluate("x = 20")
+	require.NoError(t, err)
+
+	results, err := session.Evaluate("x + 1")
+
+	require.NoError(t, err)
+	assert.Equal(t, domain.Scalar(21), results[0].Value)
 }
 
 func TestDefaultSettings_UseSeedOneAndFiveThousandSamples(t *testing.T) {

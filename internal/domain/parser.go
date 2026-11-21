@@ -5,21 +5,52 @@ import (
 	"strconv"
 )
 
+type statement struct {
+	line int
+	name string
+	expr node
+}
+
 type parser struct {
 	tokens []token
 	pos    int
 }
 
-func parse(tokens []token) (node, error) {
+func parse(tokens []token) ([]statement, error) {
 	p := &parser{tokens: tokens}
+	var statements []statement
+	for p.skipSeparators(); p.peek().kind != tokenEOF; p.skipSeparators() {
+		stmt, err := p.statement()
+		if err != nil {
+			return nil, err
+		}
+		if tok := p.peek(); !isSeparator(tok) && tok.kind != tokenEOF {
+			return nil, unexpected(tok)
+		}
+		statements = append(statements, stmt)
+	}
+	return statements, nil
+}
+
+func (p *parser) statement() (statement, error) {
+	line := p.peek().line
+	name := ""
+	if p.peek().kind == tokenIdent && p.tokens[p.pos+1].kind == tokenAssign {
+		name = p.advance().text
+		p.advance()
+	}
 	expr, err := p.rangeExpression()
-	if err != nil {
-		return nil, err
+	return statement{line: line, name: name, expr: expr}, err
+}
+
+func (p *parser) skipSeparators() {
+	for isSeparator(p.peek()) {
+		p.advance()
 	}
-	if tok := p.peek(); tok.kind != tokenEOF {
-		return nil, unexpected(tok)
-	}
-	return expr, nil
+}
+
+func isSeparator(tok token) bool {
+	return tok.kind == tokenNewline || tok.kind == tokenSemicolon
 }
 
 func (p *parser) rangeExpression() (node, error) {
@@ -27,9 +58,9 @@ func (p *parser) rangeExpression() (node, error) {
 	if err != nil || p.peek().kind != tokenTo {
 		return from, err
 	}
-	col := p.advance().col
+	at := p.advance().position
 	to, err := p.additive()
-	return rangeNode{from: from, to: to, col: col}, err
+	return rangeNode{from: from, to: to, at: at}, err
 }
 
 func (p *parser) additive() (node, error) {
@@ -74,6 +105,8 @@ func (p *parser) primary() (node, error) {
 	switch tok := p.advance(); tok.kind {
 	case tokenNumber:
 		return parseNumber(tok)
+	case tokenIdent:
+		return variable{name: tok.text, at: tok.position}, nil
 	case tokenLParen:
 		return p.parenthesised()
 	default:
@@ -95,7 +128,7 @@ func (p *parser) parenthesised() (node, error) {
 func parseNumber(tok token) (node, error) {
 	value, err := strconv.ParseFloat(tok.text, 64)
 	if err != nil {
-		return nil, syntaxErrorAt(tok.col, "invalid number '%s'", tok.text)
+		return nil, syntaxErrorAt(tok.position, "invalid number '%s'", tok.text)
 	}
 	return number(value), nil
 }
@@ -113,8 +146,12 @@ func (p *parser) advance() token {
 }
 
 func unexpected(tok token) *SyntaxError {
-	if tok.kind == tokenEOF {
-		return syntaxErrorAt(tok.col, "unexpected end of input")
+	switch tok.kind {
+	case tokenEOF:
+		return syntaxErrorAt(tok.position, "unexpected end of input")
+	case tokenNewline:
+		return syntaxErrorAt(tok.position, "unexpected end of line")
+	default:
+		return syntaxErrorAt(tok.position, "unexpected '%s'", tok.text)
 	}
-	return syntaxErrorAt(tok.col, "unexpected '%s'", tok.text)
 }

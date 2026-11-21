@@ -108,6 +108,7 @@ One line per top-level expression (assignments print too, as in the REPL example
 | SampleSet | `≈ MEDIAN   90% [P5 … P95]   SPARKLINE` |
 | Probability | `0.16` (two decimals; `<0.01` / `>0.99` at the extremes) |
 
+- A SampleSet whose samples are all equal prints as a scalar: `x = 1 to 5; x - x` prints `0`.
 - SampleSet numbers use **3 significant figures** without trailing zeros (`≈ 14.2   90% [10 … 19.8]`), and suffixes from 10k up: `≈ 22.4k   90% [10k … 50k]`.
 - The sparkline is 16 cells wide, built from a histogram over [P1, P99]; Unicode block elements `▁▂▃▄▅▆▇█`, ASCII fallback ` .:-=+*#`.
 - `--plain` prints the median (scalar as is) with full float precision, for `$(ubc -e ...)`.

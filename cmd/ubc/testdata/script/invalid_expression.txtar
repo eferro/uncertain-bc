@@ -1,3 +1,7 @@
+! exec ubc -e '1 +'
+! stdout .
+stderr '^ubc: line 1, col 4: unexpected end of input\n$'
+
 ! exec ubc -e forty
 ! stdout .
-stderr '^ubc: line 1, col 1: unexpected ''forty''\n$'
+stderr '^ubc: line 1, col 1: unknown variable ''forty''\n$'

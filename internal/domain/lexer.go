@@ -4,7 +4,12 @@ type tokenKind int
 
 const (
 	tokenEOF tokenKind = iota
+	tokenNewline
+	tokenSemicolon
 	tokenNumber
+	tokenIdent
+	tokenTo
+	tokenAssign
 	tokenPlus
 	tokenMinus
 	tokenStar
@@ -12,11 +17,11 @@ const (
 	tokenCaret
 	tokenLParen
 	tokenRParen
-	tokenTo
-	tokenIdent
 )
 
 var operators = map[byte]tokenKind{
+	';': tokenSemicolon,
+	'=': tokenAssign,
 	'+': tokenPlus,
 	'-': tokenMinus,
 	'*': tokenStar,
@@ -26,43 +31,91 @@ var operators = map[byte]tokenKind{
 	')': tokenRParen,
 }
 
+type position struct {
+	line, col int
+}
+
 type token struct {
 	kind tokenKind
 	text string
-	col  int
+	position
+}
+
+type lexer struct {
+	src       string
+	i         int
+	line      int
+	lineStart int
+	tokens    []token
 }
 
 func lex(src string) ([]token, error) {
-	var tokens []token
-	for i := 0; i < len(src); {
-		next, tok, err := lexOne(src, i)
-		if err != nil {
+	l := &lexer{src: src, line: 1}
+	for l.i < len(l.src) {
+		if err := l.next(); err != nil {
 			return nil, err
 		}
-		if tok != nil {
-			tokens = append(tokens, *tok)
-		}
-		i = next
 	}
-	return append(tokens, token{kind: tokenEOF, col: len(src) + 1}), nil
+	l.emit(tokenEOF, "", l.i)
+	return l.tokens, nil
 }
 
-func lexOne(src string, i int) (int, *token, error) {
-	c := src[i]
+func (l *lexer) next() error {
+	switch c := l.src[l.i]; c {
+	case '\n':
+		l.newline()
+	case ' ', '\t', '\r':
+		l.i++
+	case '#':
+		l.i = scanWhile(l.src, l.i, func(c byte) bool { return c != '\n' })
+	default:
+		return l.token(c)
+	}
+	return nil
+}
+
+func (l *lexer) token(c byte) error {
 	if kind, ok := operators[c]; ok {
-		return i + 1, &token{kind: kind, text: string(c), col: i + 1}, nil
+		l.emitAndSkip(kind, l.i+1)
+		return nil
 	}
 	switch {
-	case c == ' ' || c == '\t':
-		return i + 1, nil, nil
 	case isDigit(c) || c == '.':
-		end := scanNumber(src, i)
-		return end, &token{kind: tokenNumber, text: src[i:end], col: i + 1}, nil
+		l.emitAndSkip(tokenNumber, scanNumber(l.src, l.i))
 	case isIdentStart(c):
-		end := scanWhile(src, i, isIdentPart)
-		return end, identOrKeyword(src[i:end], i+1), nil
+		end := scanWhile(l.src, l.i, isIdentPart)
+		l.emitAndSkip(identKind(l.src[l.i:end]), end)
+	default:
+		return syntaxErrorAt(l.position(l.i), "unexpected character '%c'", c)
 	}
-	return 0, nil, syntaxErrorAt(i+1, "unexpected character '%c'", c)
+	return nil
+}
+
+func (l *lexer) newline() {
+	l.emit(tokenNewline, "", l.i)
+	l.i++
+	l.line++
+	l.lineStart = l.i
+}
+
+func (l *lexer) emitAndSkip(kind tokenKind, end int) {
+	l.emit(kind, l.src[l.i:end], l.i)
+	l.i = end
+}
+
+func (l *lexer) emit(kind tokenKind, text string, at int) {
+	l.tokens = append(l.tokens, token{kind: kind, text: text, position: l.position(at)})
+}
+
+func (l *lexer) position(at int) position {
+	return position{line: l.line, col: at - l.lineStart + 1}
+}
+
+func identKind(text string) tokenKind {
+	if text == "to" {
+		return tokenTo
+	}
+	return tokenIdent
 }
 
 func scanNumber(src string, start int) int {
@@ -93,13 +146,6 @@ func scanWhile(src string, i int, accept func(byte) bool) int {
 
 func isDigit(c byte) bool {
 	return c >= '0' && c <= '9'
-}
-
-func identOrKeyword(text string, col int) *token {
-	if text == "to" {
-		return &token{kind: tokenTo, text: text, col: col}
-	}
-	return &token{kind: tokenIdent, text: text, col: col}
 }
 
 func isIdentStart(c byte) bool {

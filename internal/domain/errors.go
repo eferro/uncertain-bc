@@ -9,7 +9,7 @@ type SyntaxError struct {
 }
 
 func (e *SyntaxError) Error() string {
-	return position(e.Line, e.Col, e.Msg)
+	return located(e.Line, e.Col, e.Msg)
 }
 
 type EvalError struct {
@@ -19,17 +19,17 @@ type EvalError struct {
 }
 
 func (e *EvalError) Error() string {
-	return position(e.Line, e.Col, e.Msg)
+	return located(e.Line, e.Col, e.Msg)
 }
 
-func position(line, col int, msg string) string {
+func located(line, col int, msg string) string {
 	return fmt.Sprintf("line %d, col %d: %s", line, col, msg)
 }
 
-func syntaxErrorAt(col int, format string, args ...any) *SyntaxError {
-	return &SyntaxError{Line: 1, Col: col, Msg: fmt.Sprintf(format, args...)}
+func syntaxErrorAt(at position, format string, args ...any) *SyntaxError {
+	return &SyntaxError{Line: at.line, Col: at.col, Msg: fmt.Sprintf(format, args...)}
 }
 
-func evalErrorAt(col int, format string, args ...any) *EvalError {
-	return &EvalError{Line: 1, Col: col, Msg: fmt.Sprintf(format, args...)}
+func evalErrorAt(at position, format string, args ...any) *EvalError {
+	return &EvalError{Line: at.line, Col: at.col, Msg: fmt.Sprintf(format, args...)}
 }

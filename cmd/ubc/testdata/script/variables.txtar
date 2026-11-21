@@ -1,0 +1,8 @@
+exec ubc -e 'x = 1 to 5; x - x'
+stdout '^0\n$'
+
+exec ubc -e 'price = 0.12 to 0.25; kwh = 100; price * kwh'
+cmp stdout cost.out
+
+-- cost.out --
+≈ 17.3   90% [12 … 24.8]

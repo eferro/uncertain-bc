@@ -11,6 +11,9 @@ import (
 func format(value domain.Value) string {
 	switch v := value.(type) {
 	case domain.SampleSet:
+		if v.Quantile(0) == v.Quantile(1) {
+			return format(domain.Scalar(v[0]))
+		}
 		return fmt.Sprintf("≈ %s   90%% [%s … %s]",
 			significant(v.Quantile(0.5)), significant(v.Quantile(0.05)), significant(v.Quantile(0.95)))
 	case domain.Scalar:

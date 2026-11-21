@@ -48,9 +48,22 @@ var arithmetic = map[tokenKind]func(a, b float64) float64{
 	tokenCaret: math.Pow,
 }
 
+type variable struct {
+	name string
+	at   position
+}
+
+func (v variable) evaluate(env Env) (Value, error) {
+	value, ok := env.variables[v.name]
+	if !ok {
+		return nil, evalErrorAt(v.at, "unknown variable '%s'", v.name)
+	}
+	return value, nil
+}
+
 type rangeNode struct {
 	from, to node
-	col      int
+	at       position
 }
 
 func (r rangeNode) evaluate(env Env) (Value, error) {
@@ -59,7 +72,7 @@ func (r rangeNode) evaluate(env Env) (Value, error) {
 		return nil, err
 	}
 	if from >= to {
-		return nil, evalErrorAt(r.col, "range start %g must be below its end %g", from, to)
+		return nil, evalErrorAt(r.at, "range start %g must be below its end %g", from, to)
 	}
 	return ninetyPercentRange(env, from, to), nil
 }
@@ -76,19 +89,40 @@ func (r rangeNode) bounds(env Env) (from, to float64, err error) {
 	fromScalar, fromOK := fromValue.(Scalar)
 	toScalar, toOK := toValue.(Scalar)
 	if !fromOK || !toOK {
-		return 0, 0, evalErrorAt(r.col, "range bounds must be plain numbers")
+		return 0, 0, evalErrorAt(r.at, "range bounds must be plain numbers")
 	}
 	return float64(fromScalar), float64(toScalar), nil
 }
 
-func Evaluate(program string, env Env) (Value, error) {
+type Result struct {
+	Line  int
+	Name  string
+	Value Value
+}
+
+func Evaluate(program string, env Env) ([]Result, error) {
 	tokens, err := lex(program)
 	if err != nil {
 		return nil, err
 	}
-	tree, err := parse(tokens)
+	statements, err := parse(tokens)
 	if err != nil {
 		return nil, err
 	}
-	return tree.evaluate(env)
+	return run(statements, env)
+}
+
+func run(statements []statement, env Env) ([]Result, error) {
+	results := make([]Result, 0, len(statements))
+	for _, stmt := range statements {
+		value, err := stmt.expr.evaluate(env)
+		if err != nil {
+			return results, err
+		}
+		if stmt.name != "" {
+			env.variables[stmt.name] = value
+		}
+		results = append(results, Result{Line: stmt.line, Name: stmt.name, Value: value})
+	}
+	return results, nil
 }
