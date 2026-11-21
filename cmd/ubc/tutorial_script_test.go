@@ -65,23 +65,41 @@ func (s *tutorialScript) add(block fencedBlock) error {
 	return nil
 }
 
+type consoleCommand struct {
+	command string
+	output  []string
+}
+
 func (s *tutorialScript) addConsole(lines []string) error {
-	if len(lines) == 0 {
-		return errors.New("console block is empty")
+	commands, err := consoleCommands(lines)
+	if err != nil {
+		return err
 	}
-	if !strings.HasPrefix(lines[0], "$ ") {
-		return fmt.Errorf("console block starts with %q instead of a $ command", lines[0])
-	}
-	start := 0
-	for i := 1; i <= len(lines); i++ {
-		if i == len(lines) || strings.HasPrefix(lines[i], "$ ") {
-			if err := s.addCommand(strings.TrimPrefix(lines[start], "$ "), lines[start+1:i]); err != nil {
-				return err
-			}
-			start = i
+	for _, c := range commands {
+		if err := s.addCommand(c.command, c.output); err != nil {
+			return err
 		}
 	}
 	return nil
+}
+
+func consoleCommands(lines []string) ([]consoleCommand, error) {
+	if len(lines) == 0 {
+		return nil, errors.New("console block is empty")
+	}
+	if !strings.HasPrefix(lines[0], "$ ") {
+		return nil, fmt.Errorf("console block starts with %q instead of a $ command", lines[0])
+	}
+	var commands []consoleCommand
+	for _, line := range lines {
+		if command, ok := strings.CutPrefix(line, "$ "); ok {
+			commands = append(commands, consoleCommand{command: command})
+			continue
+		}
+		last := &commands[len(commands)-1]
+		last.output = append(last.output, line)
+	}
+	return commands, nil
 }
 
 func (s *tutorialScript) addCommand(command string, output []string) error {
