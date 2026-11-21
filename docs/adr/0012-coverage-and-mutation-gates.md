@@ -1,6 +1,6 @@
 # ADR 0012: Coverage and mutation testing gates
 
-- Status: Accepted
+- Status: Accepted, amended by [ADR 0020](0020-reliable-mutation-gate.md)
 - Effective date: 2026-11-21
 - Deciders: eduardo.ferro
 

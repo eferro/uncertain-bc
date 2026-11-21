@@ -12,6 +12,7 @@ import (
 func TestEvaluate_ReturnsTheNumber_WhenTheProgramIsANumberLiteral(t *testing.T) {
 	cases := map[string]float64{
 		"42":     42,
+		"9":      9,
 		"3.14":   3.14,
 		".5":     0.5,
 		"1e6":    1e6,

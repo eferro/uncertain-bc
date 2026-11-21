@@ -13,8 +13,12 @@ VERSION ?= $(shell git describe --tags --always --dirty)
 GORELEASER_VERSION := v2.20.3
 GORELEASER := $(TOOLS)/goreleaser
 COVERAGE_PROFILE := coverage.out
+GREMLINS_VERSION := v0.6.0
+GREMLINS := $(TOOLS)/gremlins
+MUTATION_MIN := 85
+MUTATION_MEMORY_KB := 4000000
 
-.PHONY: help local-setup test test-pkg coverage format lint check-test-style check-architecture check-binary secrets-scan validate build release-check release-snapshot
+.PHONY: help local-setup test test-pkg coverage format lint check-test-style check-architecture check-binary secrets-scan test-mutation validate build release-check release-snapshot
 
 help: ## List available targets
 	@grep -hE '^[a-zA-Z_-]+:.*## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*## "} {printf "  %-20s %s\n", $$1, $$2}'
@@ -63,6 +67,12 @@ validate: lint check-test-style check-architecture coverage check-binary ## Ever
 
 build: ## Build a static binary in bin/
 	CGO_ENABLED=0 go build -trimpath -ldflags "-s -w -X main.version=$(VERSION)" -o $(BIN) ./cmd/ubc
+
+$(GREMLINS):
+	GOTOOLCHAIN=auto GOBIN=$(TOOLS) go install github.com/go-gremlins/gremlins/cmd/gremlins@$(GREMLINS_VERSION)
+
+test-mutation: $(GREMLINS) ## Mutation-test internal/domain and fail below the efficacy minimum (ADR 0012, 0020)
+	ulimit -v $(MUTATION_MEMORY_KB) && scripts/checks/mutation.sh $(GREMLINS) $(MUTATION_MIN) ./internal/domain
 
 $(GORELEASER):
 	GOTOOLCHAIN=auto GOBIN=$(TOOLS) go install github.com/goreleaser/goreleaser/v2@$(GORELEASER_VERSION)

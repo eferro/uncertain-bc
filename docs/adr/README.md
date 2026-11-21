@@ -27,3 +27,4 @@ Template: Status, Effective date, Deciders, then Context, Decision, Consequences
 | [0017](0017-comments-explain-why-not-what.md) | Comments explain why, not what | Accepted | 2026-11-21 |
 | [0018](0018-mit-license.md) | MIT license | Accepted | 2026-11-21 |
 | [0019](0019-gitleaks-on-pre-push-and-ci.md) | gitleaks on pre-push and in CI | Accepted | 2026-11-21 |
+| [0020](0020-reliable-mutation-gate.md) | A reliable mutation gate (amends 0012) | Accepted | 2026-11-21 |
