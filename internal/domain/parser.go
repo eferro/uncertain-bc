@@ -126,11 +126,23 @@ func (p *parser) parenthesised() (node, error) {
 }
 
 func parseNumber(tok token) (node, error) {
-	value, err := strconv.ParseFloat(tok.text, 64)
+	digits, scale := splitSuffix(tok.text)
+	value, err := strconv.ParseFloat(digits, 64)
 	if err != nil {
 		return nil, syntaxErrorAt(tok.position, "invalid number '%s'", tok.text)
 	}
-	return number(value), nil
+	return number(scale(value)), nil
+}
+
+func splitSuffix(text string) (string, func(float64) float64) {
+	last := text[len(text)-1]
+	if last == '%' {
+		return text[:len(text)-1], func(v float64) float64 { return v / 100 }
+	}
+	if multiplier, ok := multipliers[last]; ok {
+		return text[:len(text)-1], func(v float64) float64 { return v * multiplier }
+	}
+	return text, func(v float64) float64 { return v }
 }
 
 func (p *parser) peek() token {

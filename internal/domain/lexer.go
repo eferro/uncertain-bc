@@ -120,7 +120,21 @@ func identKind(text string) tokenKind {
 
 func scanNumber(src string, start int) int {
 	end := scanWhile(src, start, func(c byte) bool { return isDigit(c) || c == '.' })
-	return scanExponent(src, end)
+	return scanSuffix(src, scanExponent(src, end))
+}
+
+var multipliers = map[byte]float64{'k': 1e3, 'M': 1e6, 'B': 1e9, 'T': 1e12}
+
+func scanSuffix(src string, i int) int {
+	if i >= len(src) {
+		return i
+	}
+	_, isMultiplier := multipliers[src[i]]
+	endsHere := i+1 >= len(src) || !isIdentPart(src[i+1])
+	if src[i] == '%' || (isMultiplier && endsHere) {
+		return i + 1
+	}
+	return i
 }
 
 func scanExponent(src string, i int) int {

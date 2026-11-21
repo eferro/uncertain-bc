@@ -1,0 +1,5 @@
+exec ubc -e '1k * 3'
+stdout '^3000\n$'
+
+exec ubc -e '5% * 200'
+stdout '^10\n$'

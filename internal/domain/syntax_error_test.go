@@ -34,6 +34,11 @@ func TestEvaluate_ReportsWhereTheSyntaxIsWrong(t *testing.T) {
 		{"1 + ; 2", 5, "unexpected ';'"},
 		{"1.2.3", 1, "invalid number '1.2.3'"},
 		{"1e", 2, "unexpected 'e'"},
+		{"1kw", 2, "unexpected 'kw'"},
+		{"1 k", 3, "unexpected 'k'"},
+		{"1m", 2, "unexpected 'm'"},
+		{"5%%", 3, "unexpected character '%'"},
+		{"%", 1, "unexpected character '%'"},
 		{"1e+", 2, "unexpected 'e'"},
 	}
 	for _, c := range cases {
