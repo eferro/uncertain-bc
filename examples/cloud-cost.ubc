@@ -1,0 +1,18 @@
+# Monthly cloud bill for a small web app, in dollars.
+
+users = 20k to 60k              # monthly active users
+requests = users * (50 to 200)  # requests per user and month
+per_million = 0.2 to 0.6        # serverless price per million requests
+compute = requests / 1M * per_million
+
+storage_gb = 200 to 500
+storage = storage_gb * 0.023
+
+egress_gb = users * (20 to 80) / 1k   # megabytes per user, in gigabytes
+egress = egress_gb * 0.09
+
+database = 50 to 120            # managed database, depends on the plan
+bill = compute + storage + egress + database
+
+bill
+P(bill > 300)                   # how often would we blow the budget?

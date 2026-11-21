@@ -1,0 +1,4 @@
+# A function names a calculation you repeat.
+task(days) = days * (0.8 to 1.6)   # every guess is a bit off, either way
+task(5)
+task(5) + task(3) + task(8)

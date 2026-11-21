@@ -55,7 +55,7 @@ What the language has today:
 - Comparisons and `P(...)`; summaries `mean`, `median`, `stdev`, `min`, `max`, `p(x, q)`; `sqrt`, `exp`, `log`, `log10`, `abs`, `round`, `floor`, `ceil`.
 - Input from `-e` (repeatable), files or stdin; flags `-n/--samples`, `-s/--seed`, `--random`, `--plain`, `--ascii` (see `ubc --help`).
 
-Full behaviour: [docs/SPEC.md](docs/SPEC.md). Goals and roadmap: [docs/VISION.md](docs/VISION.md).
+New to `ubc`? Start with the [tutorial](docs/TUTORIAL.md): from plain arithmetic to project estimates, Fermi problems and cloud costs, with every example in [examples/](examples/). Full behaviour: [docs/SPEC.md](docs/SPEC.md). Goals and roadmap: [docs/VISION.md](docs/VISION.md).
 
 ## Install
 

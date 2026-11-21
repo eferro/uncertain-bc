@@ -23,12 +23,16 @@ func copyExamples(env *testscript.Env) error {
 	if err != nil {
 		return err
 	}
+	dir := filepath.Join(env.WorkDir, "examples")
+	if err := os.Mkdir(dir, 0o700); err != nil {
+		return err
+	}
 	for _, path := range examples {
 		content, err := os.ReadFile(path)
 		if err != nil {
 			return err
 		}
-		if err := os.WriteFile(filepath.Join(env.WorkDir, filepath.Base(path)), content, 0o600); err != nil {
+		if err := os.WriteFile(filepath.Join(dir, filepath.Base(path)), content, 0o600); err != nil {
 			return err
 		}
 	}

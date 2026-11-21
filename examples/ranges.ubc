@@ -1,0 +1,4 @@
+# "a to b" means: 90% sure the value is between a and b.
+8 to 25            # a monthly VPS bill, in euros
+(8 to 25) * 12     # the same bill over a year
+-5 to 5            # a change that can go either way

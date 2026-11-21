@@ -1,0 +1,6 @@
+# A variable keeps its samples, so it stays one uncertain quantity.
+price = 8 to 25
+yearly = price * 12
+yearly
+yearly - price * 12     # exactly 0: same samples on both sides
+(8 to 25) - (8 to 25)   # two independent guesses do not cancel

@@ -1,0 +1,15 @@
+# Fermi problem: how many piano tuners work in Madrid?
+
+people = 3M to 3.6M
+per_household = 2.3 to 2.7
+households = people / per_household
+with_piano = 1% to 5%           # households that own a piano
+pianos = households * with_piano + (500 to 3k)  # plus schools, bars, halls
+
+tunings = 0.5 to 1.5            # per piano and year
+per_day = 2 to 4                # tunings a tuner can do in a day
+workdays = 200 to 240
+per_tuner = per_day * workdays
+
+tuners = pianos * tunings / per_tuner
+tuners

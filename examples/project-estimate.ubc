@@ -1,0 +1,17 @@
+# How long will the new billing feature take? Working days.
+# Estimate each task as a 90% interval, then add a share for the
+# things nobody listed.
+
+design = 2 to 5
+backend = 8 to 20
+frontend = 5 to 12
+migration = 1 to 6
+testing = 3 to 8
+work = design + backend + frontend + migration + testing
+
+forgotten = 10% to 40%     # unplanned work, as a share of the plan
+days = work * (1 + forgotten)
+
+days
+P(days > 50)               # the deadline is 50 working days away
+round(p(days, 0.85))       # days we can promise with 85% confidence

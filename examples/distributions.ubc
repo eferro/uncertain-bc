@@ -1,0 +1,5 @@
+# When a 90% interval is not the right shape, pick a distribution.
+normal(100, 15)               # mean and standard deviation
+uniform(10, 20)               # anything in between is equally likely
+pert(3, 5, 12)                # minimum, most likely, maximum
+[12, 15, 15, 18, 31]          # past observations, resampled

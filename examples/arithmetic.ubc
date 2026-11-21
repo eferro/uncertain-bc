@@ -1,0 +1,6 @@
+# Plain arithmetic, like bc.
+2 + 3 * 4
+(2 + 3) * 4
+2 ^ 10
+1.5k * 12          # suffixes: k, M, B, T
+15% * 340          # and percentages

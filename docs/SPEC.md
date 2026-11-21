@@ -167,6 +167,7 @@ One line per top-level expression. In the REPL, assignments print too, as `name 
 
 - Extension `.ubc`, UTF-8 text, same syntax as the REPL (no `:` commands).
 - `ubc model.ubc` prints the result of every top-level expression, prefixed with the source line when there is more than one (`L12: ≈ 97   90% [22 … 237]   ▁▂▅█▆▃▁`).
+- `examples/` holds the worked models of [TUTORIAL.md](TUTORIAL.md); the test suite runs every command shown in the tutorial and compares its output (ADR 0030).
 
 ## 9. Acceptance examples
 

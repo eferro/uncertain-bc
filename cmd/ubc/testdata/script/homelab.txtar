@@ -1,4 +1,4 @@
-exec ubc homelab.ubc
+exec ubc examples/homelab.ubc
 cmp stdout homelab.out
 
 -- homelab.out --
