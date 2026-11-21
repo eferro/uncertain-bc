@@ -20,3 +20,7 @@ $ make validate      # everything CI checks; the pre-commit hook runs it
 ```
 
 Rules and decisions: [AGENTS.md](AGENTS.md), [docs/adr/](docs/adr/README.md).
+
+## License
+
+[MIT](LICENSE)

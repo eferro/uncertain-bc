@@ -25,3 +25,4 @@ Template: Status, Effective date, Deciders, then Context, Decision, Consequences
 | [0015](0015-github-actions-ci-and-goreleaser-releases.md) | GitHub Actions CI and goreleaser releases | Accepted | 2026-11-21 |
 | [0016](0016-stdlib-flag-for-cli-parsing.md) | Standard library `flag` for CLI parsing | Accepted | 2026-11-21 |
 | [0017](0017-comments-explain-why-not-what.md) | Comments explain why, not what | Accepted | 2026-11-21 |
+| [0018](0018-mit-license.md) | MIT license | Accepted | 2026-11-21 |
