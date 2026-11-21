@@ -1,0 +1,2 @@
+exec ubc -e 'P(normal(0, 1) > 0)'
+stdout '^0\.50\n$'

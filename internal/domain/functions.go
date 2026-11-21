@@ -8,14 +8,20 @@ type call struct {
 	at   position
 }
 
-type builtin func(c call, args []Value) (Value, error)
+type builtin func(c call, env Env, args []Value) (Value, error)
 
-var builtins = map[string]builtin{
-	"P": probabilityOf,
+func lookup(name string) (builtin, bool) {
+	if name == "P" {
+		return probabilityOf, true
+	}
+	if d, ok := distributions[name]; ok {
+		return d.call, true
+	}
+	return nil, false
 }
 
 func (c call) evaluate(env Env) (Value, error) {
-	fn, ok := builtins[c.name]
+	fn, ok := lookup(c.name)
 	if !ok {
 		return nil, evalErrorAt(c.at, "unknown function '%s'", c.name)
 	}
@@ -27,7 +33,7 @@ func (c call) evaluate(env Env) (Value, error) {
 		}
 		args[i] = value
 	}
-	return fn(c, args)
+	return fn(c, env, args)
 }
 
 func (c call) expectArgs(args []Value, want int) error {
@@ -44,7 +50,22 @@ func plural(n int, noun string) string {
 	return fmt.Sprintf("%d %ss", n, noun)
 }
 
-func probabilityOf(c call, args []Value) (Value, error) {
+func (c call) plainNumbers(args []Value, want int) ([]float64, error) {
+	if err := c.expectArgs(args, want); err != nil {
+		return nil, err
+	}
+	numbers := make([]float64, len(args))
+	for i, arg := range args {
+		x, ok := scalarOf(arg)
+		if !ok {
+			return nil, evalErrorAt(c.at, "%s expects plain numbers", c.name)
+		}
+		numbers[i] = x
+	}
+	return numbers, nil
+}
+
+func probabilityOf(c call, _ Env, args []Value) (Value, error) {
 	if err := c.expectArgs(args, 1); err != nil {
 		return nil, err
 	}
