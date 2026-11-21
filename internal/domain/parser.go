@@ -124,6 +124,9 @@ func (p *parser) primary() (node, error) {
 		return variable{name: tok.text, at: tok.position}, nil
 	case tokenLParen:
 		return p.parenthesised()
+	case tokenLBracket:
+		elements, err := p.arguments(tokenRBracket)
+		return list{elements: elements, at: tok.position}, err
 	default:
 		return nil, unexpected(tok)
 	}
@@ -131,16 +134,16 @@ func (p *parser) primary() (node, error) {
 
 func (p *parser) call(name token) (node, error) {
 	p.advance()
-	args, err := p.arguments()
+	args, err := p.arguments(tokenRParen)
 	if err != nil {
 		return nil, err
 	}
 	return call{name: name.text, args: args, at: name.position}, nil
 }
 
-func (p *parser) arguments() ([]node, error) {
+func (p *parser) arguments(closing tokenKind) ([]node, error) {
 	var args []node
-	if p.peek().kind == tokenRParen {
+	if p.peek().kind == closing {
 		p.advance()
 		return args, nil
 	}
@@ -150,7 +153,7 @@ func (p *parser) arguments() ([]node, error) {
 			return nil, err
 		}
 		args = append(args, arg)
-		if tok := p.advance(); tok.kind == tokenRParen {
+		if tok := p.advance(); tok.kind == closing {
 			return args, nil
 		} else if tok.kind != tokenComma {
 			return nil, unexpected(tok)

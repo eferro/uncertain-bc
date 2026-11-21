@@ -18,6 +18,8 @@ const (
 	tokenLParen
 	tokenRParen
 	tokenComma
+	tokenLBracket
+	tokenRBracket
 	tokenLess
 	tokenGreater
 	tokenLessEqual
@@ -37,6 +39,8 @@ var operators = map[byte]tokenKind{
 	'(': tokenLParen,
 	')': tokenRParen,
 	',': tokenComma,
+	'[': tokenLBracket,
+	']': tokenRBracket,
 	'<': tokenLess,
 	'>': tokenGreater,
 }

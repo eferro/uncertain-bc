@@ -96,7 +96,7 @@ Rules:
 | `P(cond)` | Probability |
 | `sqrt, exp, log, log10, abs, round, floor, ceil` | Element-wise |
 | `min(a, b, ...)`, `max(a, b, ...)` with 2+ args | Element-wise |
-| `[v1, v2, ...]` | Empirical SampleSet, resampled with replacement |
+| `[v1, v2, ...]` | Empirical SampleSet, resampled with replacement; elements must be plain numbers and the list cannot be empty |
 
 Built-in variables: `last` (result of the previous top-level expression), `pi`, `e`.
 
