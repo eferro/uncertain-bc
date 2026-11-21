@@ -25,6 +25,6 @@
 
 - Module: `github.com/eferro/uncertain-bc`. Binary entry point: `cmd/ubc`. Hexagonal layout under `internal/` (`domain`, `application`, `adapters`), dependencies point inward, ports only when a use case needs I/O (ADR 0010).
 - Always go through the Makefile, never call `go test`, `gofmt`, `go vet` or `golangci-lint` directly (ADR 0011). `make help` lists targets; `make test-pkg PKG=...` is the TDD loop.
-- `make validate` must pass before every commit; the versioned `pre-commit` hook runs it and `commit-msg` checks Conventional Commits. Never weaken a gate to get green.
+- `make validate` must pass before every commit; the versioned `pre-commit` hook runs it and `commit-msg` checks Conventional Commits; `pre-push` runs gitleaks on the pushed commits (ADR 0019). Never commit tokens or secrets. Never weaken a gate to get green.
 - Conventional commits (`feat:`, `fix:`, `docs:`, `test:`, `refactor:`, `chore:`).
 - Commit directly to `main`; no branches unless asked. CI is GitHub Actions; releases are SemVer tags built by goreleaser (ADR 0015). A red pipeline is fixed first.

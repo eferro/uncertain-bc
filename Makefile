@@ -5,19 +5,25 @@ PKG ?= ./...
 TOOLS := $(CURDIR)/.tools
 GOLANGCI_LINT_VERSION := v2.15.0
 GOLANGCI_LINT := $(TOOLS)/golangci-lint
+GITLEAKS_VERSION := v8.30.1
+GITLEAKS := $(TOOLS)/gitleaks
+LOG_OPTS ?=
 COVERAGE_MIN := 90
 COVERAGE_PROFILE := coverage.out
 
-.PHONY: help local-setup test test-pkg coverage format lint check-test-style check-architecture validate build
+.PHONY: help local-setup test test-pkg coverage format lint check-test-style check-architecture secrets-scan validate build
 
 help: ## List available targets
 	@grep -hE '^[a-zA-Z_-]+:.*## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*## "} {printf "  %-20s %s\n", $$1, $$2}'
 
-local-setup: $(GOLANGCI_LINT) ## Install pinned tools and enable the versioned git hooks
+local-setup: $(GOLANGCI_LINT) $(GITLEAKS) ## Install pinned tools and enable the versioned git hooks
 	git config core.hooksPath scripts/hooks
 
 $(GOLANGCI_LINT):
 	GOTOOLCHAIN=auto GOBIN=$(TOOLS) go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@$(GOLANGCI_LINT_VERSION)
+
+$(GITLEAKS):
+	GOTOOLCHAIN=auto GOBIN=$(TOOLS) go install github.com/zricethezav/gitleaks/v8@$(GITLEAKS_VERSION)
 
 test: ## Run all tests
 	go test ./...
@@ -42,6 +48,9 @@ check-test-style: ## Fail on t.Error*/t.Fatal* in tests (ADR 0009)
 
 check-architecture: ## Fail when an import breaks the hexagonal dependency rule (ADR 0010)
 	scripts/checks/architecture.sh
+
+secrets-scan: $(GITLEAKS) ## Scan git history for secrets; narrow it with LOG_OPTS="A..B" (ADR 0019)
+	$(GITLEAKS) git --no-banner --redact --log-opts="$(LOG_OPTS)" .
 
 validate: lint check-test-style check-architecture coverage ## Everything CI checks; run before every commit
 

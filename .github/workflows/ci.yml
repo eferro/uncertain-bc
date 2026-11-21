@@ -28,5 +28,6 @@ jobs:
           else range="$BEFORE..HEAD"; fi
           scripts/checks/commit-messages.sh "$range"
       - run: make local-setup
+      - run: make secrets-scan
       - run: make validate
       - run: make build
