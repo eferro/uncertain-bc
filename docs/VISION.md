@@ -119,7 +119,7 @@ REPL commands start with `:` so they never clash with the language: `:hist x`, `
 - **Plain numbers stay plain:** `2 + 2` prints `4`, as in bc.
 - **Probabilities:** a single number with two decimals.
 - **Machine output:** `--json` (summary stats plus optional samples) and `--plain` (just the median, for `$(ubc -e ...)`).
-- **Colour and Unicode** only when stdout is a TTY; ASCII fallback otherwise.
+- **Unicode** always, `--ascii` on request (ADR 0022); **colour** only when stdout is a TTY.
 
 ## 7. Architecture
 

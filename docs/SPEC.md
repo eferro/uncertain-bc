@@ -22,7 +22,7 @@ cmd | ubc                   # read program from stdin (non-TTY), print results
 | `--json` | One JSON object per printed result | off |
 | `--plain` | Print only the central value (median) | off |
 | `--no-color` | Disable ANSI colour | auto (TTY only) |
-| `--ascii` | ASCII instead of Unicode (sparklines, `≈`, `…`) | auto |
+| `--ascii` | ASCII instead of Unicode (sparklines, `≈`, `…`) | off (ADR 0022) |
 | `-h, --help`, `--version` | | |
 
 Flags go before files (`ubc -e 'x = 2' model.ubc`); anything after the first file name is read as another file. `-e` expressions are evaluated before files, all in one session, so variables flow from one source to the next. Without `-e` or files, the program is read from stdin.

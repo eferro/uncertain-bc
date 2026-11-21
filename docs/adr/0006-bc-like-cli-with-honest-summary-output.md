@@ -1,6 +1,6 @@
 # ADR 0006: bc-like CLI with an honest one-line summary
 
-- Status: Accepted
+- Status: Accepted, amended by [ADR 0022](0022-unicode-output-everywhere.md)
 - Effective date: 2026-11-21
 - Deciders: eduardo.ferro
 
