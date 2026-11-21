@@ -15,6 +15,7 @@ func TestEvaluate_AddsNumbers(t *testing.T) {
 		"1+2":         3,
 		"1 + 2 + 3.5": 6.5,
 		"  7  ":       7,
+		"1\t+\t2":     3,
 	}
 	for program, want := range cases {
 		t.Run(program, func(t *testing.T) {

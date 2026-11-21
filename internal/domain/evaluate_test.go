@@ -16,6 +16,8 @@ func TestEvaluate_ReturnsTheNumber_WhenTheProgramIsANumberLiteral(t *testing.T) 
 		".5":     0.5,
 		"1e6":    1e6,
 		"2.5e-3": 0.0025,
+		"1E3":    1000,
+		"1e+3":   1000,
 	}
 	for program, want := range cases {
 		t.Run(program, func(t *testing.T) {
