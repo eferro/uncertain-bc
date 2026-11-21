@@ -17,6 +17,13 @@ const (
 	tokenCaret
 	tokenLParen
 	tokenRParen
+	tokenComma
+	tokenLess
+	tokenGreater
+	tokenLessEqual
+	tokenGreaterEqual
+	tokenEqual
+	tokenNotEqual
 )
 
 var operators = map[byte]tokenKind{
@@ -29,6 +36,16 @@ var operators = map[byte]tokenKind{
 	'^': tokenCaret,
 	'(': tokenLParen,
 	')': tokenRParen,
+	',': tokenComma,
+	'<': tokenLess,
+	'>': tokenGreater,
+}
+
+var twoCharOperators = map[string]tokenKind{
+	"<=": tokenLessEqual,
+	">=": tokenGreaterEqual,
+	"==": tokenEqual,
+	"!=": tokenNotEqual,
 }
 
 type position struct {
@@ -75,8 +92,7 @@ func (l *lexer) next() error {
 }
 
 func (l *lexer) token(c byte) error {
-	if kind, ok := operators[c]; ok {
-		l.emitAndSkip(kind, l.i+1)
+	if l.operator() {
 		return nil
 	}
 	switch {
@@ -89,6 +105,20 @@ func (l *lexer) token(c byte) error {
 		return syntaxErrorAt(l.position(l.i), "unexpected character '%c'", c)
 	}
 	return nil
+}
+
+func (l *lexer) operator() bool {
+	if l.i+1 < len(l.src) {
+		if kind, ok := twoCharOperators[l.src[l.i:l.i+2]]; ok {
+			l.emitAndSkip(kind, l.i+2)
+			return true
+		}
+	}
+	if kind, ok := operators[l.src[l.i]]; ok {
+		l.emitAndSkip(kind, l.i+1)
+		return true
+	}
+	return false
 }
 
 func (l *lexer) newline() {

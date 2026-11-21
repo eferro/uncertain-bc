@@ -86,12 +86,12 @@ func (r rangeNode) bounds(env Env) (from, to float64, err error) {
 	if err != nil {
 		return 0, 0, err
 	}
-	fromScalar, fromOK := fromValue.(Scalar)
-	toScalar, toOK := toValue.(Scalar)
+	from, fromOK := scalarOf(fromValue)
+	to, toOK := scalarOf(toValue)
 	if !fromOK || !toOK {
 		return 0, 0, evalErrorAt(r.at, "range bounds must be plain numbers")
 	}
-	return float64(fromScalar), float64(toScalar), nil
+	return from, to, nil
 }
 
 type Result struct {
@@ -115,7 +115,7 @@ func Evaluate(program string, env Env) ([]Result, error) {
 func run(statements []statement, env Env) ([]Result, error) {
 	results := make([]Result, 0, len(statements))
 	for _, stmt := range statements {
-		value, err := stmt.expr.evaluate(env)
+		value, err := stmt.evaluate(env)
 		if err != nil {
 			return results, err
 		}
@@ -125,4 +125,13 @@ func run(statements []statement, env Env) ([]Result, error) {
 		results = append(results, Result{Line: stmt.line, Name: stmt.name, Value: value})
 	}
 	return results, nil
+}
+
+// evaluate reports a bare top-level comparison as a probability (SPEC §4 rule 5).
+func (s statement) evaluate(env Env) (Value, error) {
+	value, err := s.expr.evaluate(env)
+	if _, isComparison := s.expr.(comparison); isComparison && err == nil {
+		return Probability(mean(value)), nil
+	}
+	return value, err
 }

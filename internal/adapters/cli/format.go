@@ -18,6 +18,8 @@ func format(value domain.Value) string {
 			significant(v.Quantile(0.5)), significant(v.Quantile(0.05)), significant(v.Quantile(0.95)))
 	case domain.Scalar:
 		return strconv.FormatFloat(float64(v), 'g', -1, 64)
+	case domain.Probability:
+		return probability(float64(v))
 	}
 	panic(fmt.Sprintf("cli: unknown value type %T", value))
 }
@@ -56,4 +58,18 @@ func roundSignificant(x float64) float64 {
 
 func shortest(x float64) string {
 	return strconv.FormatFloat(x, 'f', -1, 64)
+}
+
+// probability shows two decimals, but never rounds an uncertain outcome to a
+// certain-looking 0 or 1 (SPEC §6).
+func probability(p float64) string {
+	switch {
+	case p == 0 || p == 1:
+		return shortest(p)
+	case p < 0.01:
+		return "<0.01"
+	case p > 0.99:
+		return ">0.99"
+	}
+	return strconv.FormatFloat(p, 'f', 2, 64)
 }

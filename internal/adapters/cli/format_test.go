@@ -38,3 +38,17 @@ func TestSignificant_UsesASuffixFromTenThousandUp(t *testing.T) {
 		assert.Equal(t, want, significant(value), "significant(%v)", value)
 	}
 }
+
+func TestProbability_ShowsTwoDecimalsAndFlagsTheExtremes(t *testing.T) {
+	cases := map[float64]string{
+		0.5:   "0.50",
+		0.16:  "0.16",
+		0.004: "<0.01",
+		0.996: ">0.99",
+		0:     "0",
+		1:     "1",
+	}
+	for value, want := range cases {
+		assert.Equal(t, want, probability(value), "probability(%v)", value)
+	}
+}

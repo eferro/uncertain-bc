@@ -17,6 +17,10 @@ type SampleSet []float64
 
 func (SampleSet) isValue() {}
 
+type Probability float64
+
+func (Probability) isValue() {}
+
 // Quantile interpolates linearly between the two nearest sorted samples
 // (Hyndman & Fan type 7, the default in R and NumPy).
 func (s SampleSet) Quantile(q float64) float64 {
@@ -50,10 +54,10 @@ func (e Env) draw(sample func(*rand.Rand) float64) SampleSet {
 // combine applies op pairwise (SPEC §4 rule 1): sample i with sample i,
 // with a scalar standing for the same value in every sample.
 func combine(op func(a, b float64) float64, left, right Value) Value {
-	l, leftIsScalar := left.(Scalar)
-	r, rightIsScalar := right.(Scalar)
+	l, leftIsScalar := scalarOf(left)
+	r, rightIsScalar := scalarOf(right)
 	if leftIsScalar && rightIsScalar {
-		return Scalar(op(float64(l), float64(r)))
+		return Scalar(op(l, r))
 	}
 	out := make(SampleSet, max(size(left), size(right)))
 	for i := range out {
@@ -73,5 +77,24 @@ func at(v Value, i int) float64 {
 	if s, ok := v.(SampleSet); ok {
 		return s[i]
 	}
-	return float64(v.(Scalar))
+	x, _ := scalarOf(v)
+	return x
+}
+
+func scalarOf(v Value) (float64, bool) {
+	switch v := v.(type) {
+	case Scalar:
+		return float64(v), true
+	case Probability:
+		return float64(v), true
+	}
+	return 0, false
+}
+
+func mean(v Value) float64 {
+	total := 0.0
+	for i := range size(v) {
+		total += at(v, i)
+	}
+	return total / float64(size(v))
 }

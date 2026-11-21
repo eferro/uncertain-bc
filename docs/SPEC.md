@@ -75,7 +75,7 @@ Rules:
 2. A variable bound to a SampleSet keeps its samples for the whole session. `x - x` is exactly 0; `x * y` with two independent variables is the product of independent draws.
 3. Every distribution literal (`to`, `normal(...)`, …) draws fresh samples from the session RNG at evaluation time.
 4. The RNG is seeded once per session (default seed 1), so the same program gives the same output.
-5. Comparisons between SampleSets yield a SampleSet of 0/1; `P(expr)` returns its mean. A bare comparison at top level prints as a probability.
+5. Comparisons between SampleSets yield a SampleSet of 0/1; `P(expr)` returns its mean. A bare comparison at top level prints as a probability. `P` of anything that is not 0/1 in every sample is an evaluation error. A probability behaves as a scalar in arithmetic (`P(x > 50) * 100`).
 6. Division by zero yields `±Inf`/`NaN` samples; summaries ignore non-finite samples and the output reports how many were dropped.
 
 ### `a to b`

@@ -39,7 +39,7 @@ func (p *parser) statement() (statement, error) {
 		name = p.advance().text
 		p.advance()
 	}
-	expr, err := p.rangeExpression()
+	expr, err := p.expression()
 	return statement{line: line, name: name, expr: expr}, err
 }
 
@@ -51,6 +51,18 @@ func (p *parser) skipSeparators() {
 
 func isSeparator(tok token) bool {
 	return tok.kind == tokenNewline || tok.kind == tokenSemicolon
+}
+
+var comparisons = []tokenKind{tokenLess, tokenGreater, tokenLessEqual, tokenGreaterEqual, tokenEqual, tokenNotEqual}
+
+func (p *parser) expression() (node, error) {
+	left, err := p.rangeExpression()
+	if err != nil || !slices.Contains(comparisons, p.peek().kind) {
+		return left, err
+	}
+	op := p.advance().kind
+	right, err := p.rangeExpression()
+	return comparison{op: op, left: left, right: right}, err
 }
 
 func (p *parser) rangeExpression() (node, error) {
@@ -106,6 +118,9 @@ func (p *parser) primary() (node, error) {
 	case tokenNumber:
 		return parseNumber(tok)
 	case tokenIdent:
+		if p.peek().kind == tokenLParen {
+			return p.call(tok)
+		}
 		return variable{name: tok.text, at: tok.position}, nil
 	case tokenLParen:
 		return p.parenthesised()
@@ -114,8 +129,37 @@ func (p *parser) primary() (node, error) {
 	}
 }
 
+func (p *parser) call(name token) (node, error) {
+	p.advance()
+	args, err := p.arguments()
+	if err != nil {
+		return nil, err
+	}
+	return call{name: name.text, args: args, at: name.position}, nil
+}
+
+func (p *parser) arguments() ([]node, error) {
+	var args []node
+	if p.peek().kind == tokenRParen {
+		p.advance()
+		return args, nil
+	}
+	for {
+		arg, err := p.expression()
+		if err != nil {
+			return nil, err
+		}
+		args = append(args, arg)
+		if tok := p.advance(); tok.kind == tokenRParen {
+			return args, nil
+		} else if tok.kind != tokenComma {
+			return nil, unexpected(tok)
+		}
+	}
+}
+
 func (p *parser) parenthesised() (node, error) {
-	inner, err := p.rangeExpression()
+	inner, err := p.expression()
 	if err != nil {
 		return nil, err
 	}
