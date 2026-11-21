@@ -17,23 +17,23 @@ func TestRange_DrawsOneSamplePerMonteCarloIteration(t *testing.T) {
 func TestRange_IsLognormal_WhenBothEndsArePositive(t *testing.T) {
 	s := evaluateSamples(t, "10 to 20")
 
-	assert.InDelta(t, 10, s.Quantile(0.05), 0.3)
-	assert.InDelta(t, math.Sqrt(10*20), s.Quantile(0.5), 0.3)
-	assert.InDelta(t, 20, s.Quantile(0.95), 0.6)
+	assert.InDelta(t, 10, s.Quantile(0.05), monteCarloNoise)
+	assert.InDelta(t, math.Sqrt(10*20), s.Quantile(0.5), monteCarloNoise)
+	assert.InDelta(t, 20, s.Quantile(0.95), monteCarloNoise)
 }
 
 func TestRange_IsNormal_WhenAnEndIsNotPositive(t *testing.T) {
 	s := evaluateSamples(t, "0 to 10")
 
-	assert.InDelta(t, 0, s.Quantile(0.05), 0.3)
-	assert.InDelta(t, 5, s.Quantile(0.5), 0.3)
-	assert.InDelta(t, 10, s.Quantile(0.95), 0.3)
+	assert.InDelta(t, 0, s.Quantile(0.05), monteCarloNoise)
+	assert.InDelta(t, 5, s.Quantile(0.5), monteCarloNoise)
+	assert.InDelta(t, 10, s.Quantile(0.95), monteCarloNoise)
 }
 
 func TestRange_BindsLooserThanAddition(t *testing.T) {
 	s := evaluateSamples(t, "5 + 5 to 10 + 10")
 
-	assert.InDelta(t, math.Sqrt(10*20), s.Quantile(0.5), 0.3)
+	assert.InDelta(t, math.Sqrt(10*20), s.Quantile(0.5), monteCarloNoise)
 }
 
 func TestRange_Fails_WhenItsStartIsNotBelowItsEnd(t *testing.T) {

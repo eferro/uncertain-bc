@@ -8,7 +8,10 @@ import (
 	"github.com/eferro/uncertain-bc/internal/domain"
 )
 
-const samples = 5000
+const (
+	samples         = 5000
+	monteCarloNoise = 0.3
+)
 
 func evaluate(t *testing.T, program string) domain.Value {
 	t.Helper()
