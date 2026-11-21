@@ -29,18 +29,33 @@ func styleFor(opts options) style {
 func format(value domain.Value, st style) string {
 	switch v := value.(type) {
 	case domain.SampleSet:
-		if v.Quantile(0) == v.Quantile(1) {
-			return format(domain.Scalar(v[0]), st)
+		if v.Dropped() == len(v) {
+			return fmt.Sprintf("no finite samples (%d dropped)", len(v))
 		}
-		return fmt.Sprintf("%s %s   90%% [%s %s %s]   %s", st.approx,
-			significant(v.Quantile(0.5)), significant(v.Quantile(0.05)), st.ellipsis, significant(v.Quantile(0.95)),
-			sparkline(v, st.blocks))
+		return withDropped(summarise(v, st), v.Dropped())
 	case domain.Scalar:
 		return plain(float64(v))
 	case domain.Probability:
 		return probability(float64(v))
 	}
 	panic(fmt.Sprintf("cli: unknown value type %T", value))
+}
+
+func summarise(v domain.SampleSet, st style) string {
+	if v.Quantile(0) == v.Quantile(1) {
+		return plain(v.Quantile(0))
+	}
+	return fmt.Sprintf("%s %s   90%% [%s %s %s]   %s", st.approx,
+		significant(v.Quantile(0.5)), significant(v.Quantile(0.05)), st.ellipsis, significant(v.Quantile(0.95)),
+		sparkline(v, st.blocks))
+}
+
+// withDropped says how many non-finite samples the summary ignored (SPEC §4 rule 6).
+func withDropped(summary string, dropped int) string {
+	if dropped == 0 {
+		return summary
+	}
+	return fmt.Sprintf("%s   (%d non-finite dropped)", summary, dropped)
 }
 
 var suffixes = []struct {

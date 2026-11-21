@@ -76,7 +76,7 @@ Rules:
 3. Every distribution literal (`to`, `normal(...)`, …) draws fresh samples from the session RNG at evaluation time.
 4. The RNG is seeded once per session (default seed 1), so the same program gives the same output.
 5. Comparisons between SampleSets yield a SampleSet of 0/1; `P(expr)` returns its mean. A bare comparison at top level prints as a probability. `P` of anything that is not 0/1 in every sample is an evaluation error. A probability behaves as a scalar in arithmetic (`P(x > 50) * 100`).
-6. Division by zero yields `±Inf`/`NaN` samples; summaries ignore non-finite samples and the output reports how many were dropped.
+6. Division by zero yields `±Inf`/`NaN` samples; summaries ignore non-finite samples and the output reports how many were dropped: `≈ 0.705   90% [0.517 … 1.12]   ▇█▇▆…   (2483 non-finite dropped)`, or `no finite samples (5000 dropped)`.
 
 ### `a to b`
 

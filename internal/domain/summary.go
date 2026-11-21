@@ -26,11 +26,12 @@ func quantile(v Value, q float64) float64 {
 
 func stdev(v Value) float64 {
 	m := mean(v)
+	values := finiteValues(v)
 	squares := 0.0
-	for i := range size(v) {
-		squares += (at(v, i) - m) * (at(v, i) - m)
+	for _, x := range values {
+		squares += (x - m) * (x - m)
 	}
-	return math.Sqrt(squares / float64(size(v)))
+	return math.Sqrt(squares / float64(len(values)))
 }
 
 func percentile(c call, _ Env, args []Value) (Value, error) {

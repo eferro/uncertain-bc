@@ -146,3 +146,14 @@ func TestRun_EvaluatesExpressionsBeforeFiles(t *testing.T) {
 
 	assert.Equal(t, outcome{code: 0, stdout: "20\n"}, run(t, "", "-e", "x = 2", path))
 }
+
+func TestRun_ReportsHowManyNonFiniteSamplesWereDropped(t *testing.T) {
+	got := run(t, "", "-e", "x = 0 to 1; x / (x > 0.5)")
+
+	assert.Equal(t, 0, got.code)
+	assert.Regexp(t, `^≈ \S+   90% \[\S+ … \S+\]   [▁▂▃▄▅▆▇█]{16}   \(\d+ non-finite dropped\)\n$`, got.stdout)
+}
+
+func TestRun_SaysSo_WhenNoSampleIsFinite(t *testing.T) {
+	assert.Equal(t, outcome{code: 0, stdout: "no finite samples (5000 dropped)\n"}, run(t, "", "-e", "(1 to 2) * 0 / 0"))
+}

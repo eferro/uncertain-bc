@@ -22,16 +22,42 @@ type Probability float64
 
 func (Probability) isValue() {}
 
-// Quantile interpolates linearly between the two nearest sorted samples
-// (Hyndman & Fan type 7, the default in R and NumPy).
+// Quantile interpolates linearly between the two nearest sorted finite
+// samples (Hyndman & Fan type 7, the default in R and NumPy). Non-finite
+// samples are ignored (SPEC §4 rule 6).
 func (s SampleSet) Quantile(q float64) float64 {
-	sorted := slices.Sorted(slices.Values(s))
+	sorted := slices.Sorted(slices.Values(s.finite()))
+	if len(sorted) == 0 {
+		return math.NaN()
+	}
 	h := q * float64(len(sorted)-1)
 	lower := int(h)
 	if lower == len(sorted)-1 {
 		return sorted[lower]
 	}
 	return sorted[lower] + (h-float64(lower))*(sorted[lower+1]-sorted[lower])
+}
+
+func (s SampleSet) Dropped() int {
+	return len(s) - len(s.finite())
+}
+
+func (s SampleSet) finite() []float64 {
+	finite := make([]float64, 0, len(s))
+	for _, x := range s {
+		if !math.IsNaN(x) && !math.IsInf(x, 0) {
+			finite = append(finite, x)
+		}
+	}
+	return finite
+}
+
+func finiteValues(v Value) []float64 {
+	if s, ok := v.(SampleSet); ok {
+		return s.finite()
+	}
+	x, _ := scalarOf(v)
+	return []float64{x}
 }
 
 type Env struct {
@@ -94,9 +120,10 @@ func scalarOf(v Value) (float64, bool) {
 }
 
 func mean(v Value) float64 {
+	values := finiteValues(v)
 	total := 0.0
-	for i := range size(v) {
-		total += at(v, i)
+	for _, x := range values {
+		total += x
 	}
-	return total / float64(size(v))
+	return total / float64(len(values))
 }
