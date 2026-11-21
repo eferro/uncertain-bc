@@ -21,8 +21,8 @@ func TestRepl_EvaluatesEachLineAfterAPrompt(t *testing.T) {
 	assert.Equal(t, outcome{code: 0, stdout: "ubc> 3\nubc> \n"}, interactive(t, "1 + 2\n"))
 }
 
-func TestRepl_PrintsAssignmentsAndKeepsVariables(t *testing.T) {
-	assert.Equal(t, outcome{code: 0, stdout: "ubc> 2\nubc> 6\nubc> \n"}, interactive(t, "x = 2\nx * 3\n"))
+func TestRepl_PrintsAssignmentsWithTheirNameAndKeepsVariables(t *testing.T) {
+	assert.Equal(t, outcome{code: 0, stdout: "ubc> x = 2\nubc> 6\nubc> \n"}, interactive(t, "x = 2\nx * 3\n"))
 }
 
 func TestRepl_ReportsAnErrorAndCarriesOn(t *testing.T) {

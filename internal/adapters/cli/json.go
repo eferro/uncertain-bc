@@ -8,11 +8,13 @@ import (
 )
 
 type numberJSON struct {
+	Name  string   `json:"name,omitempty"`
 	Kind  string   `json:"kind"`
 	Value *float64 `json:"value"`
 }
 
 type samplesJSON struct {
+	Name    string   `json:"name,omitempty"`
 	Kind    string   `json:"kind"`
 	Median  *float64 `json:"median"`
 	Mean    *float64 `json:"mean"`
@@ -24,18 +26,18 @@ type samplesJSON struct {
 }
 
 // jsonLine describes a result as one JSON object (SPEC §6).
-func jsonLine(value domain.Value) string {
+func jsonLine(value domain.Value, name string) string {
 	var object any
 	switch v := value.(type) {
 	case domain.SampleSet:
 		object = samplesJSON{
-			Kind: "samples", Median: finite(v.Quantile(0.5)), Mean: finite(v.Mean()), Stdev: finite(v.Stdev()),
+			Name: name, Kind: "samples", Median: finite(v.Quantile(0.5)), Mean: finite(v.Mean()), Stdev: finite(v.Stdev()),
 			P5: finite(v.Quantile(0.05)), P95: finite(v.Quantile(0.95)), N: len(v), Dropped: v.Dropped(),
 		}
 	case domain.Probability:
-		object = numberJSON{Kind: "probability", Value: finite(float64(v))}
+		object = numberJSON{Name: name, Kind: "probability", Value: finite(float64(v))}
 	case domain.Scalar:
-		object = numberJSON{Kind: "scalar", Value: finite(float64(v))}
+		object = numberJSON{Name: name, Kind: "scalar", Value: finite(float64(v))}
 	}
 	line, _ := json.Marshal(object)
 	return string(line)

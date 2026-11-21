@@ -33,9 +33,9 @@ Run `ubc` with no arguments for an interactive session with line editing and his
 ```console
 $ ubc
 ubc> watts = 12 to 30
-≈ 19   90% [12 … 29.7]   ▂▄▆▇██▇▅▅▄▃▂▂▂▁▁
+watts = ≈ 19   90% [12 … 29.7]   ▂▄▆▇██▇▅▅▄▃▂▂▂▁▁
 ubc> yearly = watts / 1000 * 24 * 365 * 0.2
-≈ 33.3   90% [21 … 51.9]   ▂▄▆▇██▇▅▅▄▃▂▂▂▁▁
+yearly = ≈ 33.3   90% [21 … 51.9]   ▂▄▆▇██▇▅▅▄▃▂▂▂▁▁
 ubc> P(yearly > 40)
 0.25
 ubc> :hist yearly
@@ -44,7 +44,7 @@ ubc> :plot yearly yearly.png
 ubc> :save model.ubc
 ```
 
-`:help` lists the commands (`:vars`, `:hist`, `:plot`, `:seed`, `:samples`, `:save`, `:load`, `:quit`) and the language. For scripts, `--json` prints one JSON object per result and `--plain` only the median.
+`:help` lists the commands (`:vars`, `:hist`, `:plot`, `:seed`, `:samples`, `:save`, `:load`, `:quit`) and the language. For scripts, `--json` prints one JSON object per result and `--plain` only the median; `--echo` also prints assignments with their names, so `ubc --echo model.ubc` reads like a report.
 
 What the language has today:
 

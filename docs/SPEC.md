@@ -20,6 +20,7 @@ cmd | ubc                   # read program from stdin (non-TTY), print results
 | `-s, --seed N` | RNG seed | `1` |
 | `--random` | Use a time-based seed | off |
 | `--json` | One JSON object per printed result | off |
+| `--echo` | Also print assignments, as `name = summary` (ADR 0025) | off |
 | `--plain` | Print only the central value (median) | off |
 | `--no-color` | Disable ANSI colour | auto (TTY only) |
 | `--ascii` | ASCII instead of Unicode (sparklines, `≈`, `…`) | off (ADR 0022) |
@@ -117,7 +118,7 @@ cost(10)
 
 ## 6. Output
 
-One line per top-level expression (assignments print too, as in the REPL examples; files and `-e` print only expressions unless `--echo` is added later).
+One line per top-level expression. In the REPL, assignments print too, as `name = summary`; files, stdin and `-e` print only expressions unless `--echo` is given (ADR 0025).
 
 | Value | Default output |
 |---|---|

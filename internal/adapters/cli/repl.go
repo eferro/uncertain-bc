@@ -48,7 +48,7 @@ func (r replSession) handle(line string) (quit bool) {
 	}
 	results, err := r.session.Evaluate(line)
 	for _, result := range results {
-		fmt.Fprintln(r.stdout, format(result.Value, r.style))
+		fmt.Fprintln(r.stdout, formatResult(result, r.style))
 	}
 	if err != nil {
 		fmt.Fprintf(r.stderr, "ubc: %v\n", err)

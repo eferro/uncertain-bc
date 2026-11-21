@@ -32,3 +32,4 @@ Template: Status, Effective date, Deciders, then Context, Decision, Consequences
 | [0022](0022-unicode-output-everywhere.md) | Unicode output everywhere, ASCII on request (amends 0006) | Accepted | 2026-11-21 |
 | [0023](0023-line-editing-with-x-term.md) | Line editing with golang.org/x/term | Accepted | 2026-11-21 |
 | [0024](0024-png-charts-with-x-image.md) | PNG charts with golang.org/x/image | Accepted | 2026-11-21 |
+| [0025](0025-command-line-ux-additions.md) | Command-line UX additions | Accepted | 2026-11-21 |

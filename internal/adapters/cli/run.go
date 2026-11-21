@@ -41,6 +41,7 @@ type options struct {
 	ascii       bool
 	plain       bool
 	json        bool
+	echo        bool
 }
 
 type multiString []string
@@ -66,6 +67,7 @@ Flags:
       --ascii         print ASCII instead of Unicode
       --plain         print only the central value (median), for scripts
       --json          print one JSON object per result
+      --echo          also print assignments, with their names
   -h, --help          show this help
       --version       print the version
 `
@@ -146,6 +148,7 @@ func registerFlags(fs *flag.FlagSet, opts *options) {
 	fs.BoolVar(&opts.ascii, "ascii", false, "print ASCII instead of Unicode")
 	fs.BoolVar(&opts.plain, "plain", false, "print only the central value")
 	fs.BoolVar(&opts.json, "json", false, "print one JSON object per result")
+	fs.BoolVar(&opts.echo, "echo", false, "also print assignments, with their names")
 	fs.BoolVar(&opts.version, "version", false, "print the version and exit")
 }
 
@@ -198,7 +201,7 @@ func evaluateAll(sources []source, settings application.Settings, st style, stdo
 	session := application.NewSession(settings)
 	for _, src := range sources {
 		results, err := session.Evaluate(src.program)
-		printExpressions(results, src.prefixLines, st, stdout)
+		printResults(results, src.prefixLines, st, stdout)
 		if err != nil {
 			reportError(src, err, stderr)
 			return exitCode(err)
@@ -207,19 +210,35 @@ func evaluateAll(sources []source, settings application.Settings, st style, stdo
 	return exitOK
 }
 
-func printExpressions(results []domain.Result, prefixLines bool, st style, stdout io.Writer) {
-	var expressions []domain.Result
+// printResults prints expressions, and assignments too with --echo. In a
+// program that prints several expressions each one says its line.
+func printResults(results []domain.Result, prefixLines bool, st style, stdout io.Writer) {
+	prefix := prefixLines && !st.plain && !st.json && countExpressions(results) > 1
+	for _, result := range results {
+		if line, shown := resultLine(result, prefix, st); shown {
+			fmt.Fprintln(stdout, line)
+		}
+	}
+}
+
+func resultLine(result domain.Result, prefix bool, st style) (string, bool) {
+	switch {
+	case result.Name != "":
+		return formatResult(result, st), st.echo
+	case prefix:
+		return fmt.Sprintf("L%d: %s", result.Line, format(result.Value, st)), true
+	}
+	return format(result.Value, st), true
+}
+
+func countExpressions(results []domain.Result) int {
+	expressions := 0
 	for _, result := range results {
 		if result.Name == "" {
-			expressions = append(expressions, result)
+			expressions++
 		}
 	}
-	for _, result := range expressions {
-		if prefixLines && !st.plain && !st.json && len(expressions) > 1 {
-			fmt.Fprintf(stdout, "L%d: ", result.Line)
-		}
-		fmt.Fprintln(stdout, format(result.Value, st))
-	}
+	return expressions
 }
 
 func reportError(src source, err error, stderr io.Writer) {

@@ -16,6 +16,7 @@ type style struct {
 	bar      string
 	plain    bool
 	json     bool
+	echo     bool
 }
 
 var (
@@ -30,7 +31,19 @@ func styleFor(opts options) style {
 	}
 	st.plain = opts.plain
 	st.json = opts.json
+	st.echo = opts.echo
 	return st
+}
+
+// formatResult labels an assignment with its variable name.
+func formatResult(result domain.Result, st style) string {
+	switch {
+	case result.Name == "":
+		return format(result.Value, st)
+	case st.json:
+		return jsonLine(result.Value, result.Name)
+	}
+	return result.Name + " = " + format(result.Value, st)
 }
 
 func format(value domain.Value, st style) string {
@@ -38,7 +51,7 @@ func format(value domain.Value, st style) string {
 		return centralValue(value)
 	}
 	if st.json {
-		return jsonLine(value)
+		return jsonLine(value, "")
 	}
 	switch v := value.(type) {
 	case domain.SampleSet:
