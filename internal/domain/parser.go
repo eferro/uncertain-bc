@@ -120,9 +120,9 @@ func (p *parser) expression() (node, error) {
 	if err != nil || !slices.Contains(comparisons, p.peek().kind) {
 		return left, err
 	}
-	op := p.advance().kind
+	op := p.advance()
 	right, err := p.rangeExpression()
-	return comparison{op: op, left: left, right: right}, err
+	return comparison{op: op.kind, symbol: op.text, left: left, right: right}, err
 }
 
 func (p *parser) rangeExpression() (node, error) {

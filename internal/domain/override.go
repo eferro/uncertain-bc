@@ -20,6 +20,16 @@ func IsName(name string) bool {
 }
 
 func evaluateExpression(source string, env Env) (Value, error) {
+	expr, err := parseExpression(source)
+	if err != nil {
+		return nil, err
+	}
+	return statement{expr: expr}.evaluate(env)
+}
+
+// parseExpression reads a source that must hold exactly one expression, as
+// the command-line flags do.
+func parseExpression(source string) (node, error) {
 	tokens, err := lex(source)
 	if err != nil {
 		return nil, err
@@ -32,5 +42,5 @@ func evaluateExpression(source string, env Env) (Value, error) {
 	if tok := p.peek(); tok.kind != tokenEOF {
 		return nil, unexpected(tok)
 	}
-	return statement{expr: expr}.evaluate(env)
+	return expr, nil
 }

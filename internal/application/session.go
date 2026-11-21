@@ -56,6 +56,12 @@ func (s *Session) Override(name, expr string) error {
 	return nil
 }
 
+// Assert checks a condition against the session without changing it, as
+// --assert does after the program (ADR 0029).
+func (s *Session) Assert(expr string) (domain.Check, error) {
+	return domain.Assert(expr, s.env)
+}
+
 func (s *Session) remember(name string) {
 	if !slices.Contains(s.names, name) {
 		s.names = append(s.names, name)

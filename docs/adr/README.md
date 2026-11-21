@@ -36,3 +36,4 @@ Template: Status, Effective date, Deciders, then Context, Decision, Consequences
 | [0026](0026-installation-channels.md) | Installation channels | Accepted | 2026-11-21 |
 | [0027](0027-track-work-in-github-issues.md) | Track work in GitHub issues | Accepted | 2026-11-21 |
 | [0028](0028-override-variables-with-set.md) | Override variables from the command line with `--set` | Accepted | 2026-11-21 |
+| [0029](0029-assertions-with-a-dedicated-exit-code.md) | Assertions with `--assert` and a dedicated exit code | Accepted | 2026-11-21 |

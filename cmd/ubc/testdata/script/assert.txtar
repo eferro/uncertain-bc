@@ -1,0 +1,30 @@
+exec ubc --assert 'fixed < 200' --assert 'P(cost > 1k) < 0.1' model.ubc
+stdout '^300\n$'
+! stderr .
+
+! exec ubc --assert 'fixed > 200' model.ubc
+stdout '^300\n$'
+stderr '^ubc: --assert fixed > 200 failed: 150 > 200\n$'
+
+! exec ubc --assert 'cost < 150' model.ubc
+stderr '^ubc: --assert cost < 150 failed: ≈ 142   90% \[100 … 198\] < 150 \(P = 0\.61\)\n$'
+
+! exec ubc --assert 'P(cost > 180)' --assert 'fixed == 150' --assert 'fixed != 150' model.ubc
+stderr '^ubc: --assert P\(cost > 180\) failed: 0\.\d\d\nubc: --assert fixed != 150 failed: 150 != 150\n$'
+
+exec ubc --set fixed=100 --assert 'fixed < 120' -e 'x = fixed'
+
+! exec ubc --assert 'cost' model.ubc
+stderr '^ubc: --assert cost: line 1, col 1: an assertion must be a condition or a probability\n$'
+
+! exec ubc --assert 'nobody > 1' model.ubc
+stderr '^ubc: --assert nobody > 1: line 1, col 1: unknown variable ''nobody''\n$'
+
+! exec ubc --assert 'fixed < 200' -e '10 to 5'
+! stdout .
+stderr '^ubc: line 1, col 4: range start 10 must be below its end 5\n$'
+
+-- model.ubc --
+cost = 100 to 200
+fixed = 150
+fixed * 2

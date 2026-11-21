@@ -140,3 +140,23 @@ func TestSession_Override_ListsNothing_WhenItFails(t *testing.T) {
 	assert.Error(t, err)
 	assert.Empty(t, session.Variables())
 }
+
+func TestSession_AssertsAgainstTheSessionsVariables(t *testing.T) {
+	session := application.NewSession(application.DefaultSettings())
+	_, err := session.Evaluate("team = 5")
+	require.NoError(t, err)
+
+	check, err := session.Assert("team < 3")
+
+	require.NoError(t, err)
+	assert.Equal(t, domain.Check{Value: domain.Probability(0), Left: domain.Scalar(5), Operator: "<", Right: domain.Scalar(3)}, check)
+}
+
+func TestSession_KeepsAssertionsOutOfTheTranscript(t *testing.T) {
+	session := application.NewSession(application.DefaultSettings())
+
+	_, err := session.Assert("1 < 2")
+
+	require.NoError(t, err)
+	assert.Empty(t, session.Transcript())
+}

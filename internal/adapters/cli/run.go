@@ -21,6 +21,7 @@ const (
 	exitEvalError  = 1
 	exitUsageError = 2
 	exitParseError = 3
+	exitAssertion  = 4
 )
 
 type App struct {
@@ -34,6 +35,7 @@ type App struct {
 type options struct {
 	expressions multiString
 	sets        multiString
+	asserts     multiString
 	files       []string
 	version     bool
 	samples     int
@@ -70,6 +72,7 @@ the program from stdin. Flags go before files.
 Flags:
   -e, --eval EXPR     evaluate EXPR (repeatable)
       --set NAME=EXPR set NAME to EXPR, overriding the model's value (repeatable)
+      --assert EXPR   after the program, exit 4 unless EXPR certainly holds (repeatable)
   -n, --samples N     Monte Carlo sample count (default 5000)
   -s, --seed N        random seed (default 1)
       --random        seed from the clock
@@ -107,6 +110,10 @@ func (a App) Run(args []string, stdin io.Reader, stdout, stderr io.Writer) int {
 
 func (a App) execute(opts options, settings application.Settings, stdin io.Reader, stdout, stderr io.Writer) int {
 	if a.Interactive && len(opts.expressions) == 0 && len(opts.files) == 0 {
+		if len(opts.asserts) > 0 {
+			fmt.Fprintln(stderr, "ubc: --assert needs a program: -e, files or stdin")
+			return exitUsageError
+		}
 		session, code := startSession(opts, settings, stderr)
 		if session == nil {
 			return code
@@ -129,7 +136,10 @@ func evaluateSources(opts options, settings application.Settings, st style, stdi
 	if session == nil {
 		return code
 	}
-	return evaluateAll(session, sources, st, stdout, stderr)
+	if code := evaluateAll(session, sources, st, stdout, stderr); code != exitOK {
+		return code
+	}
+	return checkAssertions(session, opts.asserts, st, stderr)
 }
 
 var flagRules = []struct {
@@ -204,6 +214,7 @@ func registerInputFlags(fs *flag.FlagSet, opts *options) {
 		fs.Var(&opts.expressions, name, "evaluate EXPR (repeatable)")
 	}
 	fs.Var(&opts.sets, "set", "set NAME=EXPR, overriding the model's value (repeatable)")
+	fs.Var(&opts.asserts, "assert", "exit 4 unless EXPR holds after the program (repeatable)")
 	for _, name := range []string{"n", "samples"} {
 		fs.IntVar(&opts.samples, name, opts.samples, "Monte Carlo sample count")
 	}

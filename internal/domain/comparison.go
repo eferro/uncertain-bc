@@ -2,19 +2,28 @@ package domain
 
 type comparison struct {
 	op          tokenKind
+	symbol      string
 	left, right node
 }
 
 func (c comparison) evaluate(env Env) (Value, error) {
-	left, err := c.left.evaluate(env)
+	left, right, err := c.operands(env)
 	if err != nil {
 		return nil, err
 	}
-	right, err := c.right.evaluate(env)
-	if err != nil {
-		return nil, err
+	return c.apply(left, right), nil
+}
+
+func (c comparison) operands(env Env) (left, right Value, err error) {
+	if left, err = c.left.evaluate(env); err != nil {
+		return nil, nil, err
 	}
-	return combine(comparators[c.op], left, right), nil
+	right, err = c.right.evaluate(env)
+	return left, right, err
+}
+
+func (c comparison) apply(left, right Value) Value {
+	return combine(comparators[c.op], left, right)
 }
 
 var comparators = map[tokenKind]func(a, b float64) float64{
