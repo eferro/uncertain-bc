@@ -3,3 +3,9 @@ stdout '^3000\n$'
 
 exec ubc -e '5% * 200'
 stdout '^10\n$'
+
+exec ubc -e '10k to 50k'
+cmp stdout thousands.out
+
+-- thousands.out --
+≈ 22.4k   90% [9990 … 49k]

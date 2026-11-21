@@ -22,13 +22,38 @@ func format(value domain.Value) string {
 	panic(fmt.Sprintf("cli: unknown value type %T", value))
 }
 
-// significant keeps three significant figures: Monte Carlo noise makes
-// further digits meaningless (ADR 0006).
+var suffixes = []struct {
+	name  string
+	scale float64
+	from  float64
+}{
+	{"T", 1e12, 1e12},
+	{"B", 1e9, 1e9},
+	{"M", 1e6, 1e6},
+	{"k", 1e3, 1e4},
+}
+
+// significant keeps three significant figures, because Monte Carlo noise makes
+// further digits meaningless (ADR 0006), and uses suffixes from 10k up (SPEC §6).
 func significant(x float64) string {
+	rounded := roundSignificant(x)
+	for _, s := range suffixes {
+		if math.Abs(rounded) >= s.from {
+			return shortest(rounded/s.scale) + s.name
+		}
+	}
+	return shortest(rounded)
+}
+
+func roundSignificant(x float64) float64 {
 	if x == 0 {
-		return "0"
+		return 0
 	}
 	decimals := 2 - int(math.Floor(math.Log10(math.Abs(x))))
 	scale := math.Pow(10, float64(decimals))
-	return strconv.FormatFloat(math.Round(x*scale)/scale, 'f', -1, 64)
+	return math.Round(x*scale) / scale
+}
+
+func shortest(x float64) string {
+	return strconv.FormatFloat(x, 'f', -1, 64)
 }
