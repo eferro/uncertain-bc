@@ -30,7 +30,7 @@ func TestSeed_RestartsTheRandomStream(t *testing.T) {
 	reseeded := interactive(t, ":seed 2\n1 to 2\n")
 	fresh := interactive(t, "1 to 2\n", "-s", "2")
 
-	assert.Equal(t, strings.TrimPrefix(fresh.stdout, "ubc> "), strings.TrimPrefix(reseeded.stdout, "ubc> ubc> "))
+	assert.Equal(t, withoutPrompts(fresh.stdout), withoutPrompts(reseeded.stdout))
 }
 
 func TestSamples_ChangesTheSampleCountQuietly_WhenThereAreNoVariables(t *testing.T) {
@@ -135,4 +135,8 @@ func TestSaveAndLoad_ReportFileProblems(t *testing.T) {
 			assert.Equal(t, message, interactive(t, input+"\n").stderr)
 		})
 	}
+}
+
+func withoutPrompts(screen string) string {
+	return strings.ReplaceAll(screen, "ubc> ", "")
 }
