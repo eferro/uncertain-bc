@@ -3,12 +3,20 @@
 package cli
 
 import (
+	"errors"
 	"flag"
 	"fmt"
 	"io"
-	"strconv"
 
+	"github.com/eferro/uncertain-bc/internal/application"
 	"github.com/eferro/uncertain-bc/internal/domain"
+)
+
+const (
+	exitOK         = 0
+	exitEvalError  = 1
+	exitUsageError = 2
+	exitParseError = 3
 )
 
 func Run(args []string, stdout, stderr io.Writer) int {
@@ -16,13 +24,21 @@ func Run(args []string, stdout, stderr io.Writer) int {
 	fs.SetOutput(stderr)
 	expr := fs.String("e", "", "evaluate EXPR")
 	if err := fs.Parse(args); err != nil {
-		return 2
+		return exitUsageError
 	}
-	value, err := domain.Evaluate(*expr)
+	value, err := application.NewSession(application.DefaultSettings()).Evaluate(*expr)
 	if err != nil {
 		fmt.Fprintf(stderr, "ubc: %v\n", err)
-		return 3
+		return exitCode(err)
 	}
-	fmt.Fprintln(stdout, strconv.FormatFloat(value, 'g', -1, 64))
-	return 0
+	fmt.Fprintln(stdout, format(value))
+	return exitOK
+}
+
+func exitCode(err error) int {
+	var syntaxErr *domain.SyntaxError
+	if errors.As(err, &syntaxErr) {
+		return exitParseError
+	}
+	return exitEvalError
 }

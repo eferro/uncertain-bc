@@ -21,10 +21,25 @@ func TestEvaluate_ReturnsTheNumber_WhenTheProgramIsANumberLiteral(t *testing.T) 
 	}
 	for program, want := range cases {
 		t.Run(program, func(t *testing.T) {
-			value, err := domain.Evaluate(program)
-
-			require.NoError(t, err)
-			assert.Equal(t, want, value)
+			assert.Equal(t, domain.Scalar(want), evaluate(t, program))
 		})
 	}
+}
+
+func TestEvaluate_DrawsTheSameSamples_WhenTheSeedIsTheSame(t *testing.T) {
+	first, err := domain.Evaluate("10 to 20", domain.NewEnv(7, samples))
+	require.NoError(t, err)
+	second, err := domain.Evaluate("10 to 20", domain.NewEnv(7, samples))
+	require.NoError(t, err)
+
+	assert.Equal(t, first, second)
+}
+
+func TestEvaluate_DrawsDifferentSamples_WhenTheSeedChanges(t *testing.T) {
+	first, err := domain.Evaluate("10 to 20", domain.NewEnv(1, samples))
+	require.NoError(t, err)
+	second, err := domain.Evaluate("10 to 20", domain.NewEnv(2, samples))
+	require.NoError(t, err)
+
+	assert.NotEqual(t, first, second)
 }

@@ -1,0 +1,11 @@
+exec ubc -e '10 to 20'
+cmp stdout lognormal.out
+! stderr .
+
+exec ubc -e '0 to 10'
+cmp stdout normal.out
+
+-- lognormal.out --
+≈ 14.2   90% [10 … 19.8]
+-- normal.out --
+≈ 5.01   90% [-0.00435 … 9.87]

@@ -1,0 +1,3 @@
+! exec ubc -e '10 to 5'
+! stdout .
+stderr '^ubc: line 1, col 4: range start 10 must be below its end 5\n$'

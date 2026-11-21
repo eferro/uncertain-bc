@@ -15,18 +15,20 @@ func TestEvaluate_ReportsWhereTheSyntaxIsWrong(t *testing.T) {
 		col     int
 		message string
 	}{
-		{"forty-two", 1, "unexpected character 'f'"},
+		{"forty", 1, "unexpected 'forty'"},
+		{"4 $ 2", 3, "unexpected character '$'"},
+		{"1 to", 5, "unexpected end of input"},
 		{"1 +", 4, "unexpected end of input"},
 		{"", 1, "unexpected end of input"},
 		{"1 2", 3, "unexpected '2'"},
 		{"+ 1", 1, "unexpected '+'"},
 		{"1.2.3", 1, "invalid number '1.2.3'"},
-		{"1e", 2, "unexpected character 'e'"},
-		{"1e+", 2, "unexpected character 'e'"},
+		{"1e", 2, "unexpected 'e'"},
+		{"1e+", 2, "unexpected 'e'"},
 	}
 	for _, c := range cases {
 		t.Run(c.program, func(t *testing.T) {
-			_, err := domain.Evaluate(c.program)
+			_, err := domain.Evaluate(c.program, domain.NewEnv(1, samples))
 
 			var syntaxErr *domain.SyntaxError
 			require.ErrorAs(t, err, &syntaxErr)

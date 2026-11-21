@@ -4,7 +4,6 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 
 	"github.com/eferro/uncertain-bc/internal/domain"
 )
@@ -19,10 +18,7 @@ func TestEvaluate_AddsNumbers(t *testing.T) {
 	}
 	for program, want := range cases {
 		t.Run(program, func(t *testing.T) {
-			value, err := domain.Evaluate(program)
-
-			require.NoError(t, err)
-			assert.Equal(t, want, value)
+			assert.Equal(t, domain.Scalar(want), evaluate(t, program))
 		})
 	}
 }

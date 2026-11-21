@@ -32,9 +32,28 @@ func TestRun_ExitsWithUsageError_WhenAFlagIsUnknown(t *testing.T) {
 func TestRun_ExitsWithParseError_WhenTheExpressionIsNotValid(t *testing.T) {
 	var stdout, stderr bytes.Buffer
 
-	code := cli.Run([]string{"-e", "forty-two"}, &stdout, &stderr)
+	code := cli.Run([]string{"-e", "forty"}, &stdout, &stderr)
 
 	assert.Equal(t, 3, code)
 	assert.Empty(t, stdout.String())
 	assert.Regexp(t, `^ubc: .+\n$`, stderr.String())
+}
+
+func TestRun_ExitsWithEvaluationError_WhenTheExpressionCannotBeEvaluated(t *testing.T) {
+	var stdout, stderr bytes.Buffer
+
+	code := cli.Run([]string{"-e", "10 to 5"}, &stdout, &stderr)
+
+	assert.Equal(t, 1, code)
+	assert.Empty(t, stdout.String())
+	assert.Regexp(t, `^ubc: .+\n$`, stderr.String())
+}
+
+func TestRun_SummarisesASampleSetAsMedianAndNinetyPercentInterval(t *testing.T) {
+	var stdout, stderr bytes.Buffer
+
+	code := cli.Run([]string{"-e", "10 to 20"}, &stdout, &stderr)
+
+	assert.Equal(t, 0, code)
+	assert.Regexp(t, `^≈ \S+   90% \[\S+ … \S+\]\n$`, stdout.String())
 }

@@ -6,6 +6,8 @@ const (
 	tokenEOF tokenKind = iota
 	tokenNumber
 	tokenPlus
+	tokenTo
+	tokenIdent
 )
 
 type token struct {
@@ -39,6 +41,9 @@ func lexOne(src string, i int) (int, *token, error) {
 	case isDigit(c) || c == '.':
 		end := scanNumber(src, i)
 		return end, &token{kind: tokenNumber, text: src[i:end], col: i + 1}, nil
+	case isIdentStart(c):
+		end := scanWhile(src, i, isIdentPart)
+		return end, identOrKeyword(src[i:end], i+1), nil
 	}
 	return 0, nil, syntaxErrorAt(i+1, "unexpected character '%c'", c)
 }
@@ -71,4 +76,19 @@ func scanWhile(src string, i int, accept func(byte) bool) int {
 
 func isDigit(c byte) bool {
 	return c >= '0' && c <= '9'
+}
+
+func identOrKeyword(text string, col int) *token {
+	if text == "to" {
+		return &token{kind: tokenTo, text: text, col: col}
+	}
+	return &token{kind: tokenIdent, text: text, col: col}
+}
+
+func isIdentStart(c byte) bool {
+	return c == '_' || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')
+}
+
+func isIdentPart(c byte) bool {
+	return isIdentStart(c) || isDigit(c)
 }
