@@ -23,7 +23,7 @@ Offer one obvious command per platform, all built from the same goreleaser relea
 
 Both install scripts accept `UBC_VERSION` and `UBC_INSTALL_DIR`. The POSIX script is tested offline against a fake GitHub (`install_test.go`), and CI runs `shellcheck` on every shell script. After each release, CI installs the new version through the scripts on Linux, macOS and Windows, and through `go install`, and checks the reported version.
 
-Publishing to the tap and the bucket needs a token that can push to those two repositories. It is stored as the `TAP_GITHUB_TOKEN` secret, because the workflow's own `GITHUB_TOKEN` cannot write to other repositories.
+Publishing to the tap and the bucket needs a token that can push to those two repositories. It is stored as the `TAP_GITHUB_TOKEN` secret, because the workflow's own `GITHUB_TOKEN` cannot write to other repositories. The secret is a fine-grained token with Contents read and write on those two repositories only; it was set on 2026-11-21 and must be renewed before it expires, or Homebrew and Scoop stop receiving new versions (releases still succeed, as both are skipped without the token).
 
 **Not done: code signing.** Signing and notarising for macOS needs a paid Apple Developer account, and Windows Authenticode needs a code-signing certificate. The channels above avoid the warnings instead (no quarantine with `curl`, `Unblock-File` on Windows, and package managers). If signing becomes necessary, a new ADR will add it to the goreleaser pipeline.
 
