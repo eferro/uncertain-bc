@@ -28,3 +28,4 @@ Template: Status, Effective date, Deciders, then Context, Decision, Consequences
 | [0018](0018-mit-license.md) | MIT license | Accepted | 2026-11-21 |
 | [0019](0019-gitleaks-on-pre-push-and-ci.md) | gitleaks on pre-push and in CI | Accepted | 2026-11-21 |
 | [0020](0020-reliable-mutation-gate.md) | A reliable mutation gate (amends 0012) | Accepted | 2026-11-21 |
+| [0021](0021-manual-mutation-in-the-tdd-loop.md) | Manual mutation in the TDD loop, gremlins as the CI safety net | Accepted | 2026-11-21 |
