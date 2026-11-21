@@ -62,7 +62,7 @@ func TestRun_SummarisesASampleSetAsMedianAndNinetyPercentInterval(t *testing.T) 
 	got := run(t, "", "-e", "10 to 20")
 
 	assert.Equal(t, 0, got.code)
-	assert.Regexp(t, `^≈ \S+   90% \[\S+ … \S+\]\n$`, got.stdout)
+	assert.Regexp(t, `^≈ \S+   90% \[\S+ … \S+\]   [▁▂▃▄▅▆▇█]{16}\n$`, got.stdout)
 }
 
 func TestRun_PrintsTheVersion_WhenAskedFor(t *testing.T) {

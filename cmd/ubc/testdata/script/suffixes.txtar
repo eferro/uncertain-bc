@@ -8,4 +8,4 @@ exec ubc -e '10k to 50k'
 cmp stdout thousands.out
 
 -- thousands.out --
-≈ 22.4k   90% [9990 … 49k]
+≈ 22.4k   90% [9990 … 49k]   ▄▇██▇▅▄▄▃▂▂▂▁▁▁▁

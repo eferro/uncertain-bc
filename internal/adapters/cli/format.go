@@ -14,8 +14,9 @@ func format(value domain.Value) string {
 		if v.Quantile(0) == v.Quantile(1) {
 			return format(domain.Scalar(v[0]))
 		}
-		return fmt.Sprintf("≈ %s   90%% [%s … %s]",
-			significant(v.Quantile(0.5)), significant(v.Quantile(0.05)), significant(v.Quantile(0.95)))
+		return fmt.Sprintf("≈ %s   90%% [%s … %s]   %s",
+			significant(v.Quantile(0.5)), significant(v.Quantile(0.05)), significant(v.Quantile(0.95)),
+			sparkline(v, unicodeBlocks))
 	case domain.Scalar:
 		return plain(float64(v))
 	case domain.Probability:
