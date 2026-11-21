@@ -1,0 +1,26 @@
+stdin program.ubc
+exec ubc
+stdout '^L2: 6\nL4: 4\n$'
+
+exec ubc first.ubc second.ubc
+stdout '^3\n$'
+
+exec ubc -e 'x = 2' -e 'x * 3'
+stdout '^6\n$'
+
+! exec ubc broken.ubc
+! stdout .
+stderr '^ubc: broken.ubc: line 2, col 4: unexpected end of line\n$'
+
+-- program.ubc --
+x = 3       # a comment
+x * 2
+y = x + 1
+y
+-- first.ubc --
+x = 2
+-- second.ubc --
+x + 1
+-- broken.ubc --
+1
+2 *

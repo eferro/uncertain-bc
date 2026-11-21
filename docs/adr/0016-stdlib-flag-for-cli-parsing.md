@@ -14,7 +14,7 @@
 - Register short and long names against the same variable (`-n` and `--samples`). Go's `flag` accepts one or two dashes for any name.
 - A small `multiString` type implementing `flag.Value` collects repeated `-e` expressions in order.
 - The usage text is written by hand to match SPEC §1. Flag errors print the usage to stderr and exit with code `2` (SPEC §1).
-- Combined short flags (`-ne`) are not supported. This is documented as a known difference from GNU tools.
+- Combined short flags (`-ne`) are not supported, and flags must come before file arguments (`flag` stops at the first positional argument). Both are documented as known differences from GNU tools.
 
 ## Consequences
 

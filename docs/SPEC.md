@@ -25,9 +25,11 @@ cmd | ubc                   # read program from stdin (non-TTY), print results
 | `--ascii` | ASCII instead of Unicode (sparklines, `≈`, `…`) | auto |
 | `-h, --help`, `--version` | | |
 
+Flags go before files (`ubc -e 'x = 2' model.ubc`); anything after the first file name is read as another file. `-e` expressions are evaluated before files, all in one session, so variables flow from one source to the next. Without `-e` or files, the program is read from stdin.
+
 Exit codes: `0` success, `1` evaluation error, `2` usage error (bad flags), `3` parse error.
 
-Errors go to stderr as `ubc: line L, col C: message`. In the REPL an error prints and the session continues.
+Errors go to stderr as `ubc: line L, col C: message`, with the file name for errors inside a file: `ubc: model.ubc: line L, col C: message`. A file or stdin that cannot be read is an evaluation error (exit 1). In the REPL an error prints and the session continues.
 
 ## 2. Lexical structure
 
