@@ -91,6 +91,7 @@ Rules:
 | Function | Returns |
 |---|---|
 | `normal(mean, sd)`, `lognormal(mu, sigma)`, `uniform(lo, hi)`, `triangular(lo, mode, hi)`, `beta(a, b)` | SampleSet |
+| `exponential(rate)`, `gamma(shape, scale)`, `pert(lo, mode, hi)` (phase 4) | SampleSet; `pert` is Beta-PERT with mean `(lo + 4·mode + hi) / 6` |
 | `mean(x)`, `median(x)`, `stdev(x)`, `min(x)`, `max(x)` | Scalar (identity on scalars); `stdev` is the population standard deviation |
 | `p(x, q)` | q-quantile, `q` in [0, 1] |
 | `P(cond)` | Probability |

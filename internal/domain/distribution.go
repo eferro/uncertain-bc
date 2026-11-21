@@ -74,6 +74,21 @@ func gamma(r *rand.Rand, shape float64) float64 {
 	}
 }
 
+func exponential(rate float64) sampler {
+	return func(r *rand.Rand) float64 { return r.ExpFloat64() / rate }
+}
+
+func gammaScaled(shape, scale float64) sampler {
+	return func(r *rand.Rand) float64 { return gamma(r, shape) * scale }
+}
+
+// pert is the Beta-PERT distribution used in project estimation: a beta
+// rescaled to [lo, hi] whose mean is (lo + 4·mode + hi) / 6.
+func pert(lo, mode, hi float64) sampler {
+	shape := beta(1+4*(mode-lo)/(hi-lo), 1+4*(hi-mode)/(hi-lo))
+	return func(r *rand.Rand) float64 { return lo + shape(r)*(hi-lo) }
+}
+
 type distribution struct {
 	arity int
 	check func(p []float64) string
@@ -81,11 +96,14 @@ type distribution struct {
 }
 
 var distributions = map[string]distribution{
-	"normal":     {2, positive(1, "sd"), func(p []float64) sampler { return normal(p[0], p[1]) }},
-	"lognormal":  {2, positive(1, "sigma"), func(p []float64) sampler { return lognormal(p[0], p[1]) }},
-	"uniform":    {2, ordered(0, 1), func(p []float64) sampler { return uniform(p[0], p[1]) }},
-	"triangular": {3, triangle, func(p []float64) sampler { return triangular(p[0], p[1], p[2]) }},
-	"beta":       {2, all(positive(0, "a"), positive(1, "b")), func(p []float64) sampler { return beta(p[0], p[1]) }},
+	"normal":      {2, positive(1, "sd"), func(p []float64) sampler { return normal(p[0], p[1]) }},
+	"lognormal":   {2, positive(1, "sigma"), func(p []float64) sampler { return lognormal(p[0], p[1]) }},
+	"uniform":     {2, ordered(0, 1), func(p []float64) sampler { return uniform(p[0], p[1]) }},
+	"triangular":  {3, triangle, func(p []float64) sampler { return triangular(p[0], p[1], p[2]) }},
+	"beta":        {2, all(positive(0, "a"), positive(1, "b")), func(p []float64) sampler { return beta(p[0], p[1]) }},
+	"exponential": {1, positive(0, "rate"), func(p []float64) sampler { return exponential(p[0]) }},
+	"gamma":       {2, all(positive(0, "shape"), positive(1, "scale")), func(p []float64) sampler { return gammaScaled(p[0], p[1]) }},
+	"pert":        {3, triangle, func(p []float64) sampler { return pert(p[0], p[1], p[2]) }},
 }
 
 func (d distribution) call(c call, env Env, args []Value) (Value, error) {

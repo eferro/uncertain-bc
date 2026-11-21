@@ -50,7 +50,7 @@ What the language has today:
 
 - Numbers with suffixes (`1.5e3`, `1k`, `2.5M`, `5%`), `+ - * / ^`, parentheses, comments (`#`).
 - `a to b`: a 90 % interval, lognormal when both ends are positive, normal otherwise.
-- Distributions: `normal`, `lognormal`, `uniform`, `triangular`, `beta`, and empirical data `[3, 5, 8, 13]` (resampled).
+- Distributions: `normal`, `lognormal`, `uniform`, `triangular`, `beta`, `pert`, `exponential`, `gamma`, and empirical data `[3, 5, 8, 13]` (resampled).
 - Variables that keep their samples (`x - x` is exactly 0), user functions (`cost(n) = n * (2 to 4)`), `last`, `pi`, `e`.
 - Comparisons and `P(...)`; summaries `mean`, `median`, `stdev`, `min`, `max`, `p(x, q)`; `sqrt`, `exp`, `log`, `log10`, `abs`, `round`, `floor`, `ceil`.
 - Input from `-e` (repeatable), files or stdin; flags `-n/--samples`, `-s/--seed`, `--random`, `--plain`, `--ascii` (see `ubc --help`).

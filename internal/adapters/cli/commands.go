@@ -43,7 +43,8 @@ Language:
   < > <= >= == !=  P(cond)            comparisons and probabilities
   a to b                              90% interval, lognormal when both ends > 0
   normal(mean, sd)  lognormal(mu, sigma)  uniform(lo, hi)
-  triangular(lo, mode, hi)  beta(a, b)
+  triangular(lo, mode, hi)  beta(a, b)  pert(lo, mode, hi)
+  exponential(rate)  gamma(shape, scale)
   mean(x) median(x) stdev(x) min(x) max(x) p(x, q)
   sqrt exp log log10 abs round floor ceil, min/max of several values
   x = expr   f(a, b) = expr   last   pi   e   # comments
