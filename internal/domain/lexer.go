@@ -6,9 +6,25 @@ const (
 	tokenEOF tokenKind = iota
 	tokenNumber
 	tokenPlus
+	tokenMinus
+	tokenStar
+	tokenSlash
+	tokenCaret
+	tokenLParen
+	tokenRParen
 	tokenTo
 	tokenIdent
 )
+
+var operators = map[byte]tokenKind{
+	'+': tokenPlus,
+	'-': tokenMinus,
+	'*': tokenStar,
+	'/': tokenSlash,
+	'^': tokenCaret,
+	'(': tokenLParen,
+	')': tokenRParen,
+}
 
 type token struct {
 	kind tokenKind
@@ -33,11 +49,12 @@ func lex(src string) ([]token, error) {
 
 func lexOne(src string, i int) (int, *token, error) {
 	c := src[i]
+	if kind, ok := operators[c]; ok {
+		return i + 1, &token{kind: kind, text: string(c), col: i + 1}, nil
+	}
 	switch {
 	case c == ' ' || c == '\t':
 		return i + 1, nil, nil
-	case c == '+':
-		return i + 1, &token{kind: tokenPlus, text: "+", col: i + 1}, nil
 	case isDigit(c) || c == '.':
 		end := scanNumber(src, i)
 		return end, &token{kind: tokenNumber, text: src[i:end], col: i + 1}, nil

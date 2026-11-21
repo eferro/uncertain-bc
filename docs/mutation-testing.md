@@ -8,8 +8,5 @@ Surviving mutants that no test can kill with the current behaviour. Revisit this
 
 | Location | Mutation | Why it survives |
 |---|---|---|
-| `distribution.go` `ninetyPercentRange`, `to > 0` | `to >= 0` | Without negative literals, a range never ends at 0 with a start below it. Killable once unary minus exists (`-5 to 0`). |
-| `distribution.go` `ninetyPercentRange`, `from + to` | `from - to` | The normal branch only runs with `from = 0` today, so both give the same mean. Killable with unary minus (`-10 to 20`). |
-| `distribution.go` `ninetyPercentRange`, `to - from` | `to + from` | Same reason: `from = 0` in every reachable normal range. |
 | `distribution.go` `normal`, `mean + sd·N` | `mean - sd·N` | The standard normal is symmetric, so both draw the same distribution. Only the order of samples changes. |
 | `distribution.go` `lognormal`, `mu + sigma·N` | `mu - sigma·N` | Same symmetry, in log space. |

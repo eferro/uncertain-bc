@@ -1,6 +1,8 @@
 // Package domain holds the pure core of ubc: the language and its evaluation.
 package domain
 
+import "math"
+
 type expression interface {
 	evaluate(env Env) (Value, error)
 }
@@ -13,11 +15,28 @@ type number float64
 
 func (n number) eval() float64 { return float64(n) }
 
-type add struct {
+type negate struct {
+	operand node
+}
+
+func (n negate) eval() float64 { return -n.operand.eval() }
+
+type binary struct {
+	op          tokenKind
 	left, right node
 }
 
-func (a add) eval() float64 { return a.left.eval() + a.right.eval() }
+func (b binary) eval() float64 {
+	return arithmetic[b.op](b.left.eval(), b.right.eval())
+}
+
+var arithmetic = map[tokenKind]func(a, b float64) float64{
+	tokenPlus:  func(a, b float64) float64 { return a + b },
+	tokenMinus: func(a, b float64) float64 { return a - b },
+	tokenStar:  func(a, b float64) float64 { return a * b },
+	tokenSlash: func(a, b float64) float64 { return a / b },
+	tokenCaret: math.Pow,
+}
 
 type scalarExpr struct {
 	node node

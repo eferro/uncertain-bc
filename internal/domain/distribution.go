@@ -9,8 +9,9 @@ import (
 // holds 90% of the mass (SPEC §4, ADR 0004).
 const z95 = 1.6448536269514722
 
+// ninetyPercentRange expects from < to, so a positive start means both ends are positive.
 func ninetyPercentRange(env Env, from, to float64) SampleSet {
-	if from > 0 && to > 0 {
+	if from > 0 {
 		return lognormal(env, (math.Log(from)+math.Log(to))/2, (math.Log(to)-math.Log(from))/(2*z95))
 	}
 	return normal(env, (from+to)/2, (to-from)/(2*z95))

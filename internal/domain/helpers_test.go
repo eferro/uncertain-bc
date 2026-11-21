@@ -3,15 +3,13 @@ package domain_test
 import (
 	"testing"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
 	"github.com/eferro/uncertain-bc/internal/domain"
 )
 
-const (
-	samples         = 5000
-	monteCarloNoise = 0.3
-)
+const samples = 5000
 
 func evaluate(t *testing.T, program string) domain.Value {
 	t.Helper()
@@ -25,4 +23,9 @@ func evaluateSamples(t *testing.T, program string) domain.SampleSet {
 	value := evaluate(t, program)
 	require.IsType(t, domain.SampleSet{}, value)
 	return value.(domain.SampleSet)
+}
+
+func assertNear(t *testing.T, want, got, intervalWidth float64) {
+	t.Helper()
+	assert.InDelta(t, want, got, 0.03*intervalWidth)
 }

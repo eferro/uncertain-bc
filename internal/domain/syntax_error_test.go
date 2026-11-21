@@ -27,6 +27,11 @@ func TestEvaluate_ReportsWhereTheSyntaxIsWrong(t *testing.T) {
 		{"", 1, "unexpected end of input"},
 		{"1 2", 3, "unexpected '2'"},
 		{"+ 1", 1, "unexpected '+'"},
+		{"(1 + 2", 7, "unexpected end of input"},
+		{"(1 + 2 3", 8, "unexpected '3'"},
+		{")", 1, "unexpected ')'"},
+		{"1 * * 2", 5, "unexpected '*'"},
+		{"2 ^", 4, "unexpected end of input"},
 		{"1.2.3", 1, "invalid number '1.2.3'"},
 		{"1e", 2, "unexpected 'e'"},
 		{"1e+", 2, "unexpected 'e'"},
@@ -49,7 +54,7 @@ func TestSyntaxError_ReadsAsLineColumnAndMessage(t *testing.T) {
 }
 
 func TestEvaluate_RejectsTheCharactersJustOutsideDigitAndLetterRanges(t *testing.T) {
-	for _, neighbour := range []string{"/", ":", "@", "[", "`", "{"} {
+	for _, neighbour := range []string{":", "@", "[", "`", "{"} {
 		t.Run(neighbour, func(t *testing.T) {
 			_, err := domain.Evaluate(neighbour, domain.NewEnv(1, samples))
 
