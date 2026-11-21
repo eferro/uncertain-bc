@@ -1,0 +1,18 @@
+# Architecture Decision Records
+
+Long-lived decisions about `uncertain-bc`. One file per decision, numbered, never renumbered. To change a decision, add a new ADR that supersedes the old one and update the status of both.
+
+Template: Status, Effective date, Deciders, then Context, Decision, Consequences and, when useful, Alternatives considered.
+
+## Index
+
+| ADR | Title | Status | Effective date |
+| --- | --- | --- | --- |
+| [0001](0001-ship-a-single-static-go-binary.md) | Ship a single static Go binary | Accepted | 2026-11-21 |
+| [0002](0002-own-squiggle-inspired-language-not-squiggle-compatible.md) | Implement our own Squiggle-inspired language, not Squiggle itself | Accepted | 2026-11-21 |
+| [0003](0003-monte-carlo-sample-sets-as-the-only-distribution-representation.md) | Monte Carlo sample sets as the only distribution representation | Accepted | 2026-11-21 |
+| [0004](0004-ranges-are-90-percent-intervals-lognormal-when-positive.md) | `a to b` is a 90 % interval, lognormal when both ends are positive | Accepted | 2026-11-21 |
+| [0005](0005-deterministic-seed-by-default.md) | Deterministic RNG seed by default | Accepted | 2026-11-21 |
+| [0006](0006-bc-like-cli-with-honest-summary-output.md) | bc-like CLI with an honest one-line summary | Accepted | 2026-11-21 |
+| [0007](0007-name-the-binary-ubc-and-the-project-uncertain-bc.md) | Name the binary `ubc` and the project `uncertain-bc` | Accepted | 2026-11-21 |
+| [0008](0008-units-out-of-the-mvp.md) | Keep units out of the MVP | Accepted | 2026-11-21 |

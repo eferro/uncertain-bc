@@ -1,0 +1,29 @@
+// ¿Me sale a cuenta el homelab frente a alquilar un VPS?
+// "a to b" = intervalo de confianza del 90 % (lognormal si ambos > 0)
+
+consumoW = 12 to 30            // ThinkCentre Tiny con Proxmox, media 24/7
+precioKWh = 0.12 to 0.25       // €/kWh
+horasAnio = 24 * 365
+
+costeLuzAnio = consumoW / 1000 * horasAnio * precioKWh
+
+hardware = 120 to 200          // € (equipo + disco + RAM extra)
+vidaUtilAnios = 3 to 6
+amortizacionAnio = hardware / vidaUtilAnios
+
+costeHomelabAnio = costeLuzAnio + amortizacionAnio
+
+vpsMes = 8 to 25               // VPS con recursos parecidos
+costeVpsAnio = vpsMes * 12
+
+ahorroAnio = costeVpsAnio - costeHomelabAnio
+probAhorro = cdf(ahorroAnio, 0)  // P(ahorro < 0) = probabilidad de que el homelab salga más caro
+
+{
+  costeLuzAnio,
+  costeHomelabAnio,
+  costeVpsAnio,
+  ahorroAnio,
+  "P(homelab más caro)": probAhorro,
+  "ahorro p5/p50/p95": [quantile(ahorroAnio, 0.05), quantile(ahorroAnio, 0.5), quantile(ahorroAnio, 0.95)],
+}
