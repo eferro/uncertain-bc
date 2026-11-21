@@ -113,3 +113,30 @@ func TestSession_SetSamples_StartsANewTranscript(t *testing.T) {
 
 	assert.Empty(t, session.Transcript())
 }
+
+func TestSession_Override_WinsOverTheProgramsAssignment(t *testing.T) {
+	session := application.NewSession(application.DefaultSettings())
+	require.NoError(t, session.Override("team", "5"))
+
+	results, err := session.Evaluate("team = 3; team * 2")
+
+	require.NoError(t, err)
+	assert.Equal(t, domain.Scalar(10), results[1].Value)
+}
+
+func TestSession_Override_ListsTheVariableOnce_WhenOverriddenTwice(t *testing.T) {
+	session := application.NewSession(application.DefaultSettings())
+	require.NoError(t, session.Override("team", "5"))
+	require.NoError(t, session.Override("team", "6"))
+
+	assert.Equal(t, []application.Variable{{Name: "team", Value: domain.Scalar(6)}}, session.Variables())
+}
+
+func TestSession_Override_ListsNothing_WhenItFails(t *testing.T) {
+	session := application.NewSession(application.DefaultSettings())
+
+	err := session.Override("team", "nobody")
+
+	assert.Error(t, err)
+	assert.Empty(t, session.Variables())
+}

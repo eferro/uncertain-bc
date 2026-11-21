@@ -65,19 +65,20 @@ func finiteValues(v Value) []float64 {
 }
 
 type Env struct {
-	source    *rand.PCG
-	rng       *rand.Rand
-	samples   int
-	variables map[string]Value
-	functions map[string]definition
-	depth     int
+	source     *rand.PCG
+	rng        *rand.Rand
+	samples    int
+	variables  map[string]Value
+	functions  map[string]definition
+	overridden map[string]bool
+	depth      int
 }
 
 func NewEnv(seed uint64, samples int) Env {
 	source := rand.NewPCG(seed, seed)
 	return Env{
 		source: source, rng: rand.New(source), samples: samples,
-		variables: predefined(), functions: map[string]definition{},
+		variables: predefined(), functions: map[string]definition{}, overridden: map[string]bool{},
 	}
 }
 
@@ -95,9 +96,12 @@ func (e Env) Reseed(seed uint64) {
 }
 
 // WithSamples keeps the random stream but forgets variables, whose sample
-// sets would no longer match the new count.
+// sets would no longer match the new count, and their overrides with them.
 func (e Env) WithSamples(samples int) Env {
-	return Env{source: e.source, rng: e.rng, samples: samples, variables: predefined(), functions: e.functions}
+	return Env{
+		source: e.source, rng: e.rng, samples: samples,
+		variables: predefined(), functions: e.functions, overridden: map[string]bool{},
+	}
 }
 
 func (e Env) draw(sample func(*rand.Rand) float64) SampleSet {

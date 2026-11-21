@@ -36,14 +36,30 @@ func NewSession(settings Settings) *Session {
 func (s *Session) Evaluate(program string) ([]domain.Result, error) {
 	results, err := domain.Evaluate(program, s.env)
 	for _, result := range results {
-		if result.Name != "" && !slices.Contains(s.names, result.Name) {
-			s.names = append(s.names, result.Name)
+		if result.Name != "" {
+			s.remember(result.Name)
 		}
 	}
 	if err == nil && strings.TrimSpace(program) != "" {
 		s.transcript = append(s.transcript, program)
 	}
 	return results, err
+}
+
+// Override fixes a variable from outside the program, as --set does: the
+// programs that follow cannot reassign it (ADR 0028).
+func (s *Session) Override(name, expr string) error {
+	if err := domain.Override(name, expr, s.env); err != nil {
+		return err
+	}
+	s.remember(name)
+	return nil
+}
+
+func (s *Session) remember(name string) {
+	if !slices.Contains(s.names, name) {
+		s.names = append(s.names, name)
+	}
 }
 
 // Transcript is every program that evaluated without errors, in order, so a

@@ -121,14 +121,27 @@ func run(statements []statement, env Env) ([]Result, error) {
 			}
 			continue
 		}
-		value, err := stmt.evaluate(env)
+		value, err := stmt.execute(env)
 		if err != nil {
 			return results, err
 		}
-		env.variables[stmt.binding()] = value
 		results = append(results, Result{Line: stmt.line, Name: stmt.name, Value: value})
 	}
 	return results, nil
+}
+
+// execute evaluates the statement and binds its value, unless it assigns to
+// an overridden variable, which keeps its value (ADR 0028).
+func (s statement) execute(env Env) (Value, error) {
+	if s.name != "" && env.overridden[s.name] {
+		return env.variables[s.name], nil
+	}
+	value, err := s.evaluate(env)
+	if err != nil {
+		return nil, err
+	}
+	env.variables[s.binding()] = value
+	return value, nil
 }
 
 // binding is the variable a statement sets: its own name, or last for an

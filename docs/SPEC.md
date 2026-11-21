@@ -10,12 +10,14 @@ Status: draft. Date: 2026-11-21.
 ubc                         # interactive REPL when stdin is a TTY
 ubc FILE...                 # evaluate files in order, print the result of each top-level expression
 ubc -e EXPR [-e EXPR...]    # evaluate expressions, print results
+ubc --set NAME=EXPR FILE    # run a model with NAME overridden (scenarios)
 cmd | ubc                   # read program from stdin (non-TTY), print results
 ```
 
 | Flag | Meaning | Default |
 |---|---|---|
 | `-e, --eval EXPR` | Evaluate an expression (repeatable) | |
+| `--set NAME=EXPR` | Set a variable, overriding the program's own assignments to it (repeatable, ADR 0028) | |
 | `-n, --samples N` | Monte Carlo sample count | `5000` |
 | `-s, --seed N` | RNG seed | `1` |
 | `--random` | Use a time-based seed | off |
@@ -31,6 +33,8 @@ cmd | ubc                   # read program from stdin (non-TTY), print results
 | `-h, --help`, `--version` | | |
 
 Flags go before files (`ubc -e 'x = 2' model.ubc`); anything after the first file name is read as another file. `-e` expressions are evaluated before files, all in one session, so variables flow from one source to the next. Without `-e` or files, the program is read from stdin.
+
+`--set` overrides are evaluated first, in order, before `-e`, files, stdin or the REPL; each value is split at its first `=` and `EXPR` is one expression that may use earlier overrides. Any later assignment to an overridden name is skipped without evaluating its right-hand side, so everything computed from the name uses the override; with `--echo` the skipped assignment prints the override. The same name given twice: the last one wins. `--set` prints nothing itself. A value without `=`, or whose name is not an identifier, is a usage error (exit 2); a bad expression is a parse (3) or evaluation (1) error reported as `ubc: --set NAME: line 1, col C: message`.
 
 Exit codes: `0` success, `1` evaluation error, `2` usage error (bad flags), `3` parse error.
 

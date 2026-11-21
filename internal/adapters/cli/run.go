@@ -33,6 +33,7 @@ type App struct {
 
 type options struct {
 	expressions multiString
+	sets        multiString
 	files       []string
 	version     bool
 	samples     int
@@ -66,6 +67,7 @@ the program from stdin. Flags go before files.
 
 Flags:
   -e, --eval EXPR     evaluate EXPR (repeatable)
+      --set NAME=EXPR set NAME to EXPR, overriding the model's value (repeatable)
   -n, --samples N     Monte Carlo sample count (default 5000)
   -s, --seed N        random seed (default 1)
       --random        seed from the clock
@@ -103,7 +105,11 @@ func (a App) Run(args []string, stdin io.Reader, stdout, stderr io.Writer) int {
 
 func (a App) execute(opts options, settings application.Settings, stdin io.Reader, stdout, stderr io.Writer) int {
 	if a.Interactive && len(opts.expressions) == 0 && len(opts.files) == 0 {
-		return a.interactive(application.NewSession(settings), styleFor(opts), stdin, stdout, stderr)
+		session, code := startSession(opts, settings, stderr)
+		if session == nil {
+			return code
+		}
+		return a.interactive(session, styleFor(opts), stdin, stdout, stderr)
 	}
 	if opts.watch {
 		return a.watch(opts, settings, styleFor(opts), stdout, stderr)
@@ -117,7 +123,11 @@ func evaluateSources(opts options, settings application.Settings, st style, stdi
 		fmt.Fprintf(stderr, "ubc: %v\n", err)
 		return exitEvalError
 	}
-	return evaluateAll(sources, settings, st, stdout, stderr)
+	session, code := startSession(opts, settings, stderr)
+	if session == nil {
+		return code
+	}
+	return evaluateAll(session, sources, st, stdout, stderr)
 }
 
 var flagRules = []struct {
@@ -138,6 +148,9 @@ func validateFlags(opts options) error {
 		if rule.broken(opts) {
 			return errors.New(rule.message)
 		}
+	}
+	if _, err := parseOverrides(opts.sets); err != nil {
+		return err
 	}
 	_, err := parseQuantiles(opts.quantiles)
 	return err
@@ -185,6 +198,7 @@ func registerInputFlags(fs *flag.FlagSet, opts *options) {
 	for _, name := range []string{"e", "eval"} {
 		fs.Var(&opts.expressions, name, "evaluate EXPR (repeatable)")
 	}
+	fs.Var(&opts.sets, "set", "set NAME=EXPR, overriding the model's value (repeatable)")
 	for _, name := range []string{"n", "samples"} {
 		fs.IntVar(&opts.samples, name, opts.samples, "Monte Carlo sample count")
 	}
@@ -245,8 +259,7 @@ func collectSources(opts options, stdin io.Reader) ([]source, error) {
 	return []source{{program: string(content), prefixLines: true}}, nil
 }
 
-func evaluateAll(sources []source, settings application.Settings, st style, stdout, stderr io.Writer) int {
-	session := application.NewSession(settings)
+func evaluateAll(session *application.Session, sources []source, st style, stdout, stderr io.Writer) int {
 	for _, src := range sources {
 		results, err := session.Evaluate(src.program)
 		printResults(results, src.prefixLines, st, stdout)

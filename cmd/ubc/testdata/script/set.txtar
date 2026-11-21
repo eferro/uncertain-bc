@@ -1,0 +1,42 @@
+exec ubc --set team=5 model.ubc
+stdout '^50\n$'
+
+exec ubc --set team=5 --set rate=20 model.ubc
+stdout '^100\n$'
+
+exec ubc --set team=2 --set team=4 model.ubc
+stdout '^40\n$'
+
+exec ubc --set 'team = 1 to 3' --plain model.ubc
+stdout '^17\.3\d*\n$'
+
+exec ubc --set base=7 -e 'base * 2'
+stdout '^14\n$'
+
+stdin model.ubc
+exec ubc --set team=5 --echo
+stdout '^team = 5\nrate = 10\n50\n$'
+
+exec ubc --set rate=20 --set 'team=rate / 10' model.ubc
+stdout '^40\n$'
+
+! exec ubc --set team model.ubc
+! stdout .
+stderr '^ubc: --set expects name=expr, got ''team''\n$'
+
+! exec ubc --set '2x=1' model.ubc
+! stdout .
+stderr '^ubc: --set: ''2x'' is not a variable name\n$'
+
+! exec ubc --set 'team=1 +' model.ubc
+! stdout .
+stderr '^ubc: --set team: line 1, col 4: unexpected end of input\n$'
+
+! exec ubc --set 'team=nobody' model.ubc
+! stdout .
+stderr '^ubc: --set team: line 1, col 1: unknown variable ''nobody''\n$'
+
+-- model.ubc --
+team = 3
+rate = 10
+team * rate
