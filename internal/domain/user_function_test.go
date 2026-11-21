@@ -1,6 +1,8 @@
 package domain_test
 
 import (
+	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -80,4 +82,25 @@ func TestUserFunction_KeepsDefinitionsAcrossCallsWithTheSameEnv(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.Equal(t, domain.Scalar(9), evaluateIn(t, env, "triple(3)"))
+}
+
+func chainOfCalls(depth int) string {
+	var program strings.Builder
+	for i := 1; i < depth; i++ {
+		fmt.Fprintf(&program, "f%d(x) = f%d(x)\n", i, i+1)
+	}
+	fmt.Fprintf(&program, "f%d(x) = x\nf1(7)", depth)
+	return program.String()
+}
+
+func TestUserFunction_AllowsCallsNestedSixtyFourDeep(t *testing.T) {
+	assert.Equal(t, domain.Scalar(7), evaluate(t, chainOfCalls(64)))
+}
+
+func TestUserFunction_RejectsCallsNestedSixtyFiveDeep(t *testing.T) {
+	_, err := domain.Evaluate(chainOfCalls(65), domain.NewEnv(1, samples))
+
+	var evalErr *domain.EvalError
+	require.ErrorAs(t, err, &evalErr)
+	assert.Contains(t, evalErr.Msg, "function calls nest too deeply")
 }

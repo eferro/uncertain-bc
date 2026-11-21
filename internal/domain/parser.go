@@ -54,19 +54,19 @@ func (p *parser) isDefinition() bool {
 	if p.peek().kind != tokenIdent || p.tokens[p.pos+1].kind != tokenLParen {
 		return false
 	}
-	end := p.closingParen(p.pos + 1)
-	return end > 0 && p.tokens[end+1].kind == tokenAssign
+	end, found := p.closingParen(p.pos + 1)
+	return found && p.tokens[end+1].kind == tokenAssign
 }
 
-func (p *parser) closingParen(open int) int {
+func (p *parser) closingParen(open int) (int, bool) {
 	depth := 0
 	for i := open; p.tokens[i].kind != tokenEOF && !isSeparator(p.tokens[i]); i++ {
 		depth += parenDepth[p.tokens[i].kind]
 		if depth == 0 {
-			return i
+			return i, true
 		}
 	}
-	return -1
+	return 0, false
 }
 
 var parenDepth = map[tokenKind]int{tokenLParen: 1, tokenRParen: -1}
