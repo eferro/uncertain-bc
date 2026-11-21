@@ -1,0 +1,48 @@
+# golangci-lint v2 (ADR 0013). v1 keys are silently ignored: check with `golangci-lint config verify`.
+version: "2"
+
+linters:
+  default: none
+  enable:
+    - errcheck
+    - govet
+    - staticcheck
+    - unused
+    - ineffassign
+    - gocritic
+    - misspell
+    - gocyclo
+    - gocognit
+    - funlen
+    - nolintlint
+  settings:
+    errcheck:
+      # Writing results to stdout/stderr has no recovery path in a CLI.
+      exclude-functions:
+        - fmt.Fprint
+        - fmt.Fprintf
+        - fmt.Fprintln
+    gocyclo:
+      min-complexity: 10
+    gocognit:
+      min-complexity: 10
+    funlen:
+      lines: 20
+      statements: 15
+    nolintlint:
+      require-explanation: true
+      require-specific: true
+  exclusions:
+    rules:
+      # Table-driven tests are long by nature; complexity limits still apply.
+      - path: _test\.go
+        linters:
+          - funlen
+
+formatters:
+  enable:
+    - gofumpt
+
+issues:
+  max-issues-per-linter: 0
+  max-same-issues: 0

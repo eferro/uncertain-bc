@@ -22,6 +22,7 @@ Use golangci-lint v2 with a version pinned in the Makefile. `.golangci.yml` enab
 
 - The formatter is **gofumpt**, a stricter superset of gofmt, run through `golangci-lint fmt`. `make format` applies it and `make lint` checks it.
 - Test files are linted too. The one exception: funlen is disabled for `_test.go`, because table-driven tests are long by nature (one table literal holds many cases). gocyclo and gocognit still apply to tests, so test logic stays flat.
+- errcheck ignores `fmt.Fprint*`: a failed write to stdout/stderr has no recovery path in a CLI.
 - `max-issues-per-linter: 0` and `max-same-issues: 0`: every finding is reported, none is hidden.
 - `//nolint` is allowed only with the linter's name and a reason (`//nolint:gocognit // reason`). nolintlint enforces this.
 - After any config change, run `golangci-lint config verify` (v1 keys are silently ignored by v2).
