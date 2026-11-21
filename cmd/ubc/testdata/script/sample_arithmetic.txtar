@@ -1,0 +1,5 @@
+exec ubc -e '(8 to 25) * 12'
+cmp stdout scaled_range.out
+
+-- scaled_range.out --
+≈ 170   90% [96 … 296]

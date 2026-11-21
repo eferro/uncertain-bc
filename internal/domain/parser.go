@@ -10,7 +10,7 @@ type parser struct {
 	pos    int
 }
 
-func parse(tokens []token) (expression, error) {
+func parse(tokens []token) (node, error) {
 	p := &parser{tokens: tokens}
 	expr, err := p.rangeExpression()
 	if err != nil {
@@ -22,14 +22,14 @@ func parse(tokens []token) (expression, error) {
 	return expr, nil
 }
 
-func (p *parser) rangeExpression() (expression, error) {
+func (p *parser) rangeExpression() (node, error) {
 	from, err := p.additive()
 	if err != nil || p.peek().kind != tokenTo {
-		return scalarExpr{node: from}, err
+		return from, err
 	}
 	col := p.advance().col
 	to, err := p.additive()
-	return rangeExpr{from: from, to: to, col: col}, err
+	return rangeNode{from: from, to: to, col: col}, err
 }
 
 func (p *parser) additive() (node, error) {
@@ -82,7 +82,7 @@ func (p *parser) primary() (node, error) {
 }
 
 func (p *parser) parenthesised() (node, error) {
-	inner, err := p.additive()
+	inner, err := p.rangeExpression()
 	if err != nil {
 		return nil, err
 	}

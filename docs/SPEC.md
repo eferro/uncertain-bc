@@ -82,6 +82,7 @@ Rules:
 - If `a > 0` and `b > 0`: lognormal with `μ = (ln a + ln b) / 2`, `σ = (ln b − ln a) / (2 · 1.6449)`.
 - Otherwise: normal with `μ = (a + b) / 2`, `σ = (b − a) / (2 · 1.6449)`.
 - `a >= b` is an evaluation error.
+- Both bounds must be plain numbers: `(1 to 2) to 3` is an evaluation error (uncertain bounds are out of the MVP).
 
 ## 5. Built-in functions (MVP)
 

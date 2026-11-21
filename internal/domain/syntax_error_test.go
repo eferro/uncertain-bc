@@ -30,6 +30,7 @@ func TestEvaluate_ReportsWhereTheSyntaxIsWrong(t *testing.T) {
 		{"(1 + 2", 7, "unexpected end of input"},
 		{"(1 + 2 3", 8, "unexpected '3'"},
 		{")", 1, "unexpected ')'"},
+		{"(*)", 2, "unexpected '*'"},
 		{"1 * * 2", 5, "unexpected '*'"},
 		{"2 ^", 4, "unexpected end of input"},
 		{"1.2.3", 1, "invalid number '1.2.3'"},
