@@ -9,7 +9,7 @@ $ ubc -e '(8 to 25) * 12'
 
 Type ranges instead of exact numbers (`10 to 20` means "90 % sure it is between 10 and 20"). `ubc` runs a Monte Carlo simulation and answers with a central value, an interval and a small chart, right in the terminal. A single Go binary, inspired by [Guesstimate](https://www.getguesstimate.com) and [Squiggle](https://www.squiggle-language.com).
 
-Status: calculator MVP with an interactive REPL (phase 2, v0.3.0).
+Status: calculator MVP with an interactive REPL, JSON output and chart export (phase 3, v0.4.0).
 
 ```console
 $ ubc -e '(8 to 25) * 12'
@@ -40,10 +40,11 @@ ubc> P(yearly > 40)
 0.25
 ubc> :hist yearly
 ubc> :vars
+ubc> :plot yearly yearly.png
 ubc> :save model.ubc
 ```
 
-`:help` lists the commands (`:vars`, `:hist`, `:seed`, `:samples`, `:save`, `:load`, `:quit`) and the language.
+`:help` lists the commands (`:vars`, `:hist`, `:plot`, `:seed`, `:samples`, `:save`, `:load`, `:quit`) and the language. For scripts, `--json` prints one JSON object per result and `--plain` only the median.
 
 What the language has today:
 

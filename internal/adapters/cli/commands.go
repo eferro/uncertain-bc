@@ -3,7 +3,9 @@ package cli
 import (
 	"errors"
 	"fmt"
+	"image/png"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 
@@ -28,7 +30,7 @@ const replHelp = `Commands:
   :help          show this help
   :vars          list variables with their summaries
   :hist EXPR     draw the distribution of EXPR
-  :plot EXPR F   write the distribution of EXPR to the SVG file F
+  :plot EXPR F   write the distribution of EXPR to F (.svg or .png)
   :seed N        restart the random stream with seed N
   :samples N     change the sample count (clears variables)
   :save FILE     write the statements that worked to FILE
@@ -111,14 +113,34 @@ func plot(r replSession, arg string) (bool, error) {
 		return false, errors.New(":plot expects an expression and a file name")
 	}
 	expr, path := strings.TrimSpace(arg[:cut]), arg[cut+1:]
-	if !strings.HasSuffix(path, ".svg") {
-		return false, fmt.Errorf(":plot writes .svg files, got '%s'", path)
+	write, ok := plotWriters[filepath.Ext(path)]
+	if !ok {
+		return false, fmt.Errorf(":plot writes .svg or .png files, got '%s'", path)
 	}
 	samples, err := r.samplesOf(expr, ":plot")
 	if err != nil {
 		return false, err
 	}
-	return false, os.WriteFile(path, []byte(svgHistogram(samples, expr)), 0o644)
+	return false, write(path, samples, expr)
+}
+
+var plotWriters = map[string]func(path string, s domain.SampleSet, title string) error{
+	".svg": func(path string, s domain.SampleSet, title string) error {
+		return os.WriteFile(path, []byte(svgHistogram(s, title)), 0o644)
+	},
+	".png": writePNG,
+}
+
+func writePNG(path string, s domain.SampleSet, title string) error {
+	file, err := os.Create(path)
+	if err != nil {
+		return err
+	}
+	if err := png.Encode(file, pngHistogram(s, title)); err != nil {
+		_ = file.Close()
+		return err
+	}
+	return file.Close()
 }
 
 func (r replSession) samplesOf(expr, command string) (domain.SampleSet, error) {

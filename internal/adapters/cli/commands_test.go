@@ -1,6 +1,7 @@
 package cli_test
 
 import (
+	"image/png"
 	"os"
 	"path/filepath"
 	"strings"
@@ -153,12 +154,26 @@ func TestPlot_WritesAnSVGHistogramOfAnExpression(t *testing.T) {
 	assert.Contains(t, string(svg), ">x * 2</text>")
 }
 
+func TestPlot_WritesAPNGHistogramOfAnExpression(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "cost.png")
+
+	got := interactive(t, "x = 10 to 20\n:plot x "+path+"\n")
+
+	require.Empty(t, got.stderr)
+	file, err := os.Open(path)
+	require.NoError(t, err)
+	defer func() { _ = file.Close() }()
+	img, err := png.Decode(file)
+	require.NoError(t, err)
+	assert.Equal(t, 640, img.Bounds().Dx())
+}
+
 func TestPlot_ReportsWhatItCannotDo(t *testing.T) {
 	dir := t.TempDir()
 	cases := map[string]string{
 		":plot":                             "ubc: :plot expects an expression and a file name\n",
 		":plot x.svg":                       "ubc: :plot expects an expression and a file name\n",
-		":plot 1 to 2 " + dir + "/c.gif":    "ubc: :plot writes .svg files, got '" + dir + "/c.gif'\n",
+		":plot 1 to 2 " + dir + "/c.gif":    "ubc: :plot writes .svg or .png files, got '" + dir + "/c.gif'\n",
 		":plot 5 " + dir + "/c.svg":         "ubc: :plot needs an uncertain value, got a plain number\n",
 		":plot y " + dir + "/c.svg":         "ubc: line 1, col 1: unknown variable 'y'\n",
 		":plot 1 to 2 " + dir + "/no/c.svg": "ubc: open " + dir + "/no/c.svg: no such file or directory\n",
