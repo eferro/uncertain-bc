@@ -59,13 +59,48 @@ Full behaviour: [docs/SPEC.md](docs/SPEC.md). Goals and roadmap: [docs/VISION.md
 
 ## Install
 
+Pick the line for your system. None of them needs Go.
+
+**macOS and Linux**, with the install script (detects your system, verifies the checksum, installs to `/usr/local/bin` or `~/.local/bin`):
+
+```console
+$ curl -fsSL https://raw.githubusercontent.com/eferro/uncertain-bc/main/install.sh | sh
+```
+
+**macOS and Linux**, with [Homebrew](https://brew.sh) (also installs shell completion):
+
+```console
+$ brew install eferro/tap/ubc
+```
+
+**Windows**, in PowerShell (installs to `%LOCALAPPDATA%\Programs\ubc` and adds it to your `PATH`):
+
+```powershell
+irm https://raw.githubusercontent.com/eferro/uncertain-bc/main/install.ps1 | iex
+```
+
+**Windows**, with [Scoop](https://scoop.sh):
+
+```powershell
+scoop bucket add eferro https://github.com/eferro/scoop-bucket
+scoop install ubc
+```
+
+**Debian, Ubuntu, Fedora, Alpine**: download the `.deb`, `.rpm` or `.apk` from the [latest release](https://github.com/eferro/uncertain-bc/releases/latest) and install it with `sudo dpkg -i`, `sudo rpm -i` or `sudo apk add --allow-untrusted`.
+
+**With Go**:
+
 ```console
 $ go install github.com/eferro/uncertain-bc/cmd/ubc@latest
 ```
 
-Or download a binary for Linux, macOS or Windows from [Releases](https://github.com/eferro/uncertain-bc/releases).
+**By hand**: every [release](https://github.com/eferro/uncertain-bc/releases) has archives for Linux, macOS and Windows (amd64 and arm64) and a `checksums.txt`.
 
-Shell completion: `source <(ubc --completion bash)` (also `zsh` and `fish`).
+Check it works with `ubc --version`. To pin a version with the scripts, set `UBC_VERSION=0.7.0`; to choose the directory, `UBC_INSTALL_DIR=~/bin`.
+
+The binaries are not signed. The script, Homebrew and Scoop installs avoid the warnings; if you download an archive with a browser, macOS needs `xattr -d com.apple.quarantine ubc` and Windows SmartScreen needs "More info → Run anyway".
+
+Shell completion (bash, zsh, fish): `source <(ubc --completion bash)`, or the same with `zsh`/`fish` in your shell's startup file. Homebrew installs it for you.
 
 ## Development
 
