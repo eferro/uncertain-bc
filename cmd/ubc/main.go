@@ -16,12 +16,20 @@ func main() {
 		RandomSeed:  clockSeed,
 		Interactive: isTerminal(os.Stdin),
 		HistoryPath: historyPath(),
+		Wait:        pollEvery(300 * time.Millisecond),
 	}
 	os.Exit(app.Run(os.Args[1:], os.Stdin, os.Stdout, os.Stderr))
 }
 
 func clockSeed() uint64 {
 	return uint64(time.Now().UnixNano())
+}
+
+func pollEvery(interval time.Duration) func() bool {
+	return func() bool {
+		time.Sleep(interval)
+		return true
+	}
 }
 
 func isTerminal(f *os.File) bool {

@@ -21,10 +21,17 @@ After phase 4 the user asked for every improvement that makes `ubc` nicer to use
 - `--hist` prints the 20-row histogram (the one `:hist` draws) under every uncertain result, in files, stdin, `-e` and the REPL. It cannot be combined with `--json` or `--plain`, which are for machines.
 - `--quantiles 10,50,90` replaces `90% [p5 … p95]` with the listed percentiles (`p10 … p50 … p90 …`). In `--json` it adds a `"quantiles"` object and keeps the standard fields. An empty list means the default.
 
+**Watch mode**
+
+- `--watch FILE...` evaluates the files, then evaluates them again whenever one changes, printing `--- FILE changed ---` before each run. It needs at least one file.
+- Changes are detected by polling modification time and size every 300 ms, with the standard library only (no fsnotify dependency). Each run uses a fresh session with the same seed, so the output changes only when the model does. Errors are reported and watching continues.
+- The wait between polls is injected into the CLI adapter, so tests drive it synchronously.
+
 ## Consequences
 
 - A model reads as a report (`ubc --echo model.ubc`) without repeating variable names at the end just to print them.
 - The REPL transcript says which variable each line is.
+- With an editor on one side and `ubc --watch` on the other, a model gets a fast feedback loop, much like a spreadsheet.
 
 ## Alternatives considered
 

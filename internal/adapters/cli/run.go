@@ -28,6 +28,7 @@ type App struct {
 	RandomSeed  func() uint64
 	Interactive bool
 	HistoryPath string
+	Wait        func() bool
 }
 
 type options struct {
@@ -44,6 +45,7 @@ type options struct {
 	echo        bool
 	hist        bool
 	quantiles   string
+	watch       bool
 }
 
 type multiString []string
@@ -71,6 +73,7 @@ Flags:
       --json          print one JSON object per result
       --echo          also print assignments, with their names
       --hist          draw a histogram under every uncertain result
+      --watch         evaluate the files again whenever they change
       --quantiles L   show these percentiles instead of the 90% interval (10,50,90)
   -h, --help          show this help
       --version       print the version
@@ -97,24 +100,39 @@ func (a App) execute(opts options, settings application.Settings, stdin io.Reade
 	if a.Interactive && len(opts.expressions) == 0 && len(opts.files) == 0 {
 		return a.interactive(application.NewSession(settings), styleFor(opts), stdin, stdout, stderr)
 	}
+	if opts.watch {
+		return a.watch(opts, settings, styleFor(opts), stdout, stderr)
+	}
+	return evaluateSources(opts, settings, styleFor(opts), stdin, stdout, stderr)
+}
+
+func evaluateSources(opts options, settings application.Settings, st style, stdin io.Reader, stdout, stderr io.Writer) int {
 	sources, err := collectSources(opts, stdin)
 	if err != nil {
 		fmt.Fprintf(stderr, "ubc: %v\n", err)
 		return exitEvalError
 	}
-	return evaluateAll(sources, settings, styleFor(opts), stdout, stderr)
+	return evaluateAll(sources, settings, st, stdout, stderr)
+}
+
+var flagRules = []struct {
+	broken  func(o options) bool
+	message string
+}{
+	{func(o options) bool { return o.json && o.plain }, "--json and --plain cannot be combined"},
+	{func(o options) bool { return o.hist && (o.json || o.plain) }, "--hist cannot be combined with --json or --plain"},
+	{func(o options) bool { return o.random && o.seedGiven }, "--seed and --random cannot be combined"},
+	{func(o options) bool { return o.watch && len(o.files) == 0 }, "--watch needs at least one file"},
 }
 
 func validateFlags(opts options) error {
-	switch {
-	case opts.samples <= 0:
+	if opts.samples <= 0 {
 		return fmt.Errorf("--samples must be positive, got %d", opts.samples)
-	case opts.json && opts.plain:
-		return errors.New("--json and --plain cannot be combined")
-	case opts.hist && (opts.json || opts.plain):
-		return errors.New("--hist cannot be combined with --json or --plain")
-	case opts.random && opts.seedGiven:
-		return errors.New("--seed and --random cannot be combined")
+	}
+	for _, rule := range flagRules {
+		if rule.broken(opts) {
+			return errors.New(rule.message)
+		}
 	}
 	_, err := parseQuantiles(opts.quantiles)
 	return err
@@ -169,6 +187,7 @@ func registerFlags(fs *flag.FlagSet, opts *options) {
 	fs.BoolVar(&opts.json, "json", false, "print one JSON object per result")
 	fs.BoolVar(&opts.echo, "echo", false, "also print assignments, with their names")
 	fs.BoolVar(&opts.hist, "hist", false, "draw a histogram under every uncertain result")
+	fs.BoolVar(&opts.watch, "watch", false, "evaluate the files again whenever they change")
 	fs.StringVar(&opts.quantiles, "quantiles", "", "comma-separated percentiles to show instead of the 90% interval")
 	fs.BoolVar(&opts.version, "version", false, "print the version and exit")
 }

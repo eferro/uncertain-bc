@@ -44,7 +44,7 @@ ubc> :plot yearly yearly.png
 ubc> :save model.ubc
 ```
 
-`:help` lists the commands (`:vars`, `:hist`, `:plot`, `:seed`, `:samples`, `:save`, `:load`, `:quit`) and the language. For scripts, `--json` prints one JSON object per result and `--plain` only the median; `--echo` also prints assignments with their names, so `ubc --echo model.ubc` reads like a report.
+`:help` lists the commands (`:vars`, `:hist`, `:plot`, `:seed`, `:samples`, `:save`, `:load`, `:quit`) and the language. For scripts, `--json` prints one JSON object per result and `--plain` only the median; `--echo` also prints assignments with their names, so `ubc --echo model.ubc` reads like a report. `ubc --watch model.ubc` evaluates the model again every time you save it.
 
 What the language has today:
 
