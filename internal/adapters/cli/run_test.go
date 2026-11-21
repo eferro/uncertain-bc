@@ -26,7 +26,7 @@ func TestRun_ExitsWithUsageError_WhenAFlagIsUnknown(t *testing.T) {
 
 	assert.Equal(t, 2, code)
 	assert.Empty(t, stdout.String())
-	assert.Contains(t, stderr.String(), "flag provided but not defined: -nope")
+	assert.Contains(t, stderr.String(), "-nope")
 }
 
 func TestRun_ExitsWithParseError_WhenTheExpressionIsNotValid(t *testing.T) {

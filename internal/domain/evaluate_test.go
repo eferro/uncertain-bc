@@ -10,8 +10,25 @@ import (
 )
 
 func TestEvaluate_ReturnsTheNumber_WhenTheProgramIsANumberLiteral(t *testing.T) {
-	value, err := domain.Evaluate("42")
+	cases := map[string]float64{
+		"42":     42,
+		"3.14":   3.14,
+		".5":     0.5,
+		"1e6":    1e6,
+		"2.5e-3": 0.0025,
+	}
+	for program, want := range cases {
+		t.Run(program, func(t *testing.T) {
+			value, err := domain.Evaluate(program)
 
-	require.NoError(t, err)
-	assert.Equal(t, 42.0, value)
+			require.NoError(t, err)
+			assert.Equal(t, want, value)
+		})
+	}
+}
+
+func TestEvaluate_Fails_WhenTheProgramIsNotANumber(t *testing.T) {
+	_, err := domain.Evaluate("forty-two")
+
+	assert.Error(t, err)
 }
