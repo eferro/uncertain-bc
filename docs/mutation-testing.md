@@ -10,3 +10,7 @@ Surviving mutants that no test can kill with the current behaviour. Revisit this
 |---|---|---|
 | `distribution.go` `normal`, `mean + sd·N` | `mean - sd·N` | The standard normal is symmetric, so both draw the same distribution. Only the order of samples changes. |
 | `distribution.go` `lognormal`, `mu + sigma·N` | `mu - sigma·N` | Same symmetry, in log space. |
+| `distribution.go` `gamma`, `v := 1 + c·x` | `1 - c·x` | Same symmetry: `x` is a standard normal draw. |
+| `distribution.go` `gamma`, `c := 1 / √(9d)` | other values of `c` | In Marsaglia & Tsang the density of the accepted `x` does not depend on `c`; `c` only shapes the envelope, so it changes efficiency, not the distribution. |
+| `distribution.go` `triangular`, `u < split`; `gamma`, `v <= 0` and `log(u) < …` | `<=` / `<` | The two sides differ only when a continuous draw hits a boundary exactly, which has probability zero. |
+| `summary.go` `stdev`, `(x - m)·(x - m)` | `(x + m)·(x - m)` | Summed over the samples, `Σ(x+m)(x−m) = Σx² − n·m² = Σ(x−m)²`. |

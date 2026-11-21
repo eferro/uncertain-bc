@@ -51,6 +51,17 @@ func TestTriangular_InvertsBothSidesOfTheMode_WhenItStartsFarFromZero(t *testing
 	assertNear(t, 110-math.Sqrt(0.1*10*9), s.Quantile(0.9), 10)
 }
 
+func TestTriangular_InvertsTheLowerSide_WhenTheModeIsNearTheTop(t *testing.T) {
+	s := evaluateSamples(t, "triangular(100, 109, 110)")
+
+	assertNear(t, 100+math.Sqrt(0.5*10*9), s.Quantile(0.5), 10)
+}
+
+func TestTriangular_AcceptsAModeAtEitherEnd(t *testing.T) {
+	assertNear(t, 1-math.Sqrt(0.5), evaluateSamples(t, "triangular(0, 0, 1)").Quantile(0.5), 1)
+	assertNear(t, math.Sqrt(0.5), evaluateSamples(t, "triangular(0, 1, 1)").Quantile(0.5), 1)
+}
+
 func TestDistributions_DrawFreshSamplesOnEveryUse(t *testing.T) {
 	s := evaluateSamples(t, "normal(0, 1) - normal(0, 1)")
 

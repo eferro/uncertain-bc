@@ -57,3 +57,27 @@ func sampleMean(s domain.SampleSet) float64 {
 	}
 	return total / float64(len(s))
 }
+
+func TestBeta_MatchesClosedFormQuantilesClosely_WithManySamples(t *testing.T) {
+	cases := []struct {
+		program  string
+		quantile func(q float64) float64
+	}{
+		{"beta(1, 1)", func(q float64) float64 { return q }},
+		{"beta(0.5, 0.5)", func(q float64) float64 { return math.Pow(math.Sin(math.Pi*q/2), 2) }},
+		{"beta(5, 1)", func(q float64) float64 { return math.Pow(q, 1.0/5) }},
+		{"beta(1, 5)", func(q float64) float64 { return 1 - math.Pow(1-q, 1.0/5) }},
+		{"beta(0.3, 1)", func(q float64) float64 { return math.Pow(q, 1/0.3) }},
+	}
+	for _, c := range cases {
+		t.Run(c.program, func(t *testing.T) {
+			results, err := domain.Evaluate(c.program, domain.NewEnv(1, 200_000))
+			require.NoError(t, err)
+			s := results[0].Value.(domain.SampleSet)
+
+			for _, q := range []float64{0.02, 0.1, 0.5, 0.9, 0.98} {
+				assert.InDelta(t, c.quantile(q), s.Quantile(q), 0.004, "q=%v", q)
+			}
+		})
+	}
+}

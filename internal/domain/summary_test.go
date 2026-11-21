@@ -39,6 +39,7 @@ func TestSummaries_DescribeASampleSetWithAPlainNumber(t *testing.T) {
 		{"max(x)", 10},
 		{"p(x, 0.9)", 9},
 		{"p(x, 0)", 0},
+		{"p(x, 1)", 10},
 	}
 	for _, c := range cases {
 		t.Run(c.summary, func(t *testing.T) {
