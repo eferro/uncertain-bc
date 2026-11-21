@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"math"
 	"testing"
 	"unicode/utf8"
 
@@ -58,4 +59,11 @@ func TestSparkline_ClipsToTheFirstAndNinetyNinthPercentiles(t *testing.T) {
 
 func TestSparkline_UsesTheGivenGlyphs(t *testing.T) {
 	assert.Equal(t, "#              #", sparkline(twoClusters(1000), asciiBlocks))
+}
+
+func TestSparkline_IgnoresNonFiniteSamples(t *testing.T) {
+	s := evenlySpread(1000)
+	s[500] = math.NaN()
+
+	assert.Equal(t, "████████████████", sparkline(s, unicodeBlocks))
 }

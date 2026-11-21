@@ -12,12 +12,14 @@ type style struct {
 	approx   string
 	ellipsis string
 	blocks   []rune
+	axis     string
+	bar      string
 	plain    bool
 }
 
 var (
-	unicodeStyle = style{approx: "≈", ellipsis: "…", blocks: unicodeBlocks}
-	asciiStyle   = style{approx: "~", ellipsis: "...", blocks: asciiBlocks}
+	unicodeStyle = style{approx: "≈", ellipsis: "…", blocks: unicodeBlocks, axis: "┤", bar: "█"}
+	asciiStyle   = style{approx: "~", ellipsis: "...", blocks: asciiBlocks, axis: "|", bar: "#"}
 )
 
 func styleFor(opts options) style {

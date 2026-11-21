@@ -1,9 +1,12 @@
 package cli
 
 import (
+	"errors"
 	"fmt"
 	"strconv"
 	"strings"
+
+	"github.com/eferro/uncertain-bc/internal/domain"
 )
 
 type command func(r replSession, arg string) (quit bool, err error)
@@ -13,12 +16,14 @@ var commands = map[string]command{
 	"vars":    showVariables,
 	"seed":    reseed,
 	"samples": resample,
+	"hist":    showHistogram,
 	"quit":    func(replSession, string) (bool, error) { return true, nil },
 }
 
 const replHelp = `Commands:
   :help          show this help
   :vars          list variables with their summaries
+  :hist EXPR     draw the distribution of EXPR
   :seed N        restart the random stream with seed N
   :samples N     change the sample count (clears variables)
   :quit          leave the session (or Ctrl-D)
@@ -78,5 +83,21 @@ func resample(r replSession, arg string) (bool, error) {
 		fmt.Fprintln(r.stderr, "ubc: variables cleared (sample count changed)")
 	}
 	r.session.SetSamples(samples)
+	return false, nil
+}
+
+func showHistogram(r replSession, expr string) (bool, error) {
+	if expr == "" {
+		return false, errors.New(":hist expects an expression")
+	}
+	results, err := r.session.Evaluate(expr)
+	if err != nil {
+		return false, err
+	}
+	samples, ok := results[len(results)-1].Value.(domain.SampleSet)
+	if !ok {
+		return false, errors.New(":hist needs an uncertain value, got a plain number")
+	}
+	fmt.Fprint(r.stdout, histogramChart(samples, r.style))
 	return false, nil
 }

@@ -69,3 +69,26 @@ func TestCommands_ReportMistakesAndCarryOn(t *testing.T) {
 		})
 	}
 }
+
+func TestHist_DrawsTheDistributionOfAnExpression(t *testing.T) {
+	got := interactive(t, "x = uniform(0, 10)\n:hist x * 2\n")
+
+	lines := strings.Split(got.stdout, "\n")
+	assert.Empty(t, got.stderr)
+	assert.Regexp(t, `^ubc> \s+\S+ ┤█+$`, lines[1])
+	assert.Regexp(t, `^\(P1 to P99 shown, \d+ samples outside\)$`, lines[21])
+}
+
+func TestHist_ReportsWhatItCannotDraw(t *testing.T) {
+	cases := map[string]string{
+		":hist":     "ubc: :hist expects an expression\n",
+		":hist 5":   "ubc: :hist needs an uncertain value, got a plain number\n",
+		":hist 1>0": "ubc: :hist needs an uncertain value, got a plain number\n",
+		":hist y":   "ubc: line 1, col 1: unknown variable 'y'\n",
+	}
+	for input, message := range cases {
+		t.Run(input, func(t *testing.T) {
+			assert.Equal(t, message, interactive(t, input+"\n").stderr)
+		})
+	}
+}
