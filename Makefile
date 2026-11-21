@@ -17,7 +17,7 @@ local-setup: $(GOLANGCI_LINT) ## Install pinned tools and enable the versioned g
 	git config core.hooksPath scripts/hooks
 
 $(GOLANGCI_LINT):
-	GOBIN=$(TOOLS) go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@$(GOLANGCI_LINT_VERSION)
+	GOTOOLCHAIN=auto GOBIN=$(TOOLS) go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@$(GOLANGCI_LINT_VERSION)
 
 test: ## Run all tests
 	go test ./...
