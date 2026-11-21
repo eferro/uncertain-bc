@@ -31,3 +31,4 @@ jobs:
       - run: make secrets-scan
       - run: make validate
       - run: make build
+      - run: make release-check

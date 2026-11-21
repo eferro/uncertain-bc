@@ -6,6 +6,8 @@ import (
 	"github.com/eferro/uncertain-bc/internal/adapters/cli"
 )
 
+var version = "dev"
+
 func main() {
-	os.Exit(cli.Run(os.Args[1:], os.Stdout, os.Stderr))
+	os.Exit(cli.App{Version: version}.Run(os.Args[1:], os.Stdout, os.Stderr))
 }

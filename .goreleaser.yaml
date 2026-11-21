@@ -1,0 +1,40 @@
+# goreleaser v2 (ADR 0015). Check with `make release-check`, try with `make release-snapshot`.
+version: 2
+
+project_name: uncertain-bc
+
+builds:
+  - id: ubc
+    main: ./cmd/ubc
+    binary: ubc
+    env:
+      - CGO_ENABLED=0
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w -X main.version={{.Version}}
+    goos: [linux, darwin, windows]
+    goarch: [amd64, arm64]
+
+archives:
+  - name_template: "ubc_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    formats: [tar.gz]
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+    files:
+      - LICENSE
+      - README.md
+
+checksum:
+  name_template: checksums.txt
+
+changelog:
+  use: git
+  sort: asc
+  filters:
+    exclude:
+      - "^docs"
+      - "^test"
+      - "^chore"
+      - "^ci"

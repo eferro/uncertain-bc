@@ -9,9 +9,12 @@ GITLEAKS_VERSION := v8.30.1
 GITLEAKS := $(TOOLS)/gitleaks
 LOG_OPTS ?=
 COVERAGE_MIN := 90
+VERSION ?= $(shell git describe --tags --always --dirty)
+GORELEASER_VERSION := v2.20.3
+GORELEASER := $(TOOLS)/goreleaser
 COVERAGE_PROFILE := coverage.out
 
-.PHONY: help local-setup test test-pkg coverage format lint check-test-style check-architecture secrets-scan validate build
+.PHONY: help local-setup test test-pkg coverage format lint check-test-style check-architecture secrets-scan validate build release-check release-snapshot
 
 help: ## List available targets
 	@grep -hE '^[a-zA-Z_-]+:.*## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*## "} {printf "  %-20s %s\n", $$1, $$2}'
@@ -32,7 +35,7 @@ test-pkg: ## Run tests of one package: make test-pkg PKG=./internal/domain/...
 	go test $(PKG)
 
 coverage: ## Run all tests and fail if coverage of internal/ is below the minimum
-	go test -coverpkg=./internal/... -coverprofile=$(COVERAGE_PROFILE) ./...
+	go test -count=1 -coverpkg=./internal/... -coverprofile=$(COVERAGE_PROFILE) ./...
 	scripts/checks/coverage.sh $(COVERAGE_PROFILE) $(COVERAGE_MIN)
 
 format: $(GOLANGCI_LINT) ## Format all Go code with gofumpt
@@ -55,4 +58,13 @@ secrets-scan: $(GITLEAKS) ## Scan git history for secrets; narrow it with LOG_OP
 validate: lint check-test-style check-architecture coverage ## Everything CI checks; run before every commit
 
 build: ## Build a static binary in bin/
-	CGO_ENABLED=0 go build -o $(BIN) ./cmd/ubc
+	CGO_ENABLED=0 go build -trimpath -ldflags "-s -w -X main.version=$(VERSION)" -o $(BIN) ./cmd/ubc
+
+$(GORELEASER):
+	GOTOOLCHAIN=auto GOBIN=$(TOOLS) go install github.com/goreleaser/goreleaser/v2@$(GORELEASER_VERSION)
+
+release-check: $(GORELEASER) ## Validate the goreleaser configuration
+	$(GORELEASER) check
+
+release-snapshot: $(GORELEASER) ## Build all release archives locally into dist/ without publishing
+	$(GORELEASER) release --snapshot --clean

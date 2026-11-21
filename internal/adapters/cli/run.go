@@ -19,14 +19,27 @@ const (
 	exitParseError = 3
 )
 
-func Run(args []string, stdout, stderr io.Writer) int {
+type App struct {
+	Version string
+}
+
+func (a App) Run(args []string, stdout, stderr io.Writer) int {
 	fs := flag.NewFlagSet("ubc", flag.ContinueOnError)
 	fs.SetOutput(stderr)
 	expr := fs.String("e", "", "evaluate EXPR")
+	showVersion := fs.Bool("version", false, "print the version and exit")
 	if err := fs.Parse(args); err != nil {
 		return exitUsageError
 	}
-	value, err := application.NewSession(application.DefaultSettings()).Evaluate(*expr)
+	if *showVersion {
+		fmt.Fprintf(stdout, "ubc %s\n", a.Version)
+		return exitOK
+	}
+	return evaluate(*expr, stdout, stderr)
+}
+
+func evaluate(expr string, stdout, stderr io.Writer) int {
+	value, err := application.NewSession(application.DefaultSettings()).Evaluate(expr)
 	if err != nil {
 		fmt.Fprintf(stderr, "ubc: %v\n", err)
 		return exitCode(err)

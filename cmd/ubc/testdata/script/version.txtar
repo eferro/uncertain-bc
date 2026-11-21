@@ -1,0 +1,2 @@
+exec ubc --version
+stdout '^ubc dev\n$'

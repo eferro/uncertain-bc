@@ -9,10 +9,12 @@ import (
 	"github.com/eferro/uncertain-bc/internal/adapters/cli"
 )
 
+var app = cli.App{Version: "v1.2.3"}
+
 func TestRun_PrintsTheResult_WhenGivenAnExpression(t *testing.T) {
 	var stdout, stderr bytes.Buffer
 
-	code := cli.Run([]string{"-e", "42"}, &stdout, &stderr)
+	code := app.Run([]string{"-e", "42"}, &stdout, &stderr)
 
 	assert.Equal(t, 0, code)
 	assert.Equal(t, "42\n", stdout.String())
@@ -22,7 +24,7 @@ func TestRun_PrintsTheResult_WhenGivenAnExpression(t *testing.T) {
 func TestRun_ExitsWithUsageError_WhenAFlagIsUnknown(t *testing.T) {
 	var stdout, stderr bytes.Buffer
 
-	code := cli.Run([]string{"--nope"}, &stdout, &stderr)
+	code := app.Run([]string{"--nope"}, &stdout, &stderr)
 
 	assert.Equal(t, 2, code)
 	assert.Empty(t, stdout.String())
@@ -32,7 +34,7 @@ func TestRun_ExitsWithUsageError_WhenAFlagIsUnknown(t *testing.T) {
 func TestRun_ExitsWithParseError_WhenTheExpressionIsNotValid(t *testing.T) {
 	var stdout, stderr bytes.Buffer
 
-	code := cli.Run([]string{"-e", "forty"}, &stdout, &stderr)
+	code := app.Run([]string{"-e", "forty"}, &stdout, &stderr)
 
 	assert.Equal(t, 3, code)
 	assert.Empty(t, stdout.String())
@@ -42,7 +44,7 @@ func TestRun_ExitsWithParseError_WhenTheExpressionIsNotValid(t *testing.T) {
 func TestRun_ExitsWithEvaluationError_WhenTheExpressionCannotBeEvaluated(t *testing.T) {
 	var stdout, stderr bytes.Buffer
 
-	code := cli.Run([]string{"-e", "10 to 5"}, &stdout, &stderr)
+	code := app.Run([]string{"-e", "10 to 5"}, &stdout, &stderr)
 
 	assert.Equal(t, 1, code)
 	assert.Empty(t, stdout.String())
@@ -52,8 +54,18 @@ func TestRun_ExitsWithEvaluationError_WhenTheExpressionCannotBeEvaluated(t *test
 func TestRun_SummarisesASampleSetAsMedianAndNinetyPercentInterval(t *testing.T) {
 	var stdout, stderr bytes.Buffer
 
-	code := cli.Run([]string{"-e", "10 to 20"}, &stdout, &stderr)
+	code := app.Run([]string{"-e", "10 to 20"}, &stdout, &stderr)
 
 	assert.Equal(t, 0, code)
 	assert.Regexp(t, `^≈ \S+   90% \[\S+ … \S+\]\n$`, stdout.String())
+}
+
+func TestRun_PrintsTheVersion_WhenAskedFor(t *testing.T) {
+	var stdout, stderr bytes.Buffer
+
+	code := app.Run([]string{"--version"}, &stdout, &stderr)
+
+	assert.Equal(t, 0, code)
+	assert.Equal(t, "ubc v1.2.3\n", stdout.String())
+	assert.Empty(t, stderr.String())
 }
