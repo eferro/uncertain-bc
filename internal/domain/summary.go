@@ -64,3 +64,23 @@ func extreme(pick func(a, b float64) float64, end float64) builtin {
 		return result, nil
 	}
 }
+
+type elementWise func(float64) float64
+
+var mathFunctions = map[string]elementWise{
+	"sqrt":  math.Sqrt,
+	"exp":   math.Exp,
+	"log":   math.Log,
+	"log10": math.Log10,
+	"abs":   math.Abs,
+	"round": math.Round,
+	"floor": math.Floor,
+	"ceil":  math.Ceil,
+}
+
+func (f elementWise) call(c call, _ Env, args []Value) (Value, error) {
+	if err := c.expectArgs(args, 1); err != nil {
+		return nil, err
+	}
+	return combine(func(a, _ float64) float64 { return f(a) }, args[0], Scalar(0)), nil
+}

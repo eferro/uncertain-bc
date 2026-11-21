@@ -27,6 +27,9 @@ func lookup(name string) (builtin, bool) {
 	if s, ok := summaries[name]; ok {
 		return s.call, true
 	}
+	if f, ok := mathFunctions[name]; ok {
+		return f.call, true
+	}
 	if d, ok := distributions[name]; ok {
 		return d.call, true
 	}
