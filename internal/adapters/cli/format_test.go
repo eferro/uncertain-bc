@@ -52,3 +52,18 @@ func TestProbability_ShowsTwoDecimalsAndFlagsTheExtremes(t *testing.T) {
 		assert.Equal(t, want, probability(value), "probability(%v)", value)
 	}
 }
+
+func TestPlain_ShowsAtMostTenSignificantFigures(t *testing.T) {
+	cases := map[float64]string{
+		4:                 "4",
+		0.1:               "0.1",
+		3.141592653589793: "3.141592654",
+		3000:              "3000",
+		1e12:              "1000000000000",
+		-2.5:              "-2.5",
+		0.000123456789012: "0.000123456789",
+	}
+	for value, want := range cases {
+		assert.Equal(t, want, plain(value), "plain(%v)", value)
+	}
+}

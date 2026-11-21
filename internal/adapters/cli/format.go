@@ -17,7 +17,7 @@ func format(value domain.Value) string {
 		return fmt.Sprintf("≈ %s   90%% [%s … %s]",
 			significant(v.Quantile(0.5)), significant(v.Quantile(0.05)), significant(v.Quantile(0.95)))
 	case domain.Scalar:
-		return strconv.FormatFloat(float64(v), 'g', -1, 64)
+		return plain(float64(v))
 	case domain.Probability:
 		return probability(float64(v))
 	}
@@ -38,7 +38,7 @@ var suffixes = []struct {
 // significant keeps three significant figures, because Monte Carlo noise makes
 // further digits meaningless (ADR 0006), and uses suffixes from 10k up (SPEC §6).
 func significant(x float64) string {
-	rounded := roundSignificant(x)
+	rounded := roundSignificant(x, 3)
 	for _, s := range suffixes {
 		if math.Abs(rounded) >= s.from {
 			return shortest(rounded/s.scale) + s.name
@@ -47,11 +47,16 @@ func significant(x float64) string {
 	return shortest(rounded)
 }
 
-func roundSignificant(x float64) float64 {
+// plain shows a scalar with at most ten significant figures (SPEC §6).
+func plain(x float64) string {
+	return shortest(roundSignificant(x, 10))
+}
+
+func roundSignificant(x float64, digits int) float64 {
 	if x == 0 {
 		return 0
 	}
-	decimals := 2 - int(math.Floor(math.Log10(math.Abs(x))))
+	decimals := digits - 1 - int(math.Floor(math.Log10(math.Abs(x))))
 	scale := math.Pow(10, float64(decimals))
 	return math.Round(x*scale) / scale
 }

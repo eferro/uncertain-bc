@@ -1,0 +1,6 @@
+exec ubc -e 'x = 10 to 20; median(x); p(x, 0.95)'
+cmp stdout summaries.out
+
+-- summaries.out --
+14.15512332
+19.82379823

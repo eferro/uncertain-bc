@@ -1,6 +1,9 @@
 package domain
 
-import "fmt"
+import (
+	"fmt"
+	"math"
+)
 
 type call struct {
 	name string
@@ -10,9 +13,19 @@ type call struct {
 
 type builtin func(c call, env Env, args []Value) (Value, error)
 
+var functions = map[string]builtin{
+	"P":   probabilityOf,
+	"p":   percentile,
+	"min": extreme(math.Min, 0),
+	"max": extreme(math.Max, 1),
+}
+
 func lookup(name string) (builtin, bool) {
-	if name == "P" {
-		return probabilityOf, true
+	if fn, ok := functions[name]; ok {
+		return fn, true
+	}
+	if s, ok := summaries[name]; ok {
+		return s.call, true
 	}
 	if d, ok := distributions[name]; ok {
 		return d.call, true
