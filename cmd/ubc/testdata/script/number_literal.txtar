@@ -1,0 +1,3 @@
+exec ubc -e 42
+stdout '^42\n$'
+! stderr .
