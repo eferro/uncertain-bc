@@ -30,3 +30,4 @@ Template: Status, Effective date, Deciders, then Context, Decision, Consequences
 | [0020](0020-reliable-mutation-gate.md) | A reliable mutation gate (amends 0012) | Accepted | 2026-11-21 |
 | [0021](0021-manual-mutation-in-the-tdd-loop.md) | Manual mutation in the TDD loop, gremlins as the CI safety net | Accepted | 2026-11-21 |
 | [0022](0022-unicode-output-everywhere.md) | Unicode output everywhere, ASCII on request (amends 0006) | Accepted | 2026-11-21 |
+| [0023](0023-line-editing-with-x-term.md) | Line editing with golang.org/x/term | Accepted | 2026-11-21 |

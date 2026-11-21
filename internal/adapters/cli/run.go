@@ -3,11 +3,14 @@
 package cli
 
 import (
+	"bufio"
 	"errors"
 	"flag"
 	"fmt"
 	"io"
 	"os"
+
+	"golang.org/x/term"
 
 	"github.com/eferro/uncertain-bc/internal/application"
 	"github.com/eferro/uncertain-bc/internal/domain"
@@ -24,6 +27,7 @@ type App struct {
 	Version     string
 	RandomSeed  func() uint64
 	Interactive bool
+	HistoryPath string
 }
 
 type options struct {
@@ -83,7 +87,7 @@ func (a App) Run(args []string, stdin io.Reader, stdout, stderr io.Writer) int {
 
 func (a App) execute(opts options, settings application.Settings, stdin io.Reader, stdout, stderr io.Writer) int {
 	if a.Interactive && len(opts.expressions) == 0 && len(opts.files) == 0 {
-		return repl(application.NewSession(settings), styleFor(opts), stdin, stdout, stderr)
+		return a.interactive(application.NewSession(settings), styleFor(opts), stdin, stdout, stderr)
 	}
 	sources, err := collectSources(opts, stdin)
 	if err != nil {
@@ -104,6 +108,14 @@ func readFlags(args []string, stdout, stderr io.Writer) (options, int, bool) {
 		return opts, exitUsageError, false
 	}
 	return opts, exitOK, true
+}
+
+func (a App) interactive(session *application.Session, st style, stdin io.Reader, stdout, stderr io.Writer) int {
+	run := func(lines lineReader, out, errOut io.Writer) int { return repl(session, st, lines, out, errOut) }
+	if f, ok := stdin.(*os.File); ok && term.IsTerminal(int(f.Fd())) {
+		return a.terminalRepl(f, stdout, stderr, run)
+	}
+	return run(promptedScanner{lines: bufio.NewScanner(stdin), stdout: stdout}, stdout, stderr)
 }
 
 func parseFlags(args []string, stderr io.Writer) (options, error) {

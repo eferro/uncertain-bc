@@ -118,7 +118,8 @@ One line per top-level expression (assignments print too, as in the REPL example
 
 ## 7. REPL
 
-- Prompt `ubc> `, line editing and persistent history in `$XDG_STATE_HOME/ubc/history`.
+- Prompt `ubc> `, line editing and persistent history in `$XDG_STATE_HOME/ubc/history` (default `~/.local/state/ubc/history`), using `golang.org/x/term` (ADR 0023). The REPL starts when stdin is a terminal and there are no `-e` expressions or files.
+- Every line prints its result, assignments included. `:` commands work only in the REPL.
 - State (variables, `last`, RNG) persists for the session.
 - Commands start with `:` and are not part of the language:
 

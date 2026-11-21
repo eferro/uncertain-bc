@@ -1,7 +1,7 @@
 package cli
 
 import (
-	"bufio"
+	"errors"
 	"fmt"
 	"io"
 	"strings"
@@ -20,20 +20,22 @@ type replSession struct {
 
 // repl evaluates one line at a time in a single session and keeps going after
 // errors, until the input ends or :quit (SPEC §7).
-func repl(session *application.Session, st style, stdin io.Reader, stdout, stderr io.Writer) int {
+func repl(session *application.Session, st style, lines lineReader, stdout, stderr io.Writer) int {
 	r := replSession{session: session, style: st, stdout: stdout, stderr: stderr}
-	lines := bufio.NewScanner(stdin)
-	for fmt.Fprint(stdout, prompt); lines.Scan(); fmt.Fprint(stdout, prompt) {
-		if quit := r.handle(lines.Text()); quit {
+	for {
+		line, err := lines.ReadLine()
+		if errors.Is(err, io.EOF) {
+			fmt.Fprintln(stdout)
+			return exitOK
+		}
+		if err != nil {
+			fmt.Fprintf(stderr, "ubc: stdin: %v\n", err)
+			return exitEvalError
+		}
+		if quit := r.handle(line); quit {
 			return exitOK
 		}
 	}
-	fmt.Fprintln(stdout)
-	if err := lines.Err(); err != nil {
-		fmt.Fprintf(stderr, "ubc: stdin: %v\n", err)
-		return exitEvalError
-	}
-	return exitOK
 }
 
 func (r replSession) handle(line string) (quit bool) {
