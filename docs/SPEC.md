@@ -24,6 +24,7 @@ cmd | ubc                   # read program from stdin (non-TTY), print results
 | `--hist` | Draw the 20-row histogram under every uncertain result (not with `--json`/`--plain`) | off |
 | `--quantiles LIST` | Show these percentiles instead of the 90% interval, e.g. `10,50,90`; adds `quantiles` to JSON | |
 | `--watch` | Evaluate the files again whenever they change (polls every 300 ms) | off |
+| `--completion SHELL` | Print a completion script for `bash`, `zsh` or `fish` | |
 | `--plain` | Print only the central value (median) | off |
 | `--no-color` | Disable ANSI colour | auto (TTY only) |
 | `--ascii` | ASCII instead of Unicode (sparklines, `≈`, `…`) | off (ADR 0022) |

@@ -65,6 +65,8 @@ $ go install github.com/eferro/uncertain-bc/cmd/ubc@latest
 
 Or download a binary for Linux, macOS or Windows from [Releases](https://github.com/eferro/uncertain-bc/releases).
 
+Shell completion: `source <(ubc --completion bash)` (also `zsh` and `fish`).
+
 ## Development
 
 ```console

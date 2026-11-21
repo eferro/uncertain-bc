@@ -46,6 +46,7 @@ type options struct {
 	hist        bool
 	quantiles   string
 	watch       bool
+	completion  string
 }
 
 type multiString []string
@@ -77,6 +78,7 @@ Flags:
       --quantiles L   show these percentiles instead of the 90% interval (10,50,90)
   -h, --help          show this help
       --version       print the version
+      --completion S  print a completion script for bash, zsh or fish
 `
 
 func (a App) Run(args []string, stdin io.Reader, stdout, stderr io.Writer) int {
@@ -87,6 +89,9 @@ func (a App) Run(args []string, stdin io.Reader, stdout, stderr io.Writer) int {
 	if opts.version {
 		fmt.Fprintf(stdout, "ubc %s\n", a.Version)
 		return exitOK
+	}
+	if opts.completion != "" {
+		return printCompletion(opts.completion, stdout, stderr)
 	}
 	settings, err := a.settings(opts)
 	if err != nil {
@@ -172,6 +177,11 @@ func parseFlags(args []string, stderr io.Writer) (options, error) {
 }
 
 func registerFlags(fs *flag.FlagSet, opts *options) {
+	registerInputFlags(fs, opts)
+	registerOutputFlags(fs, opts)
+}
+
+func registerInputFlags(fs *flag.FlagSet, opts *options) {
 	for _, name := range []string{"e", "eval"} {
 		fs.Var(&opts.expressions, name, "evaluate EXPR (repeatable)")
 	}
@@ -182,14 +192,18 @@ func registerFlags(fs *flag.FlagSet, opts *options) {
 		fs.Uint64Var(&opts.seed, name, opts.seed, "random seed")
 	}
 	fs.BoolVar(&opts.random, "random", false, "seed from the clock")
+	fs.BoolVar(&opts.watch, "watch", false, "evaluate the files again whenever they change")
+	fs.BoolVar(&opts.version, "version", false, "print the version and exit")
+	fs.StringVar(&opts.completion, "completion", "", "print a completion script for bash, zsh or fish")
+}
+
+func registerOutputFlags(fs *flag.FlagSet, opts *options) {
 	fs.BoolVar(&opts.ascii, "ascii", false, "print ASCII instead of Unicode")
 	fs.BoolVar(&opts.plain, "plain", false, "print only the central value")
 	fs.BoolVar(&opts.json, "json", false, "print one JSON object per result")
 	fs.BoolVar(&opts.echo, "echo", false, "also print assignments, with their names")
 	fs.BoolVar(&opts.hist, "hist", false, "draw a histogram under every uncertain result")
-	fs.BoolVar(&opts.watch, "watch", false, "evaluate the files again whenever they change")
 	fs.StringVar(&opts.quantiles, "quantiles", "", "comma-separated percentiles to show instead of the 90% interval")
-	fs.BoolVar(&opts.version, "version", false, "print the version and exit")
 }
 
 func (a App) settings(opts options) (application.Settings, error) {
@@ -289,4 +303,14 @@ func exitCode(err error) int {
 		return exitParseError
 	}
 	return exitEvalError
+}
+
+func printCompletion(shell string, stdout, stderr io.Writer) int {
+	script, ok := completionScript(shell)
+	if !ok {
+		fmt.Fprintf(stderr, "ubc: --completion expects bash, zsh or fish, got '%s'\n", shell)
+		return exitUsageError
+	}
+	fmt.Fprint(stdout, script)
+	return exitOK
 }

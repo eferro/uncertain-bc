@@ -27,6 +27,11 @@ After phase 4 the user asked for every improvement that makes `ubc` nicer to use
 - Changes are detected by polling modification time and size every 300 ms, with the standard library only (no fsnotify dependency). Each run uses a fresh session with the same seed, so the output changes only when the model does. Errors are reported and watching continues.
 - The wait between polls is injected into the CLI adapter, so tests drive it synchronously.
 
+**Shell completion**
+
+- `--completion bash|zsh|fish` prints a completion script for flags and file names. The list of flags is read from the same `FlagSet` the CLI parses, so completion cannot drift from the real flags.
+- Tests check every script's syntax with the shell itself when it is installed, and run the bash completion function to see what it offers.
+
 ## Consequences
 
 - A model reads as a report (`ubc --echo model.ubc`) without repeating variable names at the end just to print them.

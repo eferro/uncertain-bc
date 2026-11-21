@@ -84,3 +84,16 @@ func TestRun_PrintsOnlyTheCentralValueWithFullPrecision_WhenPlain(t *testing.T) 
 	assert.Equal(t, 0, got.code)
 	assert.Regexp(t, `^3\n14\.\d{6,}\n0\.\d+\n$`, got.stdout)
 }
+
+func TestRun_PrintsACompletionScript(t *testing.T) {
+	got := run(t, "", "--completion", "bash")
+
+	assert.Equal(t, 0, got.code)
+	assert.Contains(t, got.stdout, "complete -o filenames -F _ubc ubc")
+}
+
+func TestRun_ExitsWithUsageError_WhenTheShellIsUnknown(t *testing.T) {
+	want := outcome{code: 2, stderr: "ubc: --completion expects bash, zsh or fish, got 'tcsh'\n"}
+
+	assert.Equal(t, want, run(t, "", "--completion", "tcsh"))
+}
