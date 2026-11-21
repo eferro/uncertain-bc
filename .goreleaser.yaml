@@ -26,6 +26,23 @@ archives:
       - LICENSE
       - README.md
 
+nfpms:
+  - id: packages
+    package_name: ubc
+    file_name_template: "{{ .ConventionalFileName }}"
+    vendor: Eduardo Ferro
+    maintainer: Eduardo Ferro <eferro@eferro.net>
+    homepage: https://github.com/eferro/uncertain-bc
+    description: bc for numbers you are not sure about, a Monte Carlo calculator for ranges.
+    license: MIT
+    formats: [deb, rpm, apk]
+    bindir: /usr/bin
+    contents:
+      - src: LICENSE
+        dst: /usr/share/doc/ubc/LICENSE
+      - src: README.md
+        dst: /usr/share/doc/ubc/README.md
+
 checksum:
   name_template: checksums.txt
 
