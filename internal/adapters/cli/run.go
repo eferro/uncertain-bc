@@ -21,8 +21,9 @@ const (
 )
 
 type App struct {
-	Version    string
-	RandomSeed func() uint64
+	Version     string
+	RandomSeed  func() uint64
+	Interactive bool
 }
 
 type options struct {
@@ -76,6 +77,13 @@ func (a App) Run(args []string, stdin io.Reader, stdout, stderr io.Writer) int {
 	if err != nil {
 		fmt.Fprintf(stderr, "ubc: %v\n", err)
 		return exitUsageError
+	}
+	return a.execute(opts, settings, stdin, stdout, stderr)
+}
+
+func (a App) execute(opts options, settings application.Settings, stdin io.Reader, stdout, stderr io.Writer) int {
+	if a.Interactive && len(opts.expressions) == 0 && len(opts.files) == 0 {
+		return repl(application.NewSession(settings), styleFor(opts), stdin, stdout, stderr)
 	}
 	sources, err := collectSources(opts, stdin)
 	if err != nil {
