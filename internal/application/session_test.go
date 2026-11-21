@@ -53,3 +53,44 @@ func TestSession_KeepsVariablesAcrossPrograms(t *testing.T) {
 func TestDefaultSettings_UseSeedOneAndFiveThousandSamples(t *testing.T) {
 	assert.Equal(t, application.Settings{Seed: 1, Samples: 5000}, application.DefaultSettings())
 }
+
+func TestSession_ListsTheUserVariablesInTheOrderTheyWereFirstAssigned(t *testing.T) {
+	session := application.NewSession(application.DefaultSettings())
+	_, err := session.Evaluate("y = 2; x = 1; y = 3; 4")
+	require.NoError(t, err)
+
+	assert.Equal(t, []application.Variable{
+		{Name: "y", Value: domain.Scalar(3)},
+		{Name: "x", Value: domain.Scalar(1)},
+	}, session.Variables())
+}
+
+func TestSession_Reseed_RestartsTheRandomStreamAndKeepsVariables(t *testing.T) {
+	session := application.NewSession(application.DefaultSettings())
+	_, err := session.Evaluate("x = 5; 1 to 2")
+	require.NoError(t, err)
+
+	session.Reseed(2)
+	results, err := session.Evaluate("x; 1 to 2")
+	require.NoError(t, err)
+
+	fresh, err := application.NewSession(application.Settings{Seed: 2, Samples: 5000}).Evaluate("1 to 2")
+	require.NoError(t, err)
+	assert.Equal(t, domain.Scalar(5), results[0].Value)
+	assert.Equal(t, fresh[0].Value, results[1].Value)
+}
+
+func TestSession_SetSamples_ChangesTheSampleCountAndClearsVariables(t *testing.T) {
+	session := application.NewSession(application.DefaultSettings())
+	_, err := session.Evaluate("x = 1")
+	require.NoError(t, err)
+
+	session.SetSamples(10)
+
+	results, err := session.Evaluate("1 to 2")
+	require.NoError(t, err)
+	assert.Len(t, results[0].Value, 10)
+	assert.Empty(t, session.Variables())
+	_, err = session.Evaluate("x")
+	assert.Error(t, err)
+}

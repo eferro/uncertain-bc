@@ -61,14 +61,34 @@ func finiteValues(v Value) []float64 {
 }
 
 type Env struct {
+	source    *rand.PCG
 	rng       *rand.Rand
 	samples   int
 	variables map[string]Value
 }
 
 func NewEnv(seed uint64, samples int) Env {
-	variables := map[string]Value{"pi": Scalar(math.Pi), "e": Scalar(math.E)}
-	return Env{rng: rand.New(rand.NewPCG(seed, seed)), samples: samples, variables: variables}
+	source := rand.NewPCG(seed, seed)
+	return Env{source: source, rng: rand.New(source), samples: samples, variables: predefined()}
+}
+
+func predefined() map[string]Value {
+	return map[string]Value{"pi": Scalar(math.Pi), "e": Scalar(math.E)}
+}
+
+func (e Env) Variable(name string) (Value, bool) {
+	value, ok := e.variables[name]
+	return value, ok
+}
+
+func (e Env) Reseed(seed uint64) {
+	e.source.Seed(seed, seed)
+}
+
+// WithSamples keeps the random stream but forgets variables, whose sample
+// sets would no longer match the new count.
+func (e Env) WithSamples(samples int) Env {
+	return Env{source: e.source, rng: e.rng, samples: samples, variables: predefined()}
 }
 
 func (e Env) draw(sample func(*rand.Rand) float64) SampleSet {
