@@ -46,6 +46,34 @@ func triangular(lo, mode, hi float64) sampler {
 	}
 }
 
+func beta(a, b float64) sampler {
+	return func(r *rand.Rand) float64 {
+		x := gamma(r, a)
+		return x / (x + gamma(r, b))
+	}
+}
+
+// gamma uses Marsaglia & Tsang (2000) for shape >= 1 and boosts smaller shapes
+// with Gamma(shape+1)·U^(1/shape).
+func gamma(r *rand.Rand, shape float64) float64 {
+	if shape < 1 {
+		return gamma(r, shape+1) * math.Pow(r.Float64(), 1/shape)
+	}
+	d := shape - 1.0/3
+	c := 1 / math.Sqrt(9*d)
+	for {
+		x := r.NormFloat64()
+		v := 1 + c*x
+		if v <= 0 {
+			continue
+		}
+		v = v * v * v
+		if u := r.Float64(); math.Log(u) < 0.5*x*x+d*(1-v+math.Log(v)) {
+			return d * v
+		}
+	}
+}
+
 type distribution struct {
 	arity int
 	check func(p []float64) string
@@ -57,6 +85,7 @@ var distributions = map[string]distribution{
 	"lognormal":  {2, positive(1, "sigma"), func(p []float64) sampler { return lognormal(p[0], p[1]) }},
 	"uniform":    {2, ordered(0, 1), func(p []float64) sampler { return uniform(p[0], p[1]) }},
 	"triangular": {3, triangle, func(p []float64) sampler { return triangular(p[0], p[1], p[2]) }},
+	"beta":       {2, all(positive(0, "a"), positive(1, "b")), func(p []float64) sampler { return beta(p[0], p[1]) }},
 }
 
 func (d distribution) call(c call, env Env, args []Value) (Value, error) {
@@ -79,6 +108,17 @@ func positive(i int, name string) func(p []float64) string {
 	}
 }
 
+func all(checks ...func(p []float64) string) func(p []float64) string {
+	return func(p []float64) string {
+		for _, check := range checks {
+			if problem := check(p); problem != "" {
+				return problem
+			}
+		}
+		return ""
+	}
+}
+
 func ordered(lo, hi int) func(p []float64) string {
 	return func(p []float64) string {
 		if p[lo] >= p[hi] {
@@ -88,10 +128,9 @@ func ordered(lo, hi int) func(p []float64) string {
 	}
 }
 
-func triangle(p []float64) string {
-	if problem := ordered(0, 2)(p); problem != "" {
-		return problem
-	}
+var triangle = all(ordered(0, 2), modeInside)
+
+func modeInside(p []float64) string {
 	if p[1] < p[0] || p[1] > p[2] {
 		return fmt.Sprintf("mode must be between lo and hi, got %g, %g and %g", p[0], p[1], p[2])
 	}
