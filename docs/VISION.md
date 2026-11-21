@@ -2,7 +2,7 @@
 
 > `ubc` is `bc` for numbers you are not sure about. You type ranges instead of numbers, it runs a Monte Carlo simulation behind the scenes and answers with a distribution: a central value, an interval and a small chart, right in the terminal.
 
-Status: idea, pre-code. Date: 2026-11-21. Detailed MVP behaviour: [SPEC.md](SPEC.md). Decisions: [adr/](adr/README.md).
+Status: phase 0 done (walking skeleton, v0.1.0). Date: 2026-11-21. Detailed MVP behaviour: [SPEC.md](SPEC.md). Decisions: [adr/](adr/README.md).
 
 ## 1. The problem
 
@@ -154,7 +154,7 @@ Key decisions:
 
 | Phase | Outcome |
 |---|---|
-| 0. Walking skeleton | `ubc -e '1 + 2'` and `ubc -e '10 to 20'` print a result; CI, release binaries with goreleaser |
+| 0. Walking skeleton ✅ (v0.1.0) | `ubc -e '1 + 2'` and `ubc -e '10 to 20'` print a result; CI, release binaries with goreleaser |
 | 1. Calculator MVP | Lexer, parser, scalar + sample-set evaluation, `to`, suffixes, arithmetic, summaries, `P(...)`, default output line with sparkline, stdin and file modes |
 | 2. REPL | History, persistent variables, `last`, `:` commands, `:hist` |
 | 3. Sharing | `--json`, `--plain`, `:plot` to SVG/PNG, model files |
