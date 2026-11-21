@@ -123,16 +123,13 @@ REPL commands start with `:` so they never clash with the language: `:hist x`, `
 
 ## 7. Architecture
 
-Everything is Go, no embedded JavaScript (ADR 0001, ADR 0002).
+Everything is Go, no embedded JavaScript (ADR 0001, ADR 0002). Hexagonal layout (ADR 0010):
 
 ```
-cmd/ubc/          CLI entry point: flags, REPL, stdin/file/-e modes
-internal/lexer/   tokens (numbers with suffixes, `to`, operators, identifiers)
-internal/parser/  Pratt parser -> AST
-internal/eval/    evaluator; every value is either a scalar or a SampleSet ([]float64, N samples)
-internal/dist/    samplers: normal, lognormal, uniform, beta, triangular, empirical
-internal/stats/   quantiles, mean, stdev, histogram binning, significant-figure formatting
-internal/render/  sparkline, terminal histogram, SVG/PNG export
+cmd/ubc/                composition root: flags, wiring, exit codes
+internal/domain/        pure: lexer, parser, AST, values, distributions, statistics, evaluator
+internal/application/   Session use case (variables, `last`, RNG) and the ports it needs
+internal/adapters/      CLI/REPL, text and JSON output, later history, model files and chart export
 ```
 
 Key decisions:

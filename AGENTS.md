@@ -22,7 +22,7 @@
 
 ## Go conventions
 
-- Module: `github.com/eferro/uncertain-bc`. Binary entry point: `cmd/ubc`. Internals under `internal/` (see VISION §7).
+- Module: `github.com/eferro/uncertain-bc`. Binary entry point: `cmd/ubc`. Hexagonal layout under `internal/` (`domain`, `application`, `adapters`), dependencies point inward, ports only when a use case needs I/O (ADR 0010).
 - Before every commit: `gofmt`, `go vet ./...`, `go test ./...` must pass. Add `staticcheck` / `golangci-lint` when the Makefile exists.
 - Conventional commits (`feat:`, `fix:`, `docs:`, `test:`, `refactor:`, `chore:`).
 - Commit directly to `main`; no branches unless asked.
