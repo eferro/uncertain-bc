@@ -15,8 +15,8 @@ type dataset struct {
 	path string
 }
 
-func parseDatasets(values []string) ([]dataset, error) {
-	datasets := make([]dataset, 0, len(values))
+func parseDatasets(values []string) ([]preset, error) {
+	datasets := make([]preset, 0, len(values))
 	for _, value := range values {
 		name, path, err := splitNamed("--data", "name=file", value)
 		if err != nil {
@@ -30,7 +30,9 @@ func parseDatasets(values []string) ([]dataset, error) {
 	return datasets, nil
 }
 
-func loadDataset(session *application.Session, d dataset) error {
+func (d dataset) flag() string { return "--data " + d.name }
+
+func (d dataset) apply(session *application.Session) error {
 	values, err := readNumbers(d.path)
 	if err != nil {
 		return err

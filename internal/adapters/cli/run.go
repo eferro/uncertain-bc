@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"slices"
 
 	"golang.org/x/term"
 
@@ -50,8 +51,7 @@ type options struct {
 	hist        bool
 	quantiles   string
 	percentiles []float64
-	overrides   []override
-	datasets    []dataset
+	presets     []preset
 	watch       bool
 	completion  string
 }
@@ -167,13 +167,15 @@ func resolveFlags(opts options) (options, error) {
 			return opts, errors.New(rule.message)
 		}
 	}
-	var err error
-	if opts.overrides, err = parseOverrides(opts.sets); err != nil {
+	overrides, err := parseOverrides(opts.sets)
+	if err != nil {
 		return opts, err
 	}
-	if opts.datasets, err = parseDatasets(opts.data); err != nil {
+	datasets, err := parseDatasets(opts.data)
+	if err != nil {
 		return opts, err
 	}
+	opts.presets = slices.Concat(datasets, overrides)
 	opts.percentiles, err = parseQuantiles(opts.quantiles)
 	return opts, err
 }
