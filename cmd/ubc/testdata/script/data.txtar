@@ -1,0 +1,53 @@
+exec ubc --data lead=times.txt -e lead
+cmp stdout empirical.out
+
+exec ubc --data lead=times.txt model.ubc
+stdout '^13\n$'
+
+exec ubc --data lead=messy.txt -e 'min(lead)' -e 'max(lead)'
+stdout '^-2\.5\n1500\n$'
+
+exec ubc --data lead=times.txt --set 'worst=max(lead) * 2' -e worst
+stdout '^26\n$'
+
+! exec ubc --data lead -e 1
+! stdout .
+stderr '^ubc: --data expects name=file, got ''lead''\n$'
+
+! exec ubc --data 2x=times.txt -e 1
+! stdout .
+stderr '^ubc: --data: ''2x'' is not a variable name\n$'
+
+! exec ubc --data lead=missing.txt -e 1
+! stdout .
+stderr '^ubc: --data lead: open missing.txt: no such file or directory\n$'
+
+! exec ubc --data lead=bad.txt -e 1
+! stdout .
+stderr '^ubc: --data lead: bad.txt: line 2: ''3 days'' is not a number\n$'
+
+! exec ubc --data lead=empty.txt -e 1
+! stdout .
+stderr '^ubc: --data lead: empty.txt: no values to resample\n$'
+
+-- times.txt --
+3
+5
+8
+13
+-- messy.txt --
+
+  -2.5
+
+1e3
+1500
+-- bad.txt --
+3
+3 days
+-- empty.txt --
+
+-- model.ubc --
+lead = 1 to 2
+max(lead)
+-- empirical.out --
+≈ 5   90% [3 … 13]   █▁▁█▁▁▁▁█▁▁▁▁▁▁█

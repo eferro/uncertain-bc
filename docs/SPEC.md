@@ -11,6 +11,7 @@ ubc                         # interactive REPL when stdin is a TTY
 ubc FILE...                 # evaluate files in order, print the result of each top-level expression
 ubc -e EXPR [-e EXPR...]    # evaluate expressions, print results
 ubc --set NAME=EXPR FILE    # run a model with NAME overridden (scenarios)
+ubc --data NAME=PATH FILE   # run a model with NAME bound to observed data
 ubc --assert EXPR FILE      # run a model and fail with exit 4 unless EXPR holds (CI checks)
 cmd | ubc                   # read program from stdin (non-TTY), print results
 ```
@@ -19,6 +20,7 @@ cmd | ubc                   # read program from stdin (non-TTY), print results
 |---|---|---|
 | `-e, --eval EXPR` | Evaluate an expression (repeatable) | |
 | `--set NAME=EXPR` | Set a variable, overriding the program's own assignments to it (repeatable, ADR 0028) | |
+| `--data NAME=PATH` | Set a variable to the numbers in a file, one per line, resampled like `[...]`; overrides like `--set` (repeatable, ADR 0031) | |
 | `--assert EXPR` | After the program, exit 4 unless EXPR certainly holds (repeatable, ADR 0029) | |
 | `-n, --samples N` | Monte Carlo sample count | `5000` |
 | `-s, --seed N` | RNG seed | `1` |
@@ -37,6 +39,8 @@ cmd | ubc                   # read program from stdin (non-TTY), print results
 Flags go before files (`ubc -e 'x = 2' model.ubc`); anything after the first file name is read as another file. `-e` expressions are evaluated before files, all in one session, so variables flow from one source to the next. Without `-e` or files, the program is read from stdin.
 
 `--set` overrides are evaluated first, in order, before `-e`, files, stdin or the REPL; each value is split at its first `=` and `EXPR` is one expression that may use earlier overrides. Any later assignment to an overridden name is skipped without evaluating its right-hand side, so everything computed from the name uses the override; with `--echo` the skipped assignment prints the override. The same name given twice: the last one wins. `--set` prints nothing itself. A value without `=`, or whose name is not an identifier, is a usage error (exit 2); a bad expression is a parse (3) or evaluation (1) error reported as `ubc: --set NAME: line 1, col C: message`.
+
+`--data` files are read first, in order, before the `--set` overrides (so `--set 'worst=max(lead)'` can use the data) and before any program. Each file holds one plain number per line (`12`, `-3.5`, `1e3`; no suffixes); spaces around a number, blank lines and Windows line ends are ignored. The variable becomes an empirical SampleSet that resamples those numbers with replacement, exactly as the list literal `[v1, v2, ...]` would, and it is an override with the rules of `--set`: later assignments to it are skipped, the last `--data` for a name wins, a `--set` for the same name wins over `--data`, and `:samples` forgets it. With `--watch` the data files are read again on every run, but only changes to the program files start one. A value without `=`, a name that is not an identifier or an empty path is a usage error (exit 2). A file that cannot be read, a line that is not a finite number (`ubc: --data lead: times.csv: line 3: 'days' is not a number`) or a file with no numbers (`ubc: --data lead: times.csv: no values to resample`) is an evaluation error (exit 1) and stops the run before any program.
 
 `--assert` expressions are evaluated after the whole program (`--set`, `-e`, files or stdin), in order, in the same session; they print nothing and change no variable, not even `last`. Each must be one expression whose value is a condition: a comparison, a probability (`P(...)`) or a plain `0`/`1`. It holds only when that value is exactly 1, so a comparison of uncertain values must hold in every sample (`P(x > 0) > 0.95` states a looser check). Every assertion that does not hold prints `ubc: --assert EXPR failed: ACTUAL` to stderr, where `ACTUAL` is, for a comparison, both sides and the operator (`ubc: --assert fixed > 200 failed: 150 > 200`), uncertain sides as their one-line summary without sparkline and followed by the probability that the comparison held (`≈ 142   90% [100 … 198] < 150 (P = 0.61)`), and for anything else its value (`0.25`). The run goes on to the next assertion and exits with `4` if any failed. An assertion that is not a condition (`ubc: --assert cost: line 1, col 1: an assertion must be a condition or a probability`), or that fails to parse or evaluate, stops the run with exit 1 or 3. If the program itself fails, the assertions are not evaluated. `--assert` without a program (the REPL) is a usage error; with `--watch`, failures are reported after every run.
 

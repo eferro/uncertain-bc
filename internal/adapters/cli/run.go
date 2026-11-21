@@ -35,6 +35,7 @@ type App struct {
 type options struct {
 	expressions multiString
 	sets        multiString
+	data        multiString
 	asserts     multiString
 	files       []string
 	version     bool
@@ -50,6 +51,7 @@ type options struct {
 	quantiles   string
 	percentiles []float64
 	overrides   []override
+	datasets    []dataset
 	watch       bool
 	completion  string
 }
@@ -72,6 +74,8 @@ the program from stdin. Flags go before files.
 Flags:
   -e, --eval EXPR     evaluate EXPR (repeatable)
       --set NAME=EXPR set NAME to EXPR, overriding the model's value (repeatable)
+      --data NAME=FILE
+                      set NAME to the numbers in FILE, one per line (repeatable)
       --assert EXPR   after the program, exit 4 unless EXPR certainly holds (repeatable)
   -n, --samples N     Monte Carlo sample count (default 5000)
   -s, --seed N        random seed (default 1)
@@ -167,6 +171,9 @@ func resolveFlags(opts options) (options, error) {
 	if opts.overrides, err = parseOverrides(opts.sets); err != nil {
 		return opts, err
 	}
+	if opts.datasets, err = parseDatasets(opts.data); err != nil {
+		return opts, err
+	}
 	opts.percentiles, err = parseQuantiles(opts.quantiles)
 	return opts, err
 }
@@ -214,6 +221,7 @@ func registerInputFlags(fs *flag.FlagSet, opts *options) {
 		fs.Var(&opts.expressions, name, "evaluate EXPR (repeatable)")
 	}
 	fs.Var(&opts.sets, "set", "set NAME=EXPR, overriding the model's value (repeatable)")
+	fs.Var(&opts.data, "data", "set NAME to the numbers in FILE, one per line (repeatable)")
 	fs.Var(&opts.asserts, "assert", "exit 4 unless EXPR holds after the program (repeatable)")
 	for _, name := range []string{"n", "samples"} {
 		fs.IntVar(&opts.samples, name, opts.samples, "Monte Carlo sample count")

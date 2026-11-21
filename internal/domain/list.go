@@ -25,5 +25,9 @@ func (l list) evaluate(env Env) (Value, error) {
 		}
 		values[i] = x
 	}
-	return env.draw(func(r *rand.Rand) float64 { return values[r.IntN(len(values))] }), nil
+	return env.resample(values), nil
+}
+
+func (e Env) resample(values []float64) SampleSet {
+	return e.draw(func(r *rand.Rand) float64 { return values[r.IntN(len(values))] })
 }

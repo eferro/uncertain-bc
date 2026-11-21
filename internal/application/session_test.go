@@ -141,6 +141,36 @@ func TestSession_Override_ListsNothing_WhenItFails(t *testing.T) {
 	assert.Empty(t, session.Variables())
 }
 
+func TestSession_OverrideData_WinsOverTheProgramsAssignment(t *testing.T) {
+	session := application.NewSession(application.DefaultSettings())
+	require.NoError(t, session.OverrideData("lead", []float64{4}))
+
+	results, err := session.Evaluate("lead = 3; max(lead)")
+
+	require.NoError(t, err)
+	assert.Equal(t, domain.Scalar(4), results[1].Value)
+}
+
+func TestSession_OverrideData_ListsTheVariable(t *testing.T) {
+	session := application.NewSession(application.DefaultSettings())
+
+	require.NoError(t, session.OverrideData("lead", []float64{4, 6}))
+
+	variables := session.Variables()
+	require.Len(t, variables, 1)
+	assert.Equal(t, "lead", variables[0].Name)
+	assert.Equal(t, 6.0, variables[0].Value.(domain.SampleSet).Quantile(1))
+}
+
+func TestSession_OverrideData_ListsNothing_WhenItFails(t *testing.T) {
+	session := application.NewSession(application.DefaultSettings())
+
+	err := session.OverrideData("lead", nil)
+
+	assert.Error(t, err)
+	assert.Empty(t, session.Variables())
+}
+
 func TestSession_AssertsAgainstTheSessionsVariables(t *testing.T) {
 	session := application.NewSession(application.DefaultSettings())
 	_, err := session.Evaluate("team = 5")

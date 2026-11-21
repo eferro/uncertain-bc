@@ -56,6 +56,16 @@ func (s *Session) Override(name, expr string) error {
 	return nil
 }
 
+// OverrideData fixes a variable to observed values, as --data does: they
+// are resampled and the programs that follow cannot reassign it (ADR 0031).
+func (s *Session) OverrideData(name string, values []float64) error {
+	if err := domain.OverrideData(name, values, s.env); err != nil {
+		return err
+	}
+	s.remember(name)
+	return nil
+}
+
 // Assert checks a condition against the session without changing it, as
 // --assert does after the program (ADR 0029).
 func (s *Session) Assert(expr string) (domain.Check, error) {

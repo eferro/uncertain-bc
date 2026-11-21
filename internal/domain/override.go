@@ -1,5 +1,7 @@
 package domain
 
+import "errors"
+
 // Override binds name to the value of expr and keeps it there: later
 // assignments to name are skipped without being evaluated, so a value given
 // from outside a model wins over the model's own (ADR 0028).
@@ -8,9 +10,23 @@ func Override(name, expr string, env Env) error {
 	if err != nil {
 		return err
 	}
-	env.variables[name] = value
-	env.overridden[name] = true
+	env.bindOverride(name, value)
 	return nil
+}
+
+// OverrideData binds name to observed values, resampled like a list literal,
+// and keeps it there as Override does (ADR 0031).
+func OverrideData(name string, values []float64, env Env) error {
+	if len(values) == 0 {
+		return errors.New("no values to resample")
+	}
+	env.bindOverride(name, env.resample(values))
+	return nil
+}
+
+func (e Env) bindOverride(name string, value Value) {
+	e.variables[name] = value
+	e.overridden[name] = true
 }
 
 // IsName reports whether name can be assigned to in a program.
