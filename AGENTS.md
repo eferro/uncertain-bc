@@ -12,7 +12,7 @@
 ## How we work
 
 - **Baby steps.** One small, verifiable step at a time; follow the roadmap phases in order, starting with the walking skeleton.
-- **TDD.** Start every behaviour with a failing test. Table-driven tests for the lexer, parser and evaluator; golden-output tests for the CLI (the fixed seed makes output deterministic, ADR 0005).
+- **TDD.** Start every behaviour with a failing test. Table-driven tests for the lexer, parser and evaluator; CLI acceptance scenarios as testscript `.txtar` files in `cmd/ubc/testdata/script/` (ADR 0014; the fixed seed makes output deterministic, ADR 0005). Outer loop: a failing scenario; inner loop: unit tests.
 - **Test style** (ADR 0009): stdlib `testing` + testify (`require` for preconditions, `assert` for checks), behaviour names like `TestX_Y_WhenZ`, hand-written fakes, no mocks.
 - **Quality gates** (ADR 0012): `make validate` requires 90% coverage of `internal/`; `make test-mutation` (gremlins, CI) requires 85% efficacy on `internal/domain`. Thresholds only go up.
 - **Simplicity first.** Standard library unless a dependency clearly pays off. No cgo (ADR 0001).
