@@ -25,6 +25,7 @@ jobs:
           args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAP_GITHUB_TOKEN: ${{ secrets.TAP_GITHUB_TOKEN }}
 
   install-check:
     needs: release
@@ -85,3 +86,38 @@ jobs:
           gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --pattern '*_amd64.deb'
           sudo dpkg -i ./*_amd64.deb
           ubc --version | grep -F "ubc ${TAG#v}"
+
+  brew-install-check:
+    needs: release
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Install with Homebrew
+        env:
+          PUBLISHED: ${{ secrets.TAP_GITHUB_TOKEN != '' }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          if [ "$PUBLISHED" != "true" ]; then echo "TAP_GITHUB_TOKEN is not set, nothing was published"; exit 0; fi
+          eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv 2>/dev/null || /opt/homebrew/bin/brew shellenv)"
+          brew install eferro/tap/ubc
+          ubc --version | grep -F "ubc ${TAG#v}"
+
+  scoop-install-check:
+    needs: release
+    runs-on: windows-latest
+    steps:
+      - name: Install with Scoop
+        shell: pwsh
+        env:
+          PUBLISHED: ${{ secrets.TAP_GITHUB_TOKEN != '' }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          if ($env:PUBLISHED -ne 'true') { Write-Host 'TAP_GITHUB_TOKEN is not set, nothing was published'; exit 0 }
+          Invoke-Expression "& {$(Invoke-RestMethod get.scoop.sh)} -RunAsAdmin"
+          scoop bucket add eferro https://github.com/eferro/scoop-bucket
+          scoop install ubc
+          $version = ubc --version
+          if ($version -ne "ubc $($env:TAG.TrimStart('v'))") { throw "unexpected version: $version" }

@@ -43,6 +43,46 @@ nfpms:
       - src: README.md
         dst: /usr/share/doc/ubc/README.md
 
+homebrew_casks:
+  - name: ubc
+    repository:
+      owner: eferro
+      name: homebrew-tap
+      token: '{{ envOrDefault "TAP_GITHUB_TOKEN" "" }}'
+    skip_upload: '{{ if eq (envOrDefault "TAP_GITHUB_TOKEN" "") "" }}true{{ end }}'
+    homepage: https://github.com/eferro/uncertain-bc
+    description: bc for numbers you are not sure about, a Monte Carlo calculator for ranges.
+    license: MIT
+    binaries: [ubc]
+    generate_completions_from_executable:
+      executable: ubc
+      args: ["--completion"]
+    commit_author:
+      name: Eduardo Ferro
+      email: eferro@eferro.net
+    hooks:
+      post:
+        # The binaries are not notarised (ADR 0026); clear the quarantine flag
+        # so Gatekeeper lets the cask run them.
+        install_steps: |
+          on_macos do
+            run "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "{{ .StagedPath }}/ubc"]
+          end
+
+scoops:
+  - name: ubc
+    repository:
+      owner: eferro
+      name: scoop-bucket
+      token: '{{ envOrDefault "TAP_GITHUB_TOKEN" "" }}'
+    skip_upload: '{{ if eq (envOrDefault "TAP_GITHUB_TOKEN" "") "" }}true{{ end }}'
+    homepage: https://github.com/eferro/uncertain-bc
+    description: bc for numbers you are not sure about, a Monte Carlo calculator for ranges.
+    license: MIT
+    commit_author:
+      name: Eduardo Ferro
+      email: eferro@eferro.net
+
 checksum:
   name_template: checksums.txt
 
