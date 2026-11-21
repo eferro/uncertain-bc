@@ -3,6 +3,8 @@ package main
 import (
 	"os"
 	"path/filepath"
+	"runtime/debug"
+	"strings"
 	"time"
 
 	"github.com/eferro/uncertain-bc/internal/adapters/cli"
@@ -11,14 +13,27 @@ import (
 var version = "dev"
 
 func main() {
+	info, ok := debug.ReadBuildInfo()
 	app := cli.App{
-		Version:     version,
+		Version:     resolveVersion(version, info, ok),
 		RandomSeed:  clockSeed,
 		Interactive: isTerminal(os.Stdin),
 		HistoryPath: historyPath(),
 		Wait:        pollEvery(300 * time.Millisecond),
 	}
 	os.Exit(app.Run(os.Args[1:], os.Stdin, os.Stdout, os.Stderr))
+}
+
+// resolveVersion prefers the version goreleaser injects; a binary built with
+// go install ...@vX.Y.Z only carries the module version in its build info.
+func resolveVersion(injected string, info *debug.BuildInfo, ok bool) string {
+	if injected != "dev" || !ok || info == nil {
+		return injected
+	}
+	if v := info.Main.Version; v != "" && v != "(devel)" {
+		return strings.TrimPrefix(v, "v")
+	}
+	return injected
 }
 
 func clockSeed() uint64 {
