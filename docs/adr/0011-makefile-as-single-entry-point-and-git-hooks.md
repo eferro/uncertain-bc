@@ -6,7 +6,7 @@
 
 ## Context
 
-Every commit should leave the project a bit better than before, and it should never leave it broken. Humans and agents both work on the repo, so the way to build, test and check it must be one obvious command, identical locally and in CI. The other Go projects by the author (project A, project B) use a Makefile with canonical target names and the rule "never call the tools directly". project A also versions git hooks so the gates run without relying on memory.
+Every commit should leave the project a bit better than before, and it should never leave it broken. Humans and agents both work on the repo, so the way to build, test and check it must be one obvious command, identical locally and in CI. The other Go projects by the author (project A, project B) use a Makefile with canonical target names and the rule "never call the tools directly". Project A also versions git hooks so the gates run without relying on memory.
 
 ## Decision
 
