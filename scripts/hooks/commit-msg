@@ -1,11 +1,4 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-pattern='^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\([a-z0-9 /-]+\))?!?: .+'
-subject=$(head -n1 "$1")
-
-if [[ ! $subject =~ $pattern ]]; then
-  echo "commit-msg: subject must follow Conventional Commits, e.g. 'feat(cli): evaluate -e expressions'" >&2
-  echo "got: $subject" >&2
-  exit 1
-fi
+scripts/checks/commit-subject.sh "$(head -n1 "$1")"
