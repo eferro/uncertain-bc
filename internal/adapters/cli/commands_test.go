@@ -140,3 +140,32 @@ func TestSaveAndLoad_ReportFileProblems(t *testing.T) {
 func withoutPrompts(screen string) string {
 	return strings.ReplaceAll(screen, "ubc> ", "")
 }
+
+func TestPlot_WritesAnSVGHistogramOfAnExpression(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "cost.svg")
+
+	got := interactive(t, "x = 10 to 20\n:plot x * 2 "+path+"\n")
+
+	require.Empty(t, got.stderr)
+	svg, err := os.ReadFile(path)
+	require.NoError(t, err)
+	assert.Contains(t, string(svg), "<svg")
+	assert.Contains(t, string(svg), ">x * 2</text>")
+}
+
+func TestPlot_ReportsWhatItCannotDo(t *testing.T) {
+	dir := t.TempDir()
+	cases := map[string]string{
+		":plot":                             "ubc: :plot expects an expression and a file name\n",
+		":plot x.svg":                       "ubc: :plot expects an expression and a file name\n",
+		":plot 1 to 2 " + dir + "/c.gif":    "ubc: :plot writes .svg files, got '" + dir + "/c.gif'\n",
+		":plot 5 " + dir + "/c.svg":         "ubc: :plot needs an uncertain value, got a plain number\n",
+		":plot y " + dir + "/c.svg":         "ubc: line 1, col 1: unknown variable 'y'\n",
+		":plot 1 to 2 " + dir + "/no/c.svg": "ubc: open " + dir + "/no/c.svg: no such file or directory\n",
+	}
+	for input, message := range cases {
+		t.Run(input, func(t *testing.T) {
+			assert.Equal(t, message, interactive(t, input+"\n").stderr)
+		})
+	}
+}

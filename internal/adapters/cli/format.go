@@ -69,9 +69,12 @@ func summarise(v domain.SampleSet, st style) string {
 	if v.Quantile(0) == v.Quantile(1) {
 		return plain(v.Quantile(0))
 	}
-	return fmt.Sprintf("%s %s   90%% [%s %s %s]   %s", st.approx,
-		significant(v.Quantile(0.5)), significant(v.Quantile(0.05)), st.ellipsis, significant(v.Quantile(0.95)),
-		sparkline(v, st.blocks))
+	return summaryNumbers(v, st) + "   " + sparkline(v, st.blocks)
+}
+
+func summaryNumbers(v domain.SampleSet, st style) string {
+	return fmt.Sprintf("%s %s   90%% [%s %s %s]", st.approx,
+		significant(v.Quantile(0.5)), significant(v.Quantile(0.05)), st.ellipsis, significant(v.Quantile(0.95)))
 }
 
 // withDropped says how many non-finite samples the summary ignored (SPEC §4 rule 6).

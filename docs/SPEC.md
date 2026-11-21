@@ -128,7 +128,7 @@ One line per top-level expression (assignments print too, as in the REPL example
 | `:help` | List commands and functions |
 | `:vars` | Show variables with their one-line summary |
 | `:hist EXPR` | Full terminal histogram (≈20 rows, P1–P99, axis labels) |
-| `:plot EXPR FILE` | Export histogram as SVG (`.svg`) or PNG (`.png`) |
+| `:plot EXPR FILE` | Export a 40-bin histogram over P1–P99 as SVG (`.svg`), titled with EXPR and its summary; PNG (`.png`) to follow |
 | `:samples N` | Change sample count (clears variables, with a warning) |
 | `:seed N` | Reseed the RNG |
 | `:save FILE` | Write the session's successful statements to a `.ubc` file |

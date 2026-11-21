@@ -20,6 +20,7 @@ var commands = map[string]command{
 	"hist":    showHistogram,
 	"save":    save,
 	"load":    load,
+	"plot":    plot,
 	"quit":    func(replSession, string) (bool, error) { return true, nil },
 }
 
@@ -27,6 +28,7 @@ const replHelp = `Commands:
   :help          show this help
   :vars          list variables with their summaries
   :hist EXPR     draw the distribution of EXPR
+  :plot EXPR F   write the distribution of EXPR to the SVG file F
   :seed N        restart the random stream with seed N
   :samples N     change the sample count (clears variables)
   :save FILE     write the statements that worked to FILE
@@ -95,16 +97,40 @@ func showHistogram(r replSession, expr string) (bool, error) {
 	if expr == "" {
 		return false, errors.New(":hist expects an expression")
 	}
-	results, err := r.session.Evaluate(expr)
+	samples, err := r.samplesOf(expr, ":hist")
 	if err != nil {
 		return false, err
 	}
-	samples, ok := results[len(results)-1].Value.(domain.SampleSet)
-	if !ok {
-		return false, errors.New(":hist needs an uncertain value, got a plain number")
-	}
 	fmt.Fprint(r.stdout, histogramChart(samples, r.style))
 	return false, nil
+}
+
+func plot(r replSession, arg string) (bool, error) {
+	cut := strings.LastIndex(arg, " ")
+	if cut < 0 {
+		return false, errors.New(":plot expects an expression and a file name")
+	}
+	expr, path := strings.TrimSpace(arg[:cut]), arg[cut+1:]
+	if !strings.HasSuffix(path, ".svg") {
+		return false, fmt.Errorf(":plot writes .svg files, got '%s'", path)
+	}
+	samples, err := r.samplesOf(expr, ":plot")
+	if err != nil {
+		return false, err
+	}
+	return false, os.WriteFile(path, []byte(svgHistogram(samples, expr)), 0o644)
+}
+
+func (r replSession) samplesOf(expr, command string) (domain.SampleSet, error) {
+	results, err := r.session.Evaluate(expr)
+	if err != nil {
+		return nil, err
+	}
+	samples, ok := results[len(results)-1].Value.(domain.SampleSet)
+	if !ok {
+		return nil, fmt.Errorf("%s needs an uncertain value, got a plain number", command)
+	}
+	return samples, nil
 }
 
 func save(r replSession, path string) (bool, error) {
