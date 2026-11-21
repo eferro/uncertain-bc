@@ -93,9 +93,14 @@ func centralValue(value domain.Value) string {
 	return shortest(float64(value.(domain.Scalar)))
 }
 
+// summarise leaves out the sparkline in a style without blocks, as error
+// messages on stderr use.
 func summarise(v domain.SampleSet, st style) string {
-	if v.Quantile(0) == v.Quantile(1) {
+	switch {
+	case v.Quantile(0) == v.Quantile(1):
 		return plain(v.Quantile(0))
+	case st.blocks == nil:
+		return summaryNumbers(v, st)
 	}
 	return summaryNumbers(v, st) + "   " + sparkline(v, st.blocks)
 }

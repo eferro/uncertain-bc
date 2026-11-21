@@ -42,10 +42,5 @@ func actual(check domain.Check, st style) string {
 // operand is a value's summary without the sparkline, whatever the output
 // format, because it goes into a one-line message on stderr.
 func operand(value domain.Value, st style) string {
-	text := style{approx: st.approx, ellipsis: st.ellipsis}
-	samples, uncertain := value.(domain.SampleSet)
-	if !uncertain || samples.Dropped() == len(samples) || samples.Quantile(0) == samples.Quantile(1) {
-		return format(value, text)
-	}
-	return withDropped(summaryNumbers(samples, text), samples.Dropped())
+	return format(value, style{approx: st.approx, ellipsis: st.ellipsis})
 }
