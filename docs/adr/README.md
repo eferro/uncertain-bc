@@ -18,3 +18,4 @@ Template: Status, Effective date, Deciders, then Context, Decision, Consequences
 | [0008](0008-units-out-of-the-mvp.md) | Keep units out of the MVP | Accepted | 2026-11-21 |
 | [0009](0009-stdlib-testing-with-testify-assertions.md) | stdlib `testing` with testify assertions | Accepted | 2026-11-21 |
 | [0010](0010-hexagonal-architecture.md) | Hexagonal architecture | Accepted | 2026-11-21 |
+| [0011](0011-makefile-as-single-entry-point-and-git-hooks.md) | Makefile as the single entry point, enforced by git hooks | Accepted | 2026-11-21 |
