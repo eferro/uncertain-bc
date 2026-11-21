@@ -46,7 +46,8 @@ Language:
   triangular(lo, mode, hi)  beta(a, b)
   mean(x) median(x) stdev(x) min(x) max(x) p(x, q)
   sqrt exp log log10 abs round floor ceil, min/max of several values
-  x = expr   last   pi   e   # comments
+  x = expr   f(a, b) = expr   last   pi   e   # comments
+  [3, 5, 8, 13]                       empirical data, resampled
 `
 
 func (r replSession) command(line string) (bool, error) {

@@ -6,9 +6,10 @@ import (
 )
 
 type statement struct {
-	line int
-	name string
-	expr node
+	line     int
+	name     string
+	expr     node
+	function *definition
 }
 
 type parser struct {
@@ -34,6 +35,10 @@ func parse(tokens []token) ([]statement, error) {
 
 func (p *parser) statement() (statement, error) {
 	line := p.peek().line
+	if p.isDefinition() {
+		def, err := p.definition()
+		return statement{line: line, function: def}, err
+	}
 	name := ""
 	if p.peek().kind == tokenIdent && p.tokens[p.pos+1].kind == tokenAssign {
 		name = p.advance().text
@@ -41,6 +46,61 @@ func (p *parser) statement() (statement, error) {
 	}
 	expr, err := p.expression()
 	return statement{line: line, name: name, expr: expr}, err
+}
+
+// isDefinition looks ahead for name(...) followed by '=', which tells a
+// function definition from a call.
+func (p *parser) isDefinition() bool {
+	if p.peek().kind != tokenIdent || p.tokens[p.pos+1].kind != tokenLParen {
+		return false
+	}
+	end := p.closingParen(p.pos + 1)
+	return end > 0 && p.tokens[end+1].kind == tokenAssign
+}
+
+func (p *parser) closingParen(open int) int {
+	depth := 0
+	for i := open; p.tokens[i].kind != tokenEOF && !isSeparator(p.tokens[i]); i++ {
+		depth += parenDepth[p.tokens[i].kind]
+		if depth == 0 {
+			return i
+		}
+	}
+	return -1
+}
+
+var parenDepth = map[tokenKind]int{tokenLParen: 1, tokenRParen: -1}
+
+func (p *parser) definition() (*definition, error) {
+	name := p.advance()
+	p.advance()
+	params, err := p.parameters()
+	if err != nil {
+		return nil, err
+	}
+	p.advance()
+	body, err := p.expression()
+	return &definition{name: name.text, params: params, body: body, at: name.position}, err
+}
+
+func (p *parser) parameters() ([]token, error) {
+	var params []token
+	if p.peek().kind == tokenRParen {
+		p.advance()
+		return params, nil
+	}
+	for {
+		param := p.advance()
+		if param.kind != tokenIdent {
+			return nil, unexpected(param)
+		}
+		params = append(params, param)
+		if next := p.advance(); next.kind == tokenRParen {
+			return params, nil
+		} else if next.kind != tokenComma {
+			return nil, unexpected(next)
+		}
+	}
 }
 
 func (p *parser) skipSeparators() {

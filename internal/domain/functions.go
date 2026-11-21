@@ -37,7 +37,7 @@ func lookup(name string) (builtin, bool) {
 }
 
 func (c call) evaluate(env Env) (Value, error) {
-	fn, ok := lookup(c.name)
+	fn, ok := env.lookup(c.name)
 	if !ok {
 		return nil, evalErrorAt(c.at, "unknown function '%s'", c.name)
 	}

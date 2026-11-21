@@ -177,6 +177,7 @@ func TestPlot_ReportsWhatItCannotDo(t *testing.T) {
 		":plot 5 " + dir + "/c.svg":         "ubc: :plot needs an uncertain value, got a plain number\n",
 		":plot y " + dir + "/c.svg":         "ubc: line 1, col 1: unknown variable 'y'\n",
 		":plot 1 to 2 " + dir + "/no/c.svg": "ubc: open " + dir + "/no/c.svg: no such file or directory\n",
+		":plot 1 to 2 " + dir + "/no/c.png": "ubc: open " + dir + "/no/c.png: no such file or directory\n",
 	}
 	for input, message := range cases {
 		t.Run(input, func(t *testing.T) {

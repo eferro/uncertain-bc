@@ -100,6 +100,20 @@ Rules:
 
 Built-in variables: `last` (result of the previous top-level expression), `pi`, `e`.
 
+### User functions (phase 4)
+
+```
+cost(n) = n * (2 to 4)
+cost(10)
+```
+
+- `name(p1, p2, ...) = expr` defines a function; the definition prints nothing. Redefining a function replaces it.
+- A call evaluates the body with the parameters bound to the arguments and the global variables as they are at call time. Parameters shadow globals without changing them.
+- Ranges and distributions in the body draw fresh samples on every call, so `cost(1) - cost(1)` is not 0.
+- Redefining a built-in function, repeating a parameter or calling with the wrong number of arguments is an evaluation error.
+- There are no conditionals, so recursion cannot end: calls nested more than 64 deep are an evaluation error.
+- Functions survive `:samples`, which only clears variables.
+
 ## 6. Output
 
 One line per top-level expression (assignments print too, as in the REPL examples; files and `-e` print only expressions unless `--echo` is added later).
@@ -158,4 +172,4 @@ These must hold with the default seed and sample count (exact digits are fixed o
 
 ## 10. Out of scope for the MVP
 
-User-defined functions, units, symbolic distributions, correlation between distinct ranges, a TUI with sliders, Squiggle compatibility, Unicode identifiers.
+Units, symbolic distributions, correlation between distinct ranges, a TUI with sliders, Squiggle compatibility, Unicode identifiers.

@@ -115,6 +115,12 @@ func Evaluate(program string, env Env) ([]Result, error) {
 func run(statements []statement, env Env) ([]Result, error) {
 	results := make([]Result, 0, len(statements))
 	for _, stmt := range statements {
+		if stmt.function != nil {
+			if err := env.define(*stmt.function); err != nil {
+				return results, err
+			}
+			continue
+		}
 		value, err := stmt.evaluate(env)
 		if err != nil {
 			return results, err

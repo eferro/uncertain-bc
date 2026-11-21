@@ -59,3 +59,11 @@ func evaluateIn(t *testing.T, env domain.Env, program string) domain.Value {
 	require.NoError(t, err)
 	return results[len(results)-1].Value
 }
+
+func TestEnv_WithSamples_KeepsUserFunctions(t *testing.T) {
+	env := domain.NewEnv(1, samples)
+	_, err := domain.Evaluate("double(x) = x * 2", env)
+	require.NoError(t, err)
+
+	assert.Equal(t, domain.Scalar(8), evaluateIn(t, env.WithSamples(3), "double(4)"))
+}

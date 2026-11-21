@@ -46,6 +46,7 @@ func TestList_RejectsWhatItCannotResample(t *testing.T) {
 	cases := map[string]domain.EvalError{
 		"[]":              {Line: 1, Col: 1, Msg: "an empty list has no values to resample"},
 		"1 + [1, 2 to 3]": {Line: 1, Col: 5, Msg: "list elements must be plain numbers"},
+		"[1, y]":          {Line: 1, Col: 5, Msg: "unknown variable 'y'"},
 	}
 	for program, want := range cases {
 		t.Run(program, func(t *testing.T) {
