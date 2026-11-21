@@ -16,3 +16,4 @@ Template: Status, Effective date, Deciders, then Context, Decision, Consequences
 | [0006](0006-bc-like-cli-with-honest-summary-output.md) | bc-like CLI with an honest one-line summary | Accepted | 2026-11-21 |
 | [0007](0007-name-the-binary-ubc-and-the-project-uncertain-bc.md) | Name the binary `ubc` and the project `uncertain-bc` | Accepted | 2026-11-21 |
 | [0008](0008-units-out-of-the-mvp.md) | Keep units out of the MVP | Accepted | 2026-11-21 |
+| [0009](0009-stdlib-testing-with-testify-assertions.md) | stdlib `testing` with testify assertions | Accepted | 2026-11-21 |

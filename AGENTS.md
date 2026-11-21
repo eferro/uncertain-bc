@@ -13,6 +13,7 @@
 
 - **Baby steps.** One small, verifiable step at a time; follow the roadmap phases in order, starting with the walking skeleton.
 - **TDD.** Start every behaviour with a failing test. Table-driven tests for the lexer, parser and evaluator; golden-output tests for the CLI (the fixed seed makes output deterministic, ADR 0005).
+- **Test style** (ADR 0009): stdlib `testing` + testify (`require` for preconditions, `assert` for checks), behaviour names like `TestX_Y_WhenZ`, hand-written fakes, no mocks.
 - **Simplicity first.** Standard library unless a dependency clearly pays off. No cgo (ADR 0001).
 - **Keep the spec honest.** If behaviour changes, update `docs/SPEC.md` in the same commit; if a decision changes, add an ADR.
 - **Small functions, clear names,** no comments that restate the code.
