@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"math"
 	"math/rand/v2"
 	"slices"
 )
@@ -40,7 +41,8 @@ type Env struct {
 }
 
 func NewEnv(seed uint64, samples int) Env {
-	return Env{rng: rand.New(rand.NewPCG(seed, seed)), samples: samples, variables: map[string]Value{}}
+	variables := map[string]Value{"pi": Scalar(math.Pi), "e": Scalar(math.E)}
+	return Env{rng: rand.New(rand.NewPCG(seed, seed)), samples: samples, variables: variables}
 }
 
 func (e Env) draw(sample func(*rand.Rand) float64) SampleSet {

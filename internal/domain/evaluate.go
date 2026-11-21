@@ -119,12 +119,19 @@ func run(statements []statement, env Env) ([]Result, error) {
 		if err != nil {
 			return results, err
 		}
-		if stmt.name != "" {
-			env.variables[stmt.name] = value
-		}
+		env.variables[stmt.binding()] = value
 		results = append(results, Result{Line: stmt.line, Name: stmt.name, Value: value})
 	}
 	return results, nil
+}
+
+// binding is the variable a statement sets: its own name, or last for an
+// expression, as in bc.
+func (s statement) binding() string {
+	if s.name == "" {
+		return "last"
+	}
+	return s.name
 }
 
 // evaluate reports a bare top-level comparison as a probability (SPEC §4 rule 5).
