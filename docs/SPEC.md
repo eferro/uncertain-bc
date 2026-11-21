@@ -113,7 +113,7 @@ One line per top-level expression (assignments print too, as in the REPL example
 - A SampleSet whose samples are all equal prints as a scalar: `x = 1 to 5; x - x` prints `0`.
 - SampleSet numbers use **3 significant figures** without trailing zeros (`≈ 14.2   90% [10 … 19.8]`), and suffixes from 10k up, chosen number by number after rounding: `≈ 22.4k   90% [9990 … 49k]`.
 - The sparkline is 16 cells wide, built from a histogram over [P1, P99]; Unicode block elements `▁▂▃▄▅▆▇█`, ASCII fallback ` .:-=+*#`.
-- `--plain` prints the median (scalar as is) with full float precision, for `$(ubc -e ...)`.
+- `--plain` prints the median (scalar as is) with full float precision and no `L<n>:` prefixes, for `$(ubc -e ...)`.
 - `--json` prints, per result: `{"kind":"samples","median":…,"mean":…,"stdev":…,"p5":…,"p95":…,"n":5000,"dropped":0}` or `{"kind":"scalar","value":…}` or `{"kind":"probability","value":…}`.
 
 ## 7. REPL

@@ -9,20 +9,35 @@ $ ubc -e '(8 to 25) * 12'
 
 Type ranges instead of exact numbers (`10 to 20` means "90 % sure it is between 10 and 20"). `ubc` runs a Monte Carlo simulation and answers with a central value, an interval and a small chart, right in the terminal. A single Go binary, inspired by [Guesstimate](https://www.getguesstimate.com) and [Squiggle](https://www.squiggle-language.com).
 
-Status: phase 1 in progress. Today `ubc` has numbers with suffixes (`1k`, `5%`), `+ - * / ^`, comparisons and `P(...)`, ranges and distributions, summaries and math functions, variables and comments, and reads `-e` expressions, files or stdin:
+Status: calculator MVP (phase 1, v0.2.0). The interactive REPL comes in phase 2.
 
 ```console
 $ ubc -e '(8 to 25) * 12'
 ≈ 170   90% [96 … 296]   ▃▅▆██▇▆▅▄▃▂▂▂▁▁▁
-$ ubc -e 'x = 1 to 5' -e 'x - x'
-0
+
+$ ubc -e 'yearly = (12 to 30) / 1000 * 24 * 365 * (0.12 to 0.25)' -e 'yearly' -e 'P(yearly > 50)'
+≈ 28.7   90% [16.1 … 51]   ▃▅▇▇█▇▆▅▄▃▃▂▂▂▁▁
+0.06
+
+$ ubc --plain -e '1k to 5k'
+2240.839064891978
+
 $ ubc examples/homelab.ubc
 L15: ≈ 66.5   90% [47 … 95.7]   ▂▃▅▆▇█▇▆▅▄▃▃▂▂▂▁
 L16: ≈ 169   90% [94.7 … 295]   ▃▅▇▇█▇▆▅▄▃▃▂▂▂▁▁
 L18: ≈ 101   90% [21.5 … 229]   ▃▅▆▇█▇▇▆▄▃▃▂▂▂▁▁
 ```
 
-See [examples/homelab.ubc](examples/homelab.ubc). Flags for samples, seed and ASCII output, and handling of non-finite samples are next ([docs/SPEC.md](docs/SPEC.md)); the interactive REPL comes in phase 2. Goals and roadmap: [docs/VISION.md](docs/VISION.md).
+What the language has today:
+
+- Numbers with suffixes (`1.5e3`, `1k`, `2.5M`, `5%`), `+ - * / ^`, parentheses, comments (`#`).
+- `a to b`: a 90 % interval, lognormal when both ends are positive, normal otherwise.
+- Distributions: `normal`, `lognormal`, `uniform`, `triangular`, `beta`.
+- Variables that keep their samples (`x - x` is exactly 0), `last`, `pi`, `e`.
+- Comparisons and `P(...)`; summaries `mean`, `median`, `stdev`, `min`, `max`, `p(x, q)`; `sqrt`, `exp`, `log`, `log10`, `abs`, `round`, `floor`, `ceil`.
+- Input from `-e` (repeatable), files or stdin; flags `-n/--samples`, `-s/--seed`, `--random`, `--plain`, `--ascii` (see `ubc --help`).
+
+Full behaviour: [docs/SPEC.md](docs/SPEC.md). Goals and roadmap: [docs/VISION.md](docs/VISION.md).
 
 ## Install
 

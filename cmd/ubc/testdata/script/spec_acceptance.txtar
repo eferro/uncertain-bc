@@ -1,0 +1,32 @@
+# Every acceptance example of SPEC §9, with the default seed and sample count.
+
+exec ubc -e '2 + 2'
+stdout '^4\n$'
+
+exec ubc -e '1k * 3'
+stdout '^3000\n$'
+
+exec ubc -e '5% * 200'
+stdout '^10\n$'
+
+exec ubc -e '(8 to 25) * 12'
+stdout '^≈ 170   90% \[96 … 296\]   '
+
+exec ubc -e 'x = 1 to 5' -e 'x - x'
+stdout '^0\n$'
+
+exec ubc -e 'P(normal(0, 1) > 0)'
+stdout '^0\.50\n$'
+
+! exec ubc -e '10 to 5'
+stderr 'range start 10 must be below its end 5'
+
+exec ubc -e '-10 to 10'
+stdout '^≈ 0\.0265   90% \[-10 … 9\.74\]   '
+
+stdin plain.ubc
+exec ubc --plain
+stdout '^3\n$'
+
+-- plain.ubc --
+1 + 2

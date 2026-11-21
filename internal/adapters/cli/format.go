@@ -12,6 +12,7 @@ type style struct {
 	approx   string
 	ellipsis string
 	blocks   []rune
+	plain    bool
 }
 
 var (
@@ -20,13 +21,18 @@ var (
 )
 
 func styleFor(opts options) style {
+	st := unicodeStyle
 	if opts.ascii {
-		return asciiStyle
+		st = asciiStyle
 	}
-	return unicodeStyle
+	st.plain = opts.plain
+	return st
 }
 
 func format(value domain.Value, st style) string {
+	if st.plain {
+		return centralValue(value)
+	}
 	switch v := value.(type) {
 	case domain.SampleSet:
 		if v.Dropped() == len(v) {
@@ -39,6 +45,17 @@ func format(value domain.Value, st style) string {
 		return probability(float64(v))
 	}
 	panic(fmt.Sprintf("cli: unknown value type %T", value))
+}
+
+// centralValue prints the median with full precision, for $(ubc --plain ...) (SPEC §6).
+func centralValue(value domain.Value) string {
+	if s, ok := value.(domain.SampleSet); ok {
+		return shortest(s.Quantile(0.5))
+	}
+	if p, ok := value.(domain.Probability); ok {
+		return shortest(float64(p))
+	}
+	return shortest(float64(value.(domain.Scalar)))
 }
 
 func summarise(v domain.SampleSet, st style) string {

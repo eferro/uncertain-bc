@@ -34,6 +34,7 @@ type options struct {
 	seedGiven   bool
 	random      bool
 	ascii       bool
+	plain       bool
 }
 
 type multiString []string
@@ -57,6 +58,7 @@ Flags:
   -s, --seed N        random seed (default 1)
       --random        seed from the clock
       --ascii         print ASCII instead of Unicode
+      --plain         print only the central value (median), for scripts
   -h, --help          show this help
       --version       print the version
 `
@@ -120,6 +122,7 @@ func registerFlags(fs *flag.FlagSet, opts *options) {
 	}
 	fs.BoolVar(&opts.random, "random", false, "seed from the clock")
 	fs.BoolVar(&opts.ascii, "ascii", false, "print ASCII instead of Unicode")
+	fs.BoolVar(&opts.plain, "plain", false, "print only the central value")
 	fs.BoolVar(&opts.version, "version", false, "print the version and exit")
 }
 
@@ -186,7 +189,7 @@ func printExpressions(results []domain.Result, prefixLines bool, st style, stdou
 		}
 	}
 	for _, result := range expressions {
-		if prefixLines && len(expressions) > 1 {
+		if prefixLines && !st.plain && len(expressions) > 1 {
 			fmt.Fprintf(stdout, "L%d: ", result.Line)
 		}
 		fmt.Fprintln(stdout, format(result.Value, st))
