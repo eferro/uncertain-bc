@@ -17,7 +17,7 @@
 - **Quality gates** (ADR 0012): `make validate` requires 90% coverage of `internal/`; `make test-mutation` (gremlins, CI) requires 85% efficacy on `internal/domain`. Thresholds only go up.
 - **Simplicity first.** Standard library unless a dependency clearly pays off. No cgo (ADR 0001).
 - **Keep the spec honest.** If behaviour changes, update `docs/SPEC.md` in the same commit; if a decision changes, add an ADR.
-- **Small functions, clear names,** no comments that restate the code.
+- **Small functions, clear names,** no comments that restate the code. Enforced by golangci-lint (ADR 0013): funlen 20 lines, gocyclo/gocognit 10, gofumpt; `//nolint` only with linter name and reason.
 - **English** for code, docs, commits and ADRs. Conversation with the user can be in Spanish.
 - **Ask when in doubt,** one question at a time.
 

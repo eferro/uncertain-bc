@@ -20,3 +20,4 @@ Template: Status, Effective date, Deciders, then Context, Decision, Consequences
 | [0010](0010-hexagonal-architecture.md) | Hexagonal architecture | Accepted | 2026-11-21 |
 | [0011](0011-makefile-as-single-entry-point-and-git-hooks.md) | Makefile as the single entry point, enforced by git hooks | Accepted | 2026-11-21 |
 | [0012](0012-coverage-and-mutation-gates.md) | Coverage and mutation testing gates | Accepted | 2026-11-21 |
+| [0013](0013-strict-golangci-lint-with-complexity-limits.md) | Strict golangci-lint with complexity limits | Accepted | 2026-11-21 |
