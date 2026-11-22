@@ -3,6 +3,7 @@ package cli_test
 import (
 	"bytes"
 	"errors"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"strings"
@@ -32,6 +33,13 @@ func writeFile(t *testing.T, name, content string) string {
 	path := filepath.Join(t.TempDir(), name)
 	require.NoError(t, os.WriteFile(path, []byte(content), 0o600))
 	return path
+}
+
+func missingFileError(t *testing.T, path string) string {
+	t.Helper()
+	_, err := os.Open(path)
+	require.ErrorIs(t, err, fs.ErrNotExist)
+	return err.Error()
 }
 
 func TestRun_PrintsTheResult_WhenGivenAnExpression(t *testing.T) {

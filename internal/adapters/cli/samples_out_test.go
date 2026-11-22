@@ -93,7 +93,7 @@ func TestSamplesOut_ExitsWithEvalError_WhenTheFileCannotBeWritten(t *testing.T) 
 	got := run(t, "", "--samples-out", path, "-e", "1")
 
 	assert.Equal(t, 1, got.code)
-	assert.Equal(t, "ubc: --samples-out "+path+": open "+path+": no such file or directory\n", got.stderr)
+	assert.Equal(t, "ubc: --samples-out "+path+": "+missingFileError(t, path)+"\n", got.stderr)
 }
 
 func TestSamplesOut_ExitsWithUsageError_WhenTheExtensionIsNotCSVOrJSON(t *testing.T) {

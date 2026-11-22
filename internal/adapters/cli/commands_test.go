@@ -128,8 +128,8 @@ func TestSaveAndLoad_ReportFileProblems(t *testing.T) {
 	cases := map[string]string{
 		":save":                     "ubc: :save expects a file name\n",
 		":load":                     "ubc: :load expects a file name\n",
-		":load " + missing:          "ubc: open " + missing + ": no such file or directory\n",
-		":save " + missing + "/x/y": "ubc: open " + missing + "/x/y: no such file or directory\n",
+		":load " + missing:          "ubc: " + missingFileError(t, missing) + "\n",
+		":save " + missing + "/x/y": "ubc: " + missingFileError(t, missing+"/x/y") + "\n",
 	}
 	for input, message := range cases {
 		t.Run(input, func(t *testing.T) {
@@ -176,8 +176,8 @@ func TestPlot_ReportsWhatItCannotDo(t *testing.T) {
 		":plot 1 to 2 " + dir + "/c.gif":    "ubc: :plot writes .svg or .png files, got '" + dir + "/c.gif'\n",
 		":plot 5 " + dir + "/c.svg":         "ubc: :plot needs an uncertain value, got a plain number\n",
 		":plot y " + dir + "/c.svg":         "ubc: line 1, col 1: unknown variable 'y'\n",
-		":plot 1 to 2 " + dir + "/no/c.svg": "ubc: open " + dir + "/no/c.svg: no such file or directory\n",
-		":plot 1 to 2 " + dir + "/no/c.png": "ubc: open " + dir + "/no/c.png: no such file or directory\n",
+		":plot 1 to 2 " + dir + "/no/c.svg": "ubc: " + missingFileError(t, dir+"/no/c.svg") + "\n",
+		":plot 1 to 2 " + dir + "/no/c.png": "ubc: " + missingFileError(t, dir+"/no/c.png") + "\n",
 	}
 	for input, message := range cases {
 		t.Run(input, func(t *testing.T) {

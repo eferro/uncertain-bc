@@ -67,7 +67,7 @@ A positive coefficient means EXPR tends to grow with the variable, a negative on
 
 Exit codes: `0` success, `1` evaluation error, `2` usage error (bad flags), `3` parse error, `4` assertion failed (ADR 0029).
 
-Errors go to stderr as `ubc: line L, col C: message`, with the file name for errors inside a file: `ubc: model.ubc: line L, col C: message`. A file or stdin that cannot be read is an evaluation error (exit 1). In the REPL an error prints and the session continues.
+Errors go to stderr as `ubc: line L, col C: message`, with the file name for errors inside a file: `ubc: model.ubc: line L, col C: message`. A file or stdin that cannot be read is an evaluation error (exit 1); a file error ends with the operating system's own reason, which differs between systems (`open model.ubc: no such file or directory` on Linux and macOS, `open model.ubc: The system cannot find the file specified.` on Windows; ADR 0041). In the REPL an error prints and the session continues.
 
 ## 2. Lexical structure
 

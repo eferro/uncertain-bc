@@ -18,7 +18,7 @@ stderr '^ubc: --samples-out none\.csv: nothing to export\n$'
 ! exists none.csv
 
 ! exec ubc --samples-out missing/out.csv -e 1
-stderr '^ubc: --samples-out missing/out\.csv: open missing/out\.csv: no such file or directory\n$'
+stderr '^ubc: --samples-out missing/out\.csv: open missing/out\.csv: .+\n$'
 
 ! exec ubc --samples-out bad.csv -e 'x = 1' -e 'y'
 ! exists bad.csv

@@ -4,6 +4,7 @@
 - Effective date: 2026-11-22
 - Deciders: eduardo.ferro
 - Complements: [ADR 0023](0023-line-editing-with-x-term.md), [ADR 0036](0036-raw-mode-repl-tested-through-a-pseudo-terminal.md)
+- Amended by: [ADR 0041](0041-whole-test-suite-on-windows.md) (the Windows job now runs the whole suite)
 
 ## Context
 

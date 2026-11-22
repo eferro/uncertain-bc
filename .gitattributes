@@ -1,0 +1,3 @@
+# Check out text files with LF everywhere: the golden outputs and testscript
+# archives are compared byte for byte, and ubc prints LF on every system (ADR 0041).
+* text=auto eol=lf

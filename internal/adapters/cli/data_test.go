@@ -105,7 +105,7 @@ func TestData_ExitsWithEvalError_WhenTheFileHasNoNumbers(t *testing.T) {
 func TestData_ExitsWithEvalError_WhenTheFileCannotBeRead(t *testing.T) {
 	got := run(t, "", "--data", "lead=missing.txt", "-e", "1")
 
-	assert.Equal(t, outcome{code: 1, stderr: "ubc: --data lead: open missing.txt: no such file or directory\n"}, got)
+	assert.Equal(t, outcome{code: 1, stderr: "ubc: --data lead: " + missingFileError(t, "missing.txt") + "\n"}, got)
 }
 
 func TestData_StopsAtTheFirstFailingFile_BeforeAnyProgramRuns(t *testing.T) {
@@ -115,7 +115,7 @@ func TestData_StopsAtTheFirstFailingFile_BeforeAnyProgramRuns(t *testing.T) {
 
 	assert.Equal(t, 1, got.code)
 	assert.Empty(t, got.stdout)
-	assert.Equal(t, "ubc: --data lead: open missing.txt: no such file or directory\n", got.stderr)
+	assert.Equal(t, "ubc: --data lead: "+missingFileError(t, "missing.txt")+"\n", got.stderr)
 }
 
 func TestData_IsReadAgainOnEveryWatchRun(t *testing.T) {

@@ -50,10 +50,12 @@ func TestCompletion_ProducesValidScripts(t *testing.T) {
 				t.Skip(shell + " is not installed")
 			}
 			script, _ := completionScript(shell)
-			path := filepath.Join(t.TempDir(), "ubc."+shell)
-			require.NoError(t, os.WriteFile(path, []byte(script), 0o600))
+			dir := t.TempDir()
+			require.NoError(t, os.WriteFile(filepath.Join(dir, "ubc."+shell), []byte(script), 0o600))
+			check := exec.Command(binary, "-n", "ubc."+shell)
+			check.Dir = dir
 
-			out, err := exec.Command(binary, "-n", path).CombinedOutput()
+			out, err := check.CombinedOutput()
 
 			assert.NoError(t, err, string(out))
 		})
@@ -66,32 +68,33 @@ func TestCompletion_KnowsOnlyThreeShells(t *testing.T) {
 	assert.False(t, ok)
 }
 
-func bashCompletes(t *testing.T, word string) string {
+func bashCompletes(t *testing.T, dir, word string) string {
 	t.Helper()
 	bash, err := exec.LookPath("bash")
 	if err != nil {
 		t.Skip("bash is not installed")
 	}
 	script, _ := completionScript("bash")
-	path := filepath.Join(t.TempDir(), "ubc.bash")
-	require.NoError(t, os.WriteFile(path, []byte(script), 0o600))
-	probe := `source "$1"; COMP_WORDS=(ubc "$2"); COMP_CWORD=1; _ubc; echo "${COMPREPLY[*]}"`
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "ubc.bash"), []byte(script), 0o600))
+	probe := `source ubc.bash; COMP_WORDS=(ubc "$1"); COMP_CWORD=1; _ubc; echo "${COMPREPLY[*]}"`
+	complete := exec.Command(bash, "-c", probe, "bash", word)
+	complete.Dir = dir
 
-	out, err := exec.Command(bash, "-c", probe, "bash", path, word).Output()
+	out, err := complete.Output()
 
 	require.NoError(t, err)
 	return strings.TrimSpace(string(out))
 }
 
 func TestBashCompletion_CompletesLongFlags(t *testing.T) {
-	assert.Equal(t, "--samples --samples-out", bashCompletes(t, "--sa"))
+	assert.Equal(t, "--samples --samples-out", bashCompletes(t, t.TempDir(), "--sa"))
 }
 
 func TestBashCompletion_CompletesFileNames(t *testing.T) {
 	dir := t.TempDir()
 	require.NoError(t, os.WriteFile(filepath.Join(dir, "model.ubc"), nil, 0o600))
 
-	assert.Equal(t, filepath.Join(dir, "model.ubc"), bashCompletes(t, filepath.Join(dir, "mo")))
+	assert.Equal(t, "model.ubc", bashCompletes(t, dir, "mo"))
 }
 
 func TestFishCompletion_MarksShortFlags(t *testing.T) {

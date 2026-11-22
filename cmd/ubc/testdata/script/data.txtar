@@ -20,7 +20,7 @@ stderr '^ubc: --data: ''2x'' is not a variable name\n$'
 
 ! exec ubc --data lead=missing.txt -e 1
 ! stdout .
-stderr '^ubc: --data lead: open missing.txt: no such file or directory\n$'
+stderr '^ubc: --data lead: open missing.txt: .+\n$'
 
 ! exec ubc --data lead=bad.txt -e 1
 ! stdout .
