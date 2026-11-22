@@ -21,7 +21,7 @@ Issue #34 asks for a guide on how to model well: what a 90 % interval claims and
 
 - The guide cannot drift from the binary: a change in the RNG, the output or the language breaks it until it is updated, as with the tutorial.
 - The guide's prose about the numbers (for example "the mean is eight times the median") is not checked; only the outputs are. Whoever updates the outputs must re-read the sentences around them.
-- The converter keeps the name `tutorialArchive`, although it now serves any guide.
+- The converter is renamed from `tutorialArchive` to `guideArchive`, in `cmd/ubc/guide_script_test.go`, since it now serves any guide.
 
 ## Alternatives considered
 

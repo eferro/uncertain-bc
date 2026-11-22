@@ -15,7 +15,7 @@ type fencedBlock struct {
 	lines []string
 }
 
-type tutorialScript struct {
+type guideScript struct {
 	commands strings.Builder
 	files    []txtar.File
 	source   *fencedBlock
@@ -23,8 +23,8 @@ type tutorialScript struct {
 	sources  int
 }
 
-func tutorialArchive(markdown string) (*txtar.Archive, error) {
-	script := &tutorialScript{}
+func guideArchive(markdown string) (*txtar.Archive, error) {
+	script := &guideScript{}
 	for _, block := range fencedBlocks(markdown) {
 		if err := script.add(block); err != nil {
 			return nil, err
@@ -53,7 +53,7 @@ func fencedBlocks(markdown string) []fencedBlock {
 	return blocks
 }
 
-func (s *tutorialScript) add(block fencedBlock) error {
+func (s *guideScript) add(block fencedBlock) error {
 	switch {
 	case s.source != nil && block.info != "console":
 		return errSourceNotRun
@@ -70,7 +70,7 @@ type consoleCommand struct {
 	output  []string
 }
 
-func (s *tutorialScript) addConsole(lines []string) error {
+func (s *guideScript) addConsole(lines []string) error {
 	commands, err := consoleCommands(lines)
 	if err != nil {
 		return err
@@ -102,7 +102,7 @@ func consoleCommands(lines []string) ([]consoleCommand, error) {
 	return commands, nil
 }
 
-func (s *tutorialScript) addCommand(command string, output []string) error {
+func (s *guideScript) addCommand(command string, output []string) error {
 	if !strings.HasPrefix(command, "ubc ") {
 		return fmt.Errorf("console command %q does not run ubc", command)
 	}
@@ -121,7 +121,7 @@ func (s *tutorialScript) addCommand(command string, output []string) error {
 	return nil
 }
 
-func (s *tutorialScript) checkSource(command string) error {
+func (s *guideScript) checkSource(command string) error {
 	if s.source == nil {
 		return nil
 	}

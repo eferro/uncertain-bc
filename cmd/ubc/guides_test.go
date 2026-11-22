@@ -17,7 +17,7 @@ func TestGuides_EveryConsoleBlockMatchesTheBinary(t *testing.T) {
 		t.Run(guide, func(t *testing.T) {
 			markdown, err := os.ReadFile(filepath.Join("..", "..", "docs", guide))
 			require.NoError(t, err)
-			archive, err := tutorialArchive(string(markdown))
+			archive, err := guideArchive(string(markdown))
 			require.NoError(t, err)
 			require.NotEmpty(t, archive.Files)
 			dir := t.TempDir()
@@ -42,8 +42,8 @@ func TestModellingGuide_IsLinkedFromTheReadmeTheTutorialAndTheCatalogue(t *testi
 	}
 }
 
-func TestTutorialArchive_ChecksTheOutputOfEveryCommand(t *testing.T) {
-	archive, err := tutorialArchive("Intro\n\n```console\n$ ubc -e '1 + 1'\n2\n$ ubc examples/a.ubc\nL1: 1\nL2: 2\n```\n")
+func TestGuideArchive_ChecksTheOutputOfEveryCommand(t *testing.T) {
+	archive, err := guideArchive("Intro\n\n```console\n$ ubc -e '1 + 1'\n2\n$ ubc examples/a.ubc\nL1: 1\nL2: 2\n```\n")
 
 	require.NoError(t, err)
 	assert.Equal(t, "exec ubc -e '1 + 1'\ncmp stdout output1\nexec ubc examples/a.ubc\ncmp stdout output2\n", string(archive.Comment))
@@ -53,16 +53,16 @@ func TestTutorialArchive_ChecksTheOutputOfEveryCommand(t *testing.T) {
 	}, archive.Files)
 }
 
-func TestTutorialArchive_ExpectsNoOutput_WhenTheCommandShowsNone(t *testing.T) {
-	archive, err := tutorialArchive("```console\n$ ubc -e 'x = 1'\n```\n")
+func TestGuideArchive_ExpectsNoOutput_WhenTheCommandShowsNone(t *testing.T) {
+	archive, err := guideArchive("```console\n$ ubc -e 'x = 1'\n```\n")
 
 	require.NoError(t, err)
 	assert.Equal(t, "exec ubc -e 'x = 1'\n! stdout .\n", string(archive.Comment))
 	assert.Empty(t, archive.Files)
 }
 
-func TestTutorialArchive_ChecksTheShownSourceAgainstTheFileTheNextBlockRuns(t *testing.T) {
-	archive, err := tutorialArchive("```ubc\nx = 1\nx\n```\n\nRun it:\n\n```console\n$ ubc --echo examples/x.ubc\nx = 1\n```\n")
+func TestGuideArchive_ChecksTheShownSourceAgainstTheFileTheNextBlockRuns(t *testing.T) {
+	archive, err := guideArchive("```ubc\nx = 1\nx\n```\n\nRun it:\n\n```console\n$ ubc --echo examples/x.ubc\nx = 1\n```\n")
 
 	require.NoError(t, err)
 	assert.Equal(t, "cmp examples/x.ubc source1.ubc\nexec ubc --echo examples/x.ubc\ncmp stdout output1\n", string(archive.Comment))
@@ -72,29 +72,29 @@ func TestTutorialArchive_ChecksTheShownSourceAgainstTheFileTheNextBlockRuns(t *t
 	}, archive.Files)
 }
 
-func TestTutorialArchive_IgnoresOtherBlocks(t *testing.T) {
-	archive, err := tutorialArchive("```\nplain\n```\n\n```sh\n$ ls\n```\n")
+func TestGuideArchive_IgnoresOtherBlocks(t *testing.T) {
+	archive, err := guideArchive("```\nplain\n```\n\n```sh\n$ ls\n```\n")
 
 	require.NoError(t, err)
 	assert.Empty(t, string(archive.Comment))
 	assert.Empty(t, archive.Files)
 }
 
-func TestTutorialArchive_ReadsFenceLinesInsideABlockAsContent(t *testing.T) {
-	archive, err := tutorialArchive("```text\n```ubc\n```\n```console\n$ ubc -e '1'\n1\n```\n")
+func TestGuideArchive_ReadsFenceLinesInsideABlockAsContent(t *testing.T) {
+	archive, err := guideArchive("```text\n```ubc\n```\n```console\n$ ubc -e '1'\n1\n```\n")
 
 	require.NoError(t, err)
 	assert.Equal(t, "exec ubc -e '1'\ncmp stdout output1\n", string(archive.Comment))
 }
 
-func TestTutorialArchive_ChecksTheLastUbcFileOfTheCommand(t *testing.T) {
-	archive, err := tutorialArchive("```ubc\nx\n```\n```console\n$ ubc examples/a.ubc examples/b.ubc\n```\n")
+func TestGuideArchive_ChecksTheLastUbcFileOfTheCommand(t *testing.T) {
+	archive, err := guideArchive("```ubc\nx\n```\n```console\n$ ubc examples/a.ubc examples/b.ubc\n```\n")
 
 	require.NoError(t, err)
 	assert.Contains(t, string(archive.Comment), "cmp examples/b.ubc source1.ubc\n")
 }
 
-func TestTutorialArchive_Fails(t *testing.T) {
+func TestGuideArchive_Fails(t *testing.T) {
 	tests := []struct {
 		name     string
 		markdown string
@@ -109,7 +109,7 @@ func TestTutorialArchive_Fails(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, err := tutorialArchive(tt.markdown)
+			_, err := guideArchive(tt.markdown)
 
 			assert.EqualError(t, err, tt.message)
 		})
