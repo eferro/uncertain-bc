@@ -45,3 +45,4 @@ Template: Status, Effective date, Deciders, then Context, Decision, Consequences
 | [0035](0035-exact-poisson-and-binomial-sampling.md) | Exact `poisson` and `binomial` sampling by recursive reduction | Accepted | 2026-11-22 |
 | [0036](0036-raw-mode-repl-tested-through-a-pseudo-terminal.md) | Raw-mode REPL tested through testscript's pseudo-terminal | Accepted | 2026-11-22 |
 | [0037](0037-repl-on-windows-consoles.md) | REPL on Windows consoles: escape processing on, checked in CI by reading the code | Accepted | 2026-11-22 |
+| [0038](0038-install-the-linux-packages-in-distribution-containers.md) | Install the `.rpm` and `.apk` packages in distribution containers after each release (amends 0026) | Accepted | 2026-11-22 |

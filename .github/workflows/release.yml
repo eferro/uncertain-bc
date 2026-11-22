@@ -87,6 +87,32 @@ jobs:
           sudo dpkg -i ./*_amd64.deb
           ubc --version | grep -F "ubc ${TAG#v}"
 
+  linux-package-install-check:
+    needs: release
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - image: fedora:latest
+            pattern: "*.x86_64.rpm"
+            install: dnf install -y
+          - image: alpine:latest
+            pattern: "*_x86_64.apk"
+            install: apk add --allow-untrusted
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install the package in ${{ matrix.image }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+          IMAGE: ${{ matrix.image }}
+          PATTERN: ${{ matrix.pattern }}
+          INSTALL: ${{ matrix.install }}
+        run: |
+          gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --pattern "$PATTERN" --dir pkg
+          docker run --rm -e TAG -e INSTALL -v "$PWD/pkg:/pkg:ro" "$IMAGE" \
+            sh -c '$INSTALL /pkg/* && ubc --version | grep -F "ubc ${TAG#v}"'
+
   brew-install-check:
     needs: release
     strategy:

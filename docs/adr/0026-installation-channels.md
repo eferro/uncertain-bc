@@ -18,7 +18,7 @@ Offer one obvious command per platform, all built from the same goreleaser relea
 | Install script (Windows) | `irm …/install.ps1 \| iex` | Verifies the checksum, installs to `%LOCALAPPDATA%\Programs\ubc`, adds it to the user `PATH` and runs `Unblock-File`, so SmartScreen does not warn. |
 | Homebrew (macOS, Linux) | `brew install eferro/tap/ubc` | goreleaser publishes the formula to `eferro/homebrew-tap`. |
 | Scoop (Windows) | `scoop bucket add eferro https://github.com/eferro/scoop-bucket` then `scoop install ubc` | goreleaser publishes the manifest to `eferro/scoop-bucket`. |
-| Linux packages | `.deb`, `.rpm`, `.apk` attached to each release | goreleaser `nfpms`. No package repository: download and install with `dpkg`/`rpm`/`apk`. |
+| Linux packages | `.deb`, `.rpm`, `.apk` attached to each release | goreleaser `nfpms`. No package repository: download and install with `dpkg`/`dnf`/`apk` (`dnf`, not `rpm -i`, since ADR 0038). |
 | Go | `go install github.com/eferro/uncertain-bc/cmd/ubc@latest` | `ubc --version` reads the module version from the build info. |
 
 Both install scripts accept `UBC_VERSION` and `UBC_INSTALL_DIR`. The POSIX script is tested offline against a fake GitHub (`install_test.go`), and CI runs `shellcheck` on every shell script. After each release, CI installs the new version through the scripts on Linux, macOS and Windows, and through `go install`, and checks the reported version.

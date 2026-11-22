@@ -86,7 +86,7 @@ scoop bucket add eferro https://github.com/eferro/scoop-bucket
 scoop install ubc
 ```
 
-**Debian, Ubuntu, Fedora, Alpine**: download the `.deb`, `.rpm` or `.apk` from the [latest release](https://github.com/eferro/uncertain-bc/releases/latest) and install it with `sudo dpkg -i`, `sudo rpm -i` or `sudo apk add --allow-untrusted`.
+**Debian, Ubuntu, Fedora, Alpine**: download the `.deb`, `.rpm` or `.apk` from the [latest release](https://github.com/eferro/uncertain-bc/releases/latest) and install it with `sudo dpkg -i ./ubc_*.deb`, `sudo dnf install ./ubc-*.rpm` or `sudo apk add --allow-untrusted ./ubc_*.apk` (the packages are not signed, so plain `rpm -i` refuses them on recent Fedora).
 
 **With Go**:
 
