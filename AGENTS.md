@@ -18,6 +18,7 @@
 - **Quality gates** (ADR 0012): `make validate` requires 90% coverage of `internal/`; `make test-mutation` (gremlins, CI) requires 85% efficacy on `internal/domain`; equivalent mutants are listed in `docs/mutation-testing.md` (ADR 0020). Thresholds only go up.
 - **Simplicity first.** Standard library unless a dependency clearly pays off. No cgo (ADR 0001).
 - **Keep the spec honest.** If behaviour changes, update `docs/SPEC.md` in the same commit; if a decision changes, add an ADR.
+- **Keep the changelog.** A user-visible change (a `feat:` or `fix:`, or a guide users read) adds an entry under `## [Unreleased]` in `CHANGELOG.md` in the same commit. To release, rename that section to `## [X.Y.Z] - YYYY-MM-DD`, add a new empty `## [Unreleased]` and the compare links, commit, then tag `vX.Y.Z`: the release notes are that section, and the release fails without it (ADR 0060).
 - **Small functions, clear names.** Comments only explain *why* (package docs, non-obvious math, SPEC/ADR references); never *what*; none in tests (ADR 0017). Enforced by golangci-lint (ADR 0013): funlen 20 lines, gocyclo/gocognit 10, gofumpt; `//nolint` only with linter name and reason.
 - **English** for code, docs, commits and ADRs. Conversation with the user can be in Spanish.
 - **Pending work lives in GitHub issues** (ADR 0027): pick the lowest open `enhancement`/`documentation` issue unless told otherwise; close it from the commit with `Closes #N`.

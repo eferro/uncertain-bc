@@ -110,6 +110,7 @@ A probability prints with two decimals, a plain number as it is. When a program 
 - [How-to guides](docs/HOWTO.md): recipes for common tasks, such as using your own data, comparing two options, a check in CI or a delivery forecast.
 - [Scenario catalogue](scenarios/README.md): ready-to-use models for teams, delivery, product, engineering, reliability, cloud costs and risk.
 - [Reference](docs/REFERENCE.md): every function, flag, REPL command, output format, exit code and common error.
+- [Changelog](CHANGELOG.md): what changed in each release.
 
 For contributors: the [specification](docs/SPEC.md), the [vision and roadmap](docs/VISION.md), the rules in [AGENTS.md](AGENTS.md) and the decisions in [docs/adr/](docs/adr/README.md). `make local-setup` enables the git hooks, `make help` lists the targets and `make validate` runs everything CI checks.
 

@@ -18,7 +18,7 @@ GREMLINS := $(TOOLS)/gremlins
 MUTATION_MIN := 85
 MUTATION_MEMORY_KB := 4000000
 
-.PHONY: help local-setup test test-pkg coverage format lint check-test-style check-architecture check-binary check-scripts secrets-scan test-mutation validate build release-check release-snapshot
+.PHONY: help local-setup test test-pkg coverage format lint check-test-style check-architecture check-binary check-scripts secrets-scan test-mutation validate build release-check release-snapshot release-notes
 
 help: ## List available targets
 	@grep -hE '^[a-zA-Z_-]+:.*## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*## "} {printf "  %-20s %s\n", $$1, $$2}'
@@ -85,3 +85,6 @@ release-check: $(GORELEASER) ## Validate the goreleaser configuration
 
 release-snapshot: $(GORELEASER) ## Build all release archives locally into dist/ without publishing
 	$(GORELEASER) release --snapshot --clean
+
+release-notes: ## Print the CHANGELOG.md section of a version, used as its release notes: make -s release-notes VERSION=v1.2.0 (ADR 0060)
+	@go run ./tools/releasenotes CHANGELOG.md $(VERSION)

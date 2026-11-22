@@ -1,0 +1,71 @@
+exec releasenotes CHANGELOG.md v0.2.0
+cmp stdout notes-0.2.0.md
+
+exec releasenotes CHANGELOG.md 0.1.0
+cmp stdout notes-0.1.0.md
+
+exec releasenotes CHANGELOG.md Unreleased
+cmp stdout notes-unreleased.md
+
+! exec releasenotes CHANGELOG.md v0.3.0
+! stdout .
+stderr '^releasenotes: CHANGELOG.md: no section for 0.3.0$'
+
+! exec releasenotes CHANGELOG.md v0.0.1
+! stdout .
+stderr '^releasenotes: CHANGELOG.md: the 0.0.1 section is empty$'
+
+! exec releasenotes CHANGELOG.md
+stderr '^usage: releasenotes CHANGELOG VERSION$'
+
+! exec releasenotes missing.md v0.2.0
+stderr '^releasenotes: open missing.md: '
+
+-- CHANGELOG.md --
+# Changelog
+
+All notable changes to this project are documented in this file.
+
+## [Unreleased]
+
+### Added
+
+- Something new.
+
+## [0.2.0] - 2026-11-21
+
+### Added
+
+- Distributions.
+
+### Fixed
+
+- A crash.
+
+## [0.1.0] - 2026-11-20
+
+### Added
+
+- Ranges.
+
+## [0.0.1] - 2026-11-19
+
+[Unreleased]: https://example.com/compare/v0.2.0...HEAD
+[0.2.0]: https://example.com/compare/v0.1.0...v0.2.0
+[0.1.0]: https://example.com/releases/tag/v0.1.0
+-- notes-0.2.0.md --
+### Added
+
+- Distributions.
+
+### Fixed
+
+- A crash.
+-- notes-0.1.0.md --
+### Added
+
+- Ranges.
+-- notes-unreleased.md --
+### Added
+
+- Something new.

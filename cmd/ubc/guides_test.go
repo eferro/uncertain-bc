@@ -40,6 +40,7 @@ func TestGuides_AreLinkedFromTheDocsThatPointReadersToThem(t *testing.T) {
 		{"scenarios/README.md", "(../docs/HOWTO.md)"},
 		{"README.md", "(docs/TUTORIAL.md)"},
 		{"README.md", "(scenarios/README.md)"},
+		{"README.md", "(CHANGELOG.md)"},
 	}
 	for _, tt := range tests {
 		doc, link := tt.doc, tt.link

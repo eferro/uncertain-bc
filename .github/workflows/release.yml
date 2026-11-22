@@ -19,10 +19,12 @@ jobs:
           go-version-file: go.mod
       - run: make local-setup
       - run: make validate
+      - name: Take the release notes from CHANGELOG.md (ADR 0060)
+        run: make -s release-notes VERSION="$GITHUB_REF_NAME" > "$RUNNER_TEMP/release-notes.md"
       - uses: goreleaser/goreleaser-action@a4f02ab5355a589de60d917a659ce617ed19b3de # v7.3.0
         with:
           version: v2.20.3
-          args: release --clean
+          args: release --clean --release-notes=${{ runner.temp }}/release-notes.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAP_GITHUB_TOKEN: ${{ secrets.TAP_GITHUB_TOKEN }}

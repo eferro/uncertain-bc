@@ -25,6 +25,7 @@ archives:
     files:
       - LICENSE
       - README.md
+      - CHANGELOG.md
 
 nfpms:
   - id: packages
@@ -42,6 +43,8 @@ nfpms:
         dst: /usr/share/doc/ubc/LICENSE
       - src: README.md
         dst: /usr/share/doc/ubc/README.md
+      - src: CHANGELOG.md
+        dst: /usr/share/doc/ubc/CHANGELOG.md
 
 homebrew_casks:
   - name: ubc
@@ -90,12 +93,6 @@ scoops:
 checksum:
   name_template: checksums.txt
 
-changelog:
-  use: git
-  sort: asc
-  filters:
-    exclude:
-      - "^docs"
-      - "^test"
-      - "^chore"
-      - "^ci"
+# Release notes are the version's section of CHANGELOG.md, passed with
+# --release-notes by the release workflow (ADR 0060), so there is no changelog
+# section: goreleaser does not generate one from the commits.
