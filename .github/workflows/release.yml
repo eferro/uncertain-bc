@@ -74,25 +74,15 @@ jobs:
           go install "github.com/eferro/uncertain-bc/cmd/ubc@$TAG"
           "$(go env GOPATH)/bin/ubc" --version | grep -F "ubc ${TAG#v}"
 
-  deb-install-check:
-    needs: release
-    runs-on: ubuntu-latest
-    steps:
-      - name: Install the .deb package
-        env:
-          GH_TOKEN: ${{ github.token }}
-          TAG: ${{ github.ref_name }}
-        run: |
-          gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --pattern '*_amd64.deb'
-          sudo dpkg -i ./*_amd64.deb
-          ubc --version | grep -F "ubc ${TAG#v}"
-
   linux-package-install-check:
     needs: release
     strategy:
       fail-fast: false
       matrix:
         include:
+          - image: ubuntu:latest
+            pattern: "*_amd64.deb"
+            install: dpkg -i
           - image: fedora:latest
             pattern: "*.x86_64.rpm"
             install: dnf install -y

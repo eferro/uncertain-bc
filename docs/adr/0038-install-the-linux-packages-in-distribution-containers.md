@@ -14,12 +14,12 @@ Installing the v0.7.2 packages by hand showed a real bug: on Fedora 45 (RPM 6.1)
 ## Decision
 
 1. **Document `dnf` for the `.rpm`.** The README says `sudo dnf install ./ubc-*.rpm` instead of `sudo rpm -i`. It is also the command Fedora and RHEL users expect for a downloaded package. Signing the packages stays out, as in ADR 0026.
-2. **A `linux-package-install-check` job in `release.yml`**, next to the `.deb` one. After the release job, a matrix downloads the `x86_64` `.rpm` and `.apk` of the tag, installs each one in a `fedora:latest` and an `alpine:latest` container (`docker run` on an Ubuntu runner, so `gh` stays outside the container) with the documented command, and checks that `ubc --version` reports the tag.
+2. **A `linux-package-install-check` job in `release.yml`** for the three packages. After the release job, a matrix downloads the `x86_64` `.deb`, `.rpm` and `.apk` of the tag, installs each one in an `ubuntu:latest`, a `fedora:latest` and an `alpine:latest` container (`docker run` on an Ubuntu runner, so `gh` stays outside the container) with the documented command, and checks that `ubc --version` reports the tag.
 3. **`latest` images, not pinned versions.** The point is to catch what breaks on current distributions, as RPM 6 just did. A pinned image would hide that until someone bumps it.
 
 ## Consequences
 
-- Every documented installation channel is now exercised after each release.
+- Every documented installation channel is now exercised after each release. The `.deb` check, a separate job until now, moved into the same matrix, so the three packages are checked the same way.
 - A new Fedora or Alpine release can turn the job red without any change on our side. That is the signal we want: the README must keep working for current users.
 - The job only runs on release tags, so it was verified locally by running the same script against v0.7.2 (and checked that it fails with `rpm -i` or a wrong version); the first tagged release runs it in CI.
 - Only `x86_64` is installed; the `aarch64` packages are built by the same goreleaser config and are not checked.
