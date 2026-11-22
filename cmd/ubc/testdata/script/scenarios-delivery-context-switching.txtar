@@ -1,0 +1,10 @@
+exec ubc scenarios/formulas.ubc scenarios/delivery/context-switching.ubc
+stdout '^L28: ≈ 43\.3 '
+stdout '^L29: ≈ 90\.5k '
+stdout '^L30: 0\.23\n\z'
+! stderr .
+exec ubc --set 'interruptions = 1 to 4' scenarios/formulas.ubc scenarios/delivery/context-switching.ubc
+stdout '^L30: <0\.01\n\z'
+exec ubc --sens lost_share scenarios/formulas.ubc scenarios/delivery/context-switching.ubc
+stdout '^sensitivity of lost_share \(rank correlation\):\n'
+stdout '^  interruptions +\+0\.\d\d '

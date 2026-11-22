@@ -1,0 +1,29 @@
+# Question: if the scope grows while we build it, how much later do we finish
+# than the plan says, and how likely are we to miss the date?
+#
+# Run it:
+#   ubc scenarios/delivery/scope-creep.ubc
+# Change an assumption, for example scope that is kept under control:
+#   ubc --set 'growth = 5% to 15%' scenarios/delivery/scope-creep.ubc
+# See which assumption matters most:
+#   ubc --sens weeks scenarios/delivery/scope-creep.ubc
+#
+# Every "a to b" is a 90% confidence interval.
+
+# Assumptions
+initial_scope = 80 to 120         # items in the plan when we commit to the date
+growth = 10% to 60%               # scope added before the end; requirements found while building, often 25-50%
+throughput = 8 to 12              # items finished a week
+deadline = 12                     # weeks until the committed date
+
+# Calculation
+scope = initial_scope * (1 + growth)       # items we will really build
+planned_weeks = initial_scope / throughput # what the plan says
+weeks = scope / throughput                 # what it will take
+weeks_late = weeks - planned_weeks         # the delay the growth alone adds
+
+# Result
+planned_weeks
+weeks
+weeks_late
+P(weeks > deadline)               # how likely are we to miss the date?

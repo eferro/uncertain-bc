@@ -52,3 +52,4 @@ Template: Status, Effective date, Deciders, then Context, Decision, Consequences
 | [0042](0042-scenario-catalogue.md) | A scenario catalogue checked by the test suite | Accepted | 2026-11-22 |
 | [0043](0043-reusable-formulas-for-the-scenarios.md) | Reusable formulas for the scenarios in one shared file | Accepted | 2026-11-22 |
 | [0044](0044-team-scenarios.md) | Team scenarios, self-contained and pinned by their answers | Accepted | 2026-11-22 |
+| [0045](0045-delivery-scenarios.md) | Delivery scenarios, with observed data as a replaceable default | Accepted | 2026-11-22 |

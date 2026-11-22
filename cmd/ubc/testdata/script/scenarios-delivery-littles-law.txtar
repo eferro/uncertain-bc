@@ -1,0 +1,12 @@
+exec ubc scenarios/formulas.ubc scenarios/delivery/littles-law.ubc
+stdout '^L28: ≈ 4 '
+stdout '^L29: ≈ 1\.51 '
+stdout '^L30: ≈ 2\.48 '
+stdout '^L31: 0\.95\n\z'
+! stderr .
+exec ubc --set 'wip_limit = 5' scenarios/formulas.ubc scenarios/delivery/littles-law.ubc
+stdout '^L29: ≈ 0\.947 '
+stdout '^L31: 1\n\z'
+exec ubc --sens lead_limited scenarios/formulas.ubc scenarios/delivery/littles-law.ubc
+stdout '^sensitivity of lead_limited \(rank correlation\):\n'
+stdout '^  throughput +-1\.00 '

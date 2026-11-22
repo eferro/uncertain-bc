@@ -1,0 +1,31 @@
+# Question: how long does an item take from start to finish, given the work in
+# progress and the throughput, and how likely is it to take at most two weeks
+# once work in progress is limited?
+#
+# Run it (it uses the shared formulas):
+#   ubc scenarios/formulas.ubc scenarios/delivery/littles-law.ubc
+# Change an assumption, for example a stricter limit:
+#   ubc --set 'wip_limit = 5' scenarios/formulas.ubc scenarios/delivery/littles-law.ubc
+# See which assumption matters most:
+#   ubc --sens lead_limited scenarios/formulas.ubc scenarios/delivery/littles-law.ubc
+#
+# Every "a to b" is a 90% confidence interval. Little's law holds for averages
+# in a stable system: limiting work in progress does not make the team finish
+# more items a week, it makes each item wait less.
+
+# Assumptions
+wip = 15 to 30                    # items started and not finished; count the cards in progress on the board
+throughput = 4 to 7               # items finished a week; take it from the last weeks
+wip_limit = 8                     # the limit the team would agree on
+target = 2                        # weeks the business would like an item to take
+
+# Calculation
+lead = lead_time(wip, throughput)                 # weeks an item takes today
+lead_limited = lead_time(wip_limit, throughput)   # weeks it would take with the limit
+weeks_saved = lead - lead_limited                 # what the limit takes off every item
+
+# Result
+lead
+lead_limited
+weeks_saved
+P(lead_limited <= target)         # how likely is an item to take at most two weeks with the limit?

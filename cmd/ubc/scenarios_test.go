@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"testing"
 
@@ -42,6 +43,13 @@ func TestScenarios_TheIndexListsEveryFile(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.Empty(t, missingFromIndex(string(index), files))
+}
+
+func TestScenarios_EveryIndexLinkPointsToAFile(t *testing.T) {
+	index, err := os.ReadFile(filepath.Join(scenariosDir, "README.md"))
+	require.NoError(t, err)
+
+	assert.Empty(t, brokenLinks(string(index), scenariosDir))
 }
 
 func TestScenarioArgs_RunsTheSharedFormulasFirst(t *testing.T) {
@@ -85,6 +93,17 @@ func TestMissingFromIndex_ListsFilesWithoutALink(t *testing.T) {
 	assert.Equal(t, []string{"team/b.ubc", "team/c.ubc"}, missing)
 }
 
+func TestBrokenLinks_ListsUbcLinksToMissingFiles(t *testing.T) {
+	root := filepath.Join(t.TempDir(), "scenarios")
+	writeFile(t, root, "team/a.ubc")
+	writeFile(t, root, "../examples/b.ubc")
+	index := "[a](team/a.ubc) [b](../examples/b.ubc) [c](team/c.ubc) [d](../examples/d.ubc) [tutorial](../docs/TUTORIAL.md)"
+
+	broken := brokenLinks(index, root)
+
+	assert.Equal(t, []string{"team/c.ubc", "../examples/d.ubc"}, broken)
+}
+
 func scenarioArgs(root, file string) []string {
 	formulas := filepath.Join(root, formulasFile)
 	if file == formulasFile {
@@ -101,6 +120,18 @@ func missingFromIndex(index string, files []string) []string {
 		}
 	}
 	return missing
+}
+
+var ubcLink = regexp.MustCompile(`\]\(([^)]+\.ubc)\)`)
+
+func brokenLinks(index, root string) []string {
+	var broken []string
+	for _, match := range ubcLink.FindAllStringSubmatch(index, -1) {
+		if _, err := os.Stat(filepath.Join(root, filepath.FromSlash(match[1]))); err != nil {
+			broken = append(broken, match[1])
+		}
+	}
+	return broken
 }
 
 func writeFile(t *testing.T, root, name string) {

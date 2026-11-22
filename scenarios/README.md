@@ -8,7 +8,7 @@ Run a scenario from the repository root:
 $ ubc scenarios/team/replace-a-person.ubc
 ```
 
-Every scenario is checked by the test suite: it must evaluate without errors and be listed in the index below ([ADR 0042](../docs/adr/0042-scenario-catalogue.md)).
+Every scenario is checked by the test suite: it must evaluate without errors and be listed in the index below, and every model the index links to must exist ([ADR 0042](../docs/adr/0042-scenario-catalogue.md), [ADR 0045](../docs/adr/0045-delivery-scenarios.md)).
 
 ## Index
 
@@ -22,6 +22,11 @@ Every scenario is checked by the test suite: it must evaluate without errors and
 | team | [meeting-cost](team/meeting-cost.ubc) | How much does a recurring weekly meeting cost in a year, and how likely is it to exceed 30k euros? |
 | team | [in-house-vs-contractors](team/in-house-vs-contractors.ubc) | For a year of work, what do hiring, contractors and outsourcing cost, and how likely is hiring to be the cheapest? |
 | team | [bus-factor](team/bus-factor.ubc) | What does it cost a year to depend on the only person who knows a system, and is spreading the knowledge worth it? |
+| delivery | [delivery-date](delivery/delivery-date.ubc) | With the throughput the team has really had (`--data throughput=weeks.txt`), how many weeks will the backlog take, and how likely is it to be done within 12 weeks? |
+| delivery | [project-estimate](../examples/project-estimate.ubc) | How long will a feature take when it is estimated as a sum of task ranges plus forgotten work, and how likely is it to miss the deadline? (A worked model from the [tutorial](../docs/TUTORIAL.md).) |
+| delivery | [littles-law](delivery/littles-law.ubc) | How long does an item take, given the work in progress and the throughput (Little's law), and how much shorter would a WIP limit make it? |
+| delivery | [scope-creep](delivery/scope-creep.ubc) | If the scope grows while we build it, how much later do we finish than the plan says, and how likely are we to miss the date? |
+| delivery | [context-switching](delivery/context-switching.ubc) | How much of the working day do interruptions eat (interruptions a day × minutes lost × people), what does it cost a year, and how likely is it to be more than a quarter of the day? |
 | all | [formulas](formulas.ubc) | Reusable formulas shared by every scenario: loaded cost, real capacity, Little's law, cost of delay and CD3, LTV and CAC payback, annual loss expectancy, availability in series and in parallel, compound growth, present value and NPV. |
 
 ## Reusable formulas

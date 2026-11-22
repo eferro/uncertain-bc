@@ -1,0 +1,29 @@
+# Question: with the throughput the team has really had, how many weeks will
+# the rest of the backlog take, and how likely is it to be done within 12
+# weeks?
+#
+# Run it with the example throughput below:
+#   ubc scenarios/delivery/delivery-date.ubc
+# Use your own history, one number per line (items finished each week):
+#   ubc --data throughput=weeks.txt scenarios/delivery/delivery-date.ubc
+# Change an assumption, for example a backlog that has been trimmed:
+#   ubc --set 'backlog = 30 to 40' scenarios/delivery/delivery-date.ubc
+# See which assumption matters most:
+#   ubc --sens weeks scenarios/delivery/delivery-date.ubc
+#
+# Every "a to b" is a 90% confidence interval. A list "[...]" is observed data:
+# every sample picks one of its values at random.
+
+# Assumptions
+backlog = 40 to 60                # items left, splitting and new findings included
+throughput = [3, 5, 2, 6, 4, 4, 7, 3, 5, 1, 4, 6]   # items finished each of the last 12 weeks; --data replaces it
+deadline = 12                     # weeks until the date we were asked for
+
+# Calculation
+horizon = mean(backlog) / mean(throughput)                                 # rough number of weeks ahead
+weekly_rate = normal(mean(throughput), stdev(throughput) / sqrt(horizon))  # average of that many weeks: good and bad weeks even out
+weeks = backlog / weekly_rate                                              # weeks to finish the backlog
+
+# Result
+weeks
+P(weeks <= deadline)              # how likely is the backlog to be done within 12 weeks?
