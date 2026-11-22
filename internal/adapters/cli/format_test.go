@@ -56,6 +56,56 @@ func TestSignificant_ShowsNoFloatNoise_WhenRoundingToTensOrMore(t *testing.T) {
 	}
 }
 
+func TestRoundForSummary_KeepsTwoSignificantFiguresOfTheWidth_WhenFinerThanThreeOfItsOwn(t *testing.T) {
+	cases := []struct{ x, width, want float64 }{
+		{1001234, 2012, 1001200},
+		{-1001234, 2012, -1001200},
+		{0.999871, 0.00046, 0.99987},
+		{1000.4, 10.4, 1000},
+		{1004.6, 99.4, 1005},
+	}
+	for _, c := range cases {
+		assert.Equal(t, c.want, roundForSummary(c.x, c.width), "roundForSummary(%v, %v)", c.x, c.width)
+	}
+}
+
+func TestRoundForSummary_KeepsThreeSignificantFiguresOfItsOwn_WhenTheWidthIsWider(t *testing.T) {
+	cases := []struct{ x, width, want float64 }{
+		{14.142, 9.8, 14.1},
+		{170.3, 200, 170},
+		{1234, 0, 1230},
+		{1234, 100, 1230},
+		{0, 5, 0},
+	}
+	for _, c := range cases {
+		assert.Equal(t, c.want, roundForSummary(c.x, c.width), "roundForSummary(%v, %v)", c.x, c.width)
+	}
+}
+
+func TestSummaryNumbers_TellTheEndsOfANarrowIntervalApart(t *testing.T) {
+	got := summaryNumbers(ramp(1_000_000, 1_002_000), unicodeStyle)
+
+	assert.Equal(t, "≈ 1.001M   90% [1.0001M … 1.0019M]   98% [1M … 1.002M]", got)
+}
+
+func TestSummaryNumbers_TellTheEndsOfANarrowInnerIntervalApart_WithAnotherWidth(t *testing.T) {
+	st := unicodeStyle
+	st.interval = 5
+
+	got := summaryNumbers(ramp(1_000_000, 1_002_000), st)
+
+	assert.Equal(t, "≈ 1.001M   5% [1.00095M … 1.00105M]   98% [1M … 1.002M]", got)
+}
+
+func TestSummaryNumbers_TellNarrowQuantilesApart_UsingTheWidthOfTheInnerInterval(t *testing.T) {
+	st := unicodeStyle
+	st.quantiles = []float64{5, 95}
+
+	got := summaryNumbers(ramp(1_000_000, 1_002_000), st)
+
+	assert.Equal(t, "≈ 1.001M   p5 1.0001M   p95 1.0019M", got)
+}
+
 func TestProbability_ShowsTwoDecimalsAndFlagsTheExtremes(t *testing.T) {
 	cases := map[float64]string{
 		0.5:   "0.50",
@@ -133,12 +183,14 @@ func TestTailEnds_KeepTwoSignificantFiguresOfTheirOwn_WhenTheDistanceIsCoarser(t
 	}
 }
 
-func TestIntervals_KeepThe98PercentAroundThe90Percent_WhenTheInnerEndsRoundFurtherOut(t *testing.T) {
-	samples := clampedRamp(1004, 1046)
-
-	got := intervals(samples, unicodeStyle)
-
-	assert.Equal(t, "90% [1000 … 1050]   98% [1000 … 1050]", got)
+func TestSummaryNumbers_KeepThe98PercentAroundThe90Percent_WhenTheInnerEndsRoundFurtherOut(t *testing.T) {
+	cases := map[string]domain.SampleSet{
+		"≈ 1000   90% [1000 … 1000]   98% [1000 … 1007]": repeated(map[float64]int{1001: 3, 1004: 94, 1007: 3}),
+		"≈ 1050   90% [1050 … 1050]   98% [1043 … 1050]": repeated(map[float64]int{1043: 3, 1046: 94, 1047: 3}),
+	}
+	for want, samples := range cases {
+		assert.Equal(t, want, summaryNumbers(samples, unicodeStyle))
+	}
 }
 
 func TestTailEnds_KeepThreeSignificantFigures_WhenBothEndsAreEqual(t *testing.T) {
@@ -160,10 +212,12 @@ func TestTailEnds_ContainTheTailsAndTheInnerInterval_ForSkewedSamples(t *testing
 	}
 }
 
-func clampedRamp(lo, hi float64) domain.SampleSet {
-	samples := make(domain.SampleSet, 100)
-	for i := range samples {
-		samples[i] = min(max(lo, 1000+float64(i)/2), hi)
+func repeated(counts map[float64]int) domain.SampleSet {
+	var samples domain.SampleSet
+	for value, count := range counts {
+		for range count {
+			samples = append(samples, value)
+		}
 	}
 	return samples
 }
@@ -173,6 +227,14 @@ func skewedSamples(seed uint64) domain.SampleSet {
 	samples := make(domain.SampleSet, 5000)
 	for i := range samples {
 		samples[i] = 1000 * math.Exp(r.NormFloat64())
+	}
+	return samples
+}
+
+func ramp(lo, hi float64) domain.SampleSet {
+	samples := make(domain.SampleSet, 1001)
+	for i := range samples {
+		samples[i] = lo + (hi-lo)*float64(i)/1000
 	}
 	return samples
 }

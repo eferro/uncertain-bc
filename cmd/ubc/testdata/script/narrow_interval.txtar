@@ -1,0 +1,8 @@
+exec ubc -e '1M to 1.002M'
+stdout '^≈ 1\.001M   90% \[1M … 1\.002M\]   98% \[999\.5k … 1\.0025M\]   '
+
+exec ubc -e '0.999 to 0.9999'
+stdout '^≈ 0\.99945   90% \[0\.999 … 0\.99989\]   '
+
+exec ubc --quantiles 5,95 -e '1M to 1.002M'
+stdout '^≈ 1\.001M   p5 1M   p95 1\.002M   '

@@ -1,6 +1,6 @@
 # ADR 0006: bc-like CLI with an honest one-line summary
 
-- Status: Accepted, amended by [ADR 0022](0022-unicode-output-everywhere.md) and [ADR 0040](0040-nested-98-percent-interval.md)
+- Status: Accepted, amended by [ADR 0022](0022-unicode-output-everywhere.md), [ADR 0040](0040-nested-98-percent-interval.md) and [ADR 0052](0052-keep-enough-digits-for-narrow-intervals.md)
 - Effective date: 2026-11-21
 - Deciders: eduardo.ferro
 

@@ -118,26 +118,34 @@ func summarise(v domain.SampleSet, st style) string {
 }
 
 func summaryNumbers(v domain.SampleSet, st style) string {
-	median := st.approx + " " + significant(v.Quantile(0.5))
+	width := innerWidth(v, st.interval)
+	median := st.approx + " " + suffixed(roundForSummary(v.Quantile(0.5), width))
 	if len(st.quantiles) > 0 {
-		return median + quantileList(v, st.quantiles)
+		return median + quantileList(v, st.quantiles, width)
 	}
-	return median + "   " + intervals(v, st)
+	return median + "   " + intervals(v, st, width)
 }
 
-func quantileList(v domain.SampleSet, quantiles []float64) string {
+// innerWidth is the width of the inner interval even when --quantiles hides
+// it, so one rounding rule covers every summary (ADR 0052).
+func innerWidth(v domain.SampleSet, interval float64) float64 {
+	ends := intervalEnds(interval)
+	return v.Quantile(ends[1]/100) - v.Quantile(ends[0]/100)
+}
+
+func quantileList(v domain.SampleSet, quantiles []float64, width float64) string {
 	var list strings.Builder
 	for _, q := range quantiles {
-		fmt.Fprintf(&list, "   %s %s", quantileLabel(q), significant(v.Quantile(q/100)))
+		fmt.Fprintf(&list, "   %s %s", quantileLabel(q), suffixed(roundForSummary(v.Quantile(q/100), width)))
 	}
 	return list.String()
 }
 
 // intervals nests the tail interval around the inner one only while it is
 // the wider of the two (ADR 0040).
-func intervals(v domain.SampleSet, st style) string {
+func intervals(v domain.SampleSet, st style, width float64) string {
 	ends := intervalEnds(st.interval)
-	lo, hi := roundForSummary(v.Quantile(ends[0]/100)), roundForSummary(v.Quantile(ends[1]/100))
+	lo, hi := roundForSummary(v.Quantile(ends[0]/100), width), roundForSummary(v.Quantile(ends[1]/100), width)
 	inner := interval(st.interval, suffixed(lo), suffixed(hi), st)
 	if st.interval >= tailInterval {
 		return inner
@@ -158,7 +166,7 @@ func interval(width float64, lo, hi string, st style) string {
 // interval always contains the true tails and the inner interval (ADR 0051).
 func tailEnds(p1, p99, innerLo, innerHi float64) (float64, float64) {
 	if p1 == p99 {
-		return roundForSummary(p1), roundForSummary(p99)
+		return roundForSummary(p1, 0), roundForSummary(p99, 0)
 	}
 	spread := magnitude(p99-p1) - 1
 	lo := roundOutwards(p1, min(spread, magnitude(p1)-1), -1)
@@ -203,16 +211,29 @@ var suffixes = []struct {
 // significant keeps three significant figures, because Monte Carlo noise makes
 // further digits meaningless (ADR 0006), and uses suffixes from 10k up (SPEC §6).
 func significant(x float64) string {
-	return suffixed(roundForSummary(x))
+	return suffixed(roundForSummary(x, 0))
 }
 
-// summaryFigures is the precision of every summary number but the 98% ends;
-// the 98% clamp relies on rounding the inner ends exactly as they are printed
-// (ADR 0006, ADR 0051).
-const summaryFigures = 3
+// summaryFigures and widthFigures set the precision of every summary number
+// but the 98% ends; the 98% clamp relies on rounding the inner ends exactly as
+// they are printed (ADR 0006, ADR 0051, ADR 0052).
+const (
+	summaryFigures = 3
+	widthFigures   = 2
+)
 
-func roundForSummary(x float64) float64 {
-	return roundSignificant(x, summaryFigures)
+// roundForSummary keeps the finer of three significant figures of x and two
+// of the inner interval's width, so the ends of a narrow interval never
+// collapse into one number (ADR 0052). A zero width leaves the first rule.
+func roundForSummary(x, width float64) float64 {
+	if x == 0 {
+		return 0
+	}
+	exponent := magnitude(x) - summaryFigures + 1
+	if width > 0 {
+		exponent = min(exponent, magnitude(width)-widthFigures+1)
+	}
+	return roundToPowerOfTen(x, exponent)
 }
 
 func suffixed(rounded float64) string {

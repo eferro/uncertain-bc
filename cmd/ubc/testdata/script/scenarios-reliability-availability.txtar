@@ -3,6 +3,9 @@ stdout '^L36: ≈ 2\.8 '
 stdout '^L37: ≈ 68\.6 '
 stdout '^L38: 0\.14\n\z'
 ! stderr .
+exec ubc --echo scenarios/formulas.ubc scenarios/reliability/availability.ubc
+stdout '^balancer = ≈ 0\.99978   90% \[0\.99951 … 0\.9999\]   98% \[0\.9993 … 0\.99993\]   '
+stdout '^application = ≈ 0\.99996   90% \[0\.99961 … 1\]   '
 exec ubc --set 'database_down = 0.01% to 0.05%' scenarios/formulas.ubc scenarios/reliability/availability.ubc
 stdout '^L38: 0\.93\n\z'
 exec ubc --sens availability scenarios/formulas.ubc scenarios/reliability/availability.ubc

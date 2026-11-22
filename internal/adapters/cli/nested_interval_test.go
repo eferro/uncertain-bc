@@ -54,5 +54,5 @@ func TestNestedInterval_AppliesToFailedAssertions(t *testing.T) {
 func TestNestedInterval_RoundsItsEndsOutwardsToTheSpread_WhenTheDistributionIsNarrow(t *testing.T) {
 	got := run(t, "", "-e", "1000 to 1010")
 
-	assert.Regexp(t, `^≈ 1010   90% \[1000 … 1010\]   98% \[997 … 1013\]   `, got.stdout)
+	assert.Regexp(t, `^≈ 1005   90% \[1000 … 1009\.9\]   98% \[997 … 1013\]   `, got.stdout)
 }

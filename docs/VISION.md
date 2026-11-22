@@ -116,7 +116,7 @@ REPL commands start with `:` so they never clash with the language: `:hist x`, `
 
 ## 6. Output design
 
-- **Default line:** `≈ median   90% [p5 … p95]   98% [p1 … p99]   sparkline`, three significant figures, the outer interval rounded more coarsely and outwards, so it always contains the inner one (ADR 0040, ADR 0051).
+- **Default line:** `≈ median   90% [p5 … p95]   98% [p1 … p99]   sparkline`, three significant figures (more when the interval is narrow, so its ends stay apart), the outer interval rounded more coarsely and outwards, so it always contains the inner one (ADR 0040, ADR 0051, ADR 0052).
 - **Plain numbers stay plain:** `2 + 2` prints `4`, as in bc.
 - **Probabilities:** a single number with two decimals.
 - **Machine output:** `--json` (summary stats plus optional samples) and `--plain` (just the median, for `$(ubc -e ...)`).
