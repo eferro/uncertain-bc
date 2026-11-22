@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"slices"
 	"strings"
 	"testing"
 
@@ -113,9 +114,10 @@ func scenarioArgs(root, file string) []string {
 }
 
 func missingFromIndex(index string, files []string) []string {
+	links := indexLinks(index)
 	var missing []string
 	for _, file := range files {
-		if !strings.Contains(index, "]("+file+")") {
+		if !slices.Contains(links, file) {
 			missing = append(missing, file)
 		}
 	}
@@ -124,11 +126,19 @@ func missingFromIndex(index string, files []string) []string {
 
 var ubcLink = regexp.MustCompile(`\]\(([^)]+\.ubc)\)`)
 
+func indexLinks(index string) []string {
+	var links []string
+	for _, match := range ubcLink.FindAllStringSubmatch(index, -1) {
+		links = append(links, match[1])
+	}
+	return links
+}
+
 func brokenLinks(index, root string) []string {
 	var broken []string
-	for _, match := range ubcLink.FindAllStringSubmatch(index, -1) {
-		if _, err := os.Stat(filepath.Join(root, filepath.FromSlash(match[1]))); err != nil {
-			broken = append(broken, match[1])
+	for _, link := range indexLinks(index) {
+		if _, err := os.Stat(filepath.Join(root, filepath.FromSlash(link))); err != nil {
+			broken = append(broken, link)
 		}
 	}
 	return broken
