@@ -1,10 +1,10 @@
-exec ubc scenarios/formulas.ubc scenarios/team/attrition-cost.ubc
+exec ubc scenarios/team/attrition-cost.ubc
 stdout '^L23: ≈ 5\.07 '
 stdout '^L24: ≈ 318k '
 stdout '^L25: 0\.12\n\z'
 ! stderr .
-exec ubc --set 'people = 100' scenarios/formulas.ubc scenarios/team/attrition-cost.ubc
+exec ubc --set 'people = 100' scenarios/team/attrition-cost.ubc
 stdout '^L25: 0\.88\n\z'
-exec ubc --sens yearly_cost scenarios/formulas.ubc scenarios/team/attrition-cost.ubc
+exec ubc --sens yearly_cost scenarios/team/attrition-cost.ubc
 stdout '^sensitivity of yearly_cost \(rank correlation\):\n'
 stdout '^  replacement_cost +\+0\.69 '
