@@ -1,0 +1,30 @@
+# Question: what will the per-seat SaaS tools cost a month in two years if
+# the team keeps growing, and how likely is the bill to exceed 20k dollars a
+# month by then?
+#
+# Run it (it uses the shared formulas):
+#   ubc scenarios/formulas.ubc scenarios/cloud/saas-seats.ubc
+# Change an assumption, for example a hiring freeze:
+#   ubc --set 'growth = 0.2% to 1%' scenarios/formulas.ubc scenarios/cloud/saas-seats.ubc
+# See which assumption matters most:
+#   ubc --sens bill_later scenarios/formulas.ubc scenarios/cloud/saas-seats.ubc
+#
+# Every "a to b" is a 90% confidence interval. Amounts are in dollars. Seats
+# are bought for everyone, and some are never given back: people who left,
+# annual true-ups, tools bought for a team that moved on.
+
+# Assumptions
+team = 40                         # people today
+growth = 1% to 4%                 # how much the team grows every month
+per_seat = 150 to 300             # monthly SaaS tools per person: chat, docs, design, IDE, security
+unused = 10% to 25%               # seats paid for on top of the people who use them
+months = 24                       # horizon
+
+# Calculation
+team_later = compound(team, growth, months)               # people at the end of the horizon
+bill_later = team_later * (1 + unused) * per_seat         # the monthly bill then, unused seats included
+
+# Result
+team_later
+bill_later
+P(bill_later > 20k)               # how likely are the seats to cost more than 20k dollars a month in two years?

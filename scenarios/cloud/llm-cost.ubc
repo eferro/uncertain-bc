@@ -1,0 +1,33 @@
+# Question: what does an LLM feature cost a month when it is billed by the
+# token (users × requests × tokens × price), and how likely is the bill to
+# exceed 3k dollars a month?
+#
+# Run it:
+#   ubc scenarios/cloud/llm-cost.ubc
+# Change an assumption, for example a shorter prompt with less context:
+#   ubc --set 'input_tokens = 300 to 1k' scenarios/cloud/llm-cost.ubc
+# See which assumption matters most:
+#   ubc --sens monthly_cost scenarios/cloud/llm-cost.ubc
+#
+# Every "a to b" is a 90% confidence interval. Amounts are in dollars, the
+# currency API providers bill in. Input tokens are everything sent to the
+# model (instructions, retrieved context, conversation history), which is
+# why they usually outnumber the output by several times.
+
+# Assumptions
+users = 2k to 10k                 # monthly active users of the feature
+requests_per_user = 20 to 100     # requests each user makes a month
+input_tokens = 1k to 4k           # tokens sent with each request, context included
+output_tokens = 200 to 800        # tokens the model answers with
+input_price = 1 to 3              # dollars per million input tokens, from the provider's price list
+output_price = 5 to 15            # dollars per million output tokens, usually 3-5 times the input price
+
+# Calculation
+requests = users * requests_per_user                                               # requests a month
+cost_per_request = (input_tokens * input_price + output_tokens * output_price) / 1M    # prices are per million tokens
+monthly_cost = requests * cost_per_request                                         # the monthly bill
+
+# Result
+cost_per_request
+monthly_cost
+P(monthly_cost > 3k)              # how likely is the bill to exceed 3k dollars a month?

@@ -56,3 +56,4 @@ Template: Status, Effective date, Deciders, then Context, Decision, Consequences
 | [0046](0046-product-scenarios.md) | Product scenarios around cost of delay, with ranges in place of confidence factors | Accepted | 2026-11-22 |
 | [0047](0047-engineering-scenarios.md) | Engineering scenarios for technical debt and productivity, counted in recoverable hours | Accepted | 2026-11-22 |
 | [0048](0048-reliability-scenarios.md) | Reliability scenarios, with availability described by its downtime share | Accepted | 2026-11-22 |
+| [0049](0049-cloud-cost-scenarios.md) | Cloud and variable cost scenarios, in dollars | Accepted | 2026-11-22 |

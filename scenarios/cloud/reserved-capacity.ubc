@@ -1,0 +1,29 @@
+# Question: should we commit to a year of reserved capacity or a savings
+# plan when we are not sure how much we will use, and how likely is the
+# commitment to come out cheaper than paying on demand?
+#
+# Run it:
+#   ubc scenarios/cloud/reserved-capacity.ubc
+# Change an assumption, for example a usage that may shrink after a migration:
+#   ubc --set 'usage = 20k to 60k' scenarios/cloud/reserved-capacity.ubc
+# See which assumption matters most:
+#   ubc --sens savings scenarios/cloud/reserved-capacity.ubc
+#
+# Every "a to b" is a 90% confidence interval. Amounts are in dollars a
+# month, at on-demand prices. The commitment is paid whether it is used or
+# not, at a discount; usage above it is paid on demand.
+
+# Assumptions
+usage = 30k to 80k                # average monthly compute over the year, at on-demand prices
+commitment = 50k                  # the monthly usage we commit to, at on-demand prices
+discount = 20% to 35%             # the discount for committing for a year, from the provider's price list
+
+# Calculation
+on_demand = usage                                                     # paying on demand for everything
+committed = commitment * (1 - discount) + max(usage - commitment, 0)  # the commitment, plus any usage above it
+savings = (on_demand - committed) * 12                                # a year of savings; negative when the commitment is wasted
+
+# Result
+savings
+P(usage < commitment)             # how likely are we to pay for capacity we do not use?
+P(savings > 0)                    # how likely is the commitment to come out cheaper?

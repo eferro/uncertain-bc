@@ -1,0 +1,31 @@
+# Question: if the data we store grows by a few percent every month, what
+# will storage cost in two years, what will the two years cost in total, and
+# how likely is the monthly bill to exceed 3k dollars by then?
+#
+# Run it (it uses the shared formulas):
+#   ubc scenarios/formulas.ubc scenarios/cloud/storage-growth.ubc
+# Change an assumption, for example a retention policy that deletes old data:
+#   ubc --set 'growth = 1% to 3%' scenarios/formulas.ubc scenarios/cloud/storage-growth.ubc
+# See which assumption matters most:
+#   ubc --sens bill_later scenarios/formulas.ubc scenarios/cloud/storage-growth.ubc
+#
+# Every "a to b" is a 90% confidence interval. Amounts are in dollars.
+# Growth compounds: 5% a month is not 120% in two years but 223%, so a
+# small change in the monthly rate moves the result a lot.
+
+# Assumptions
+data_tb = 20 to 50                # terabytes stored today
+growth = 3% to 8%                 # how much the data grows every month
+price_per_tb = 20 to 25           # dollars per terabyte a month, from the storage class we use
+months = 24                       # horizon
+
+# Calculation
+data_later = compound(data_tb, growth, months)                       # terabytes stored at the end of the horizon
+bill_later = data_later * price_per_tb                               # the monthly bill then
+total = (data_later - data_tb) / growth * price_per_tb               # every month's bill added up (a geometric series)
+
+# Result
+data_later
+bill_later
+total
+P(bill_later > 3k)                # how likely is storage to cost more than 3k dollars a month in two years?

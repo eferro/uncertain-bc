@@ -1,0 +1,10 @@
+exec ubc scenarios/formulas.ubc scenarios/cloud/saas-seats.ubc
+stdout '^L28: ≈ 64\.4 '
+stdout '^L29: ≈ 16\.2k '
+stdout '^L30: 0\.24\n\z'
+! stderr .
+exec ubc --set 'growth = 0.2% to 1%' scenarios/formulas.ubc scenarios/cloud/saas-seats.ubc
+stdout '^L30: <0\.01\n\z'
+exec ubc --sens bill_later scenarios/formulas.ubc scenarios/cloud/saas-seats.ubc
+stdout '^sensitivity of bill_later \(rank correlation\):\n'
+stdout '^  growth +\+0\.\d\d '

@@ -1,0 +1,10 @@
+exec ubc scenarios/cloud/reserved-capacity.ubc
+stdout '^L27: ≈ 129k '
+stdout '^L28: 0\.53\n'
+stdout '^L29: 0\.83\n\z'
+! stderr .
+exec ubc --set 'usage = 20k to 60k' scenarios/cloud/reserved-capacity.ubc
+stdout '^L29: 0\.44\n\z'
+exec ubc --sens savings scenarios/cloud/reserved-capacity.ubc
+stdout '^sensitivity of savings \(rank correlation\):\n'
+stdout '^  usage +\+0\.\d\d '

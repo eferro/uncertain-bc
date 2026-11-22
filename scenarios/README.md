@@ -49,6 +49,14 @@ Every scenario is checked by the test suite: it must evaluate without errors and
 | reliability | [error-budget](reliability/error-budget.ubc) | How many minutes of downtime does an SLO allow in a month, how many can we expect, and how likely are we to overspend the error budget? |
 | reliability | [capacity](reliability/capacity.ubc) | How many nodes does next year's peak traffic need, with headroom and one spare, and how likely is the current cluster to fall short? |
 | reliability | [bug-cost](reliability/bug-cost.ubc) | What does a bug cost when it is caught in code review, in QA or in production, and how likely is a production bug to cost more than ten times one caught in QA? |
+| cloud | [serverless-bill](../examples/cloud-cost.ubc) | What will the monthly bill of a small serverless web app be (requests, storage, egress and a managed database), and how likely is it to exceed 300 dollars? (A worked model from the [tutorial](../docs/TUTORIAL.md).) |
+| cloud | [llm-cost](cloud/llm-cost.ubc) | What does an LLM feature cost a month when it is billed by the token (users × requests × tokens × price), and how likely is the bill to exceed 3k dollars? |
+| cloud | [observability](cloud/observability.ubc) | What does observability cost a month when logs are billed by the gigabyte ingested and retained, and how likely is it to exceed 1.5k dollars? |
+| cloud | [storage-growth](cloud/storage-growth.ubc) | If the stored data grows by a few percent every month, what will storage cost in two years and in total, and how likely is the monthly bill to exceed 3k dollars by then? |
+| cloud | [reserved-capacity](cloud/reserved-capacity.ubc) | Should we commit to a year of reserved capacity or a savings plan under an uncertain usage, and how likely is the commitment to come out cheaper than on demand? |
+| cloud | [cost-per-customer](cloud/cost-per-customer.ubc) | What does the infrastructure for one customer cost a month (unit economics), and how likely is it to take more than 30% of the price? |
+| cloud | [saas-seats](cloud/saas-seats.ubc) | What will the per-seat SaaS tools cost a month in two years as the team grows, unused seats included, and how likely is the bill to exceed 20k dollars? |
+| cloud | [ephemeral-environments](cloud/ephemeral-environments.ubc) | What do ephemeral environments, one per pull request, cost a month (pull requests a day × hours alive × cost per hour), and how likely is it to exceed 10k dollars? |
 | all | [formulas](formulas.ubc) | Reusable formulas shared by every scenario: loaded cost, real capacity, Little's law, cost of delay and CD3, LTV and CAC payback, annual loss expectancy, availability in series and in parallel, compound growth, present value and NPV. |
 
 ## Reusable formulas

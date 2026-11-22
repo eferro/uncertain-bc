@@ -1,0 +1,11 @@
+exec ubc scenarios/formulas.ubc scenarios/cloud/storage-growth.ubc
+stdout '^L28: ≈ 101 '
+stdout '^L29: ≈ 2260 '
+stdout '^L30: ≈ 31\.8k '
+stdout '^L31: 0\.27\n\z'
+! stderr .
+exec ubc --set 'growth = 1% to 3%' scenarios/formulas.ubc scenarios/cloud/storage-growth.ubc
+stdout '^L31: <0\.01\n\z'
+exec ubc --sens bill_later scenarios/formulas.ubc scenarios/cloud/storage-growth.ubc
+stdout '^sensitivity of bill_later \(rank correlation\):\n'
+stdout '^  growth +\+0\.\d\d '

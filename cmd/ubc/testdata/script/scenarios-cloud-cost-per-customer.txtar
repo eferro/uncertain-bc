@@ -1,0 +1,10 @@
+exec ubc scenarios/cloud/cost-per-customer.ubc
+stdout '^L27: ≈ 69\.7 '
+stdout '^L28: ≈ 0\.232 '
+stdout '^L29: 0\.21\n\z'
+! stderr .
+exec ubc --set 'customers = 1k to 3k' scenarios/cloud/cost-per-customer.ubc
+stdout '^L29: 0\.03\n\z'
+exec ubc --sens cost_per_customer scenarios/cloud/cost-per-customer.ubc
+stdout '^sensitivity of cost_per_customer \(rank correlation\):\n'
+stdout '^  customers +-0\.\d\d '

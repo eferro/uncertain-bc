@@ -1,0 +1,29 @@
+# Question: what does the infrastructure for one customer cost a month (the
+# shared platform divided among customers, plus what each one adds), and how
+# likely is it to take more than 30% of the price they pay?
+#
+# Run it:
+#   ubc scenarios/cloud/cost-per-customer.ubc
+# Change an assumption, for example twice as many customers on the same platform:
+#   ubc --set 'customers = 1k to 3k' scenarios/cloud/cost-per-customer.ubc
+# See which assumption matters most:
+#   ubc --sens cost_per_customer scenarios/cloud/cost-per-customer.ubc
+#
+# Every "a to b" is a 90% confidence interval. Amounts are in dollars a
+# month. SaaS companies usually aim for a gross margin of 75-80%, and
+# infrastructure is most of the cost of serving a customer.
+
+# Assumptions
+customers = 500 to 1.5k           # paying customers
+platform = 20k to 50k             # the shared bill: clusters, databases, networking, tooling
+per_customer = 15 to 60           # what each customer adds: storage, emails, API calls, support tooling
+price = 300                       # what a customer pays a month
+
+# Calculation
+cost_per_customer = platform / customers + per_customer        # a share of the platform plus what the customer adds
+infra_share = cost_per_customer / price                        # the share of the price that goes to infrastructure
+
+# Result
+cost_per_customer
+infra_share
+P(infra_share > 30%)              # how likely is infrastructure to take more than 30% of the price?

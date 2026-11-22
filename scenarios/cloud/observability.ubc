@@ -1,0 +1,33 @@
+# Question: what does observability cost a month when the vendor bills by
+# the gigabyte of logs ingested and retained, and how likely is it to exceed
+# 1.5k dollars a month?
+#
+# Run it:
+#   ubc scenarios/cloud/observability.ubc
+# Change an assumption, for example dropping debug logs and sampling the rest:
+#   ubc --set 'gb_per_service = 0.2 to 1' scenarios/cloud/observability.ubc
+# See which assumption matters most:
+#   ubc --sens monthly_cost scenarios/cloud/observability.ubc
+#
+# Every "a to b" is a 90% confidence interval. Amounts are in dollars.
+# Vendors charge once to ingest a gigabyte and again to keep it searchable
+# for the retention period; metrics and traces are left out.
+
+# Assumptions
+services = 20 to 60               # services that ship logs
+gb_per_service = 0.5 to 3         # gigabytes of logs a service writes a day
+ingest_price = 0.3 to 1.5         # dollars per gigabyte ingested, from the vendor's price list
+retention_days = 15 to 30         # days the logs stay searchable
+storage_price = 0.03 to 0.1       # dollars per gigabyte kept searchable for a month
+days = 30                         # days in a month
+
+# Calculation
+daily_gb = services * gb_per_service                       # gigabytes ingested a day
+ingest = daily_gb * days * ingest_price                    # ingesting a month of logs
+storage = daily_gb * retention_days * storage_price        # keeping the retention window searchable
+monthly_cost = ingest + storage                            # the monthly bill
+
+# Result
+daily_gb
+monthly_cost
+P(monthly_cost > 1.5k)            # how likely is observability to cost more than 1.5k dollars a month?

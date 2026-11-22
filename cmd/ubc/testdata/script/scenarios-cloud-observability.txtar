@@ -1,0 +1,10 @@
+exec ubc scenarios/cloud/observability.ubc
+stdout '^L31: ≈ 41\.9 '
+stdout '^L32: ≈ 902 '
+stdout '^L33: 0\.27\n\z'
+! stderr .
+exec ubc --set 'gb_per_service = 0.2 to 1' scenarios/cloud/observability.ubc
+stdout '^L33: 0\.02\n\z'
+exec ubc --sens monthly_cost scenarios/cloud/observability.ubc
+stdout '^sensitivity of monthly_cost \(rank correlation\):\n'
+stdout '^  gb_per_service +\+0\.\d\d '
