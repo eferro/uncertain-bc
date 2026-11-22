@@ -268,6 +268,7 @@ With the `--set` scenario above, the same assertion fails: the budget is blown 9
 
 ## Where next
 
+- The [modelling guide](MODELLING.md) shows how to estimate well: calibrated ranges, choosing a shape, correlation, typical mistakes and Monte Carlo noise.
 - The [scenario catalogue](../scenarios/README.md) has ready-to-use models for software engineering and product questions, such as the cost of replacing a person: change the assumptions and run them.
 - Run `ubc` with no arguments for an interactive session: assignments print as you type, and `:hist`, `:plot` and `:save` draw histograms, export charts and save the session as a model.
 - `--json` and `--plain` make the results easy to use from scripts; `--hist` draws a histogram under every result; `--interval 80` prints an 80 % interval instead of the 90 % one; `--quantiles 10,50,90` shows other percentiles.

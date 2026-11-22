@@ -1,0 +1,8 @@
+# Two jobs billed at the same uncertain hourly rate, in euros.
+rate = 40 to 90
+shared = 100 * rate + 300 * rate                 # one rate, used twice
+separate = 100 * (40 to 90) + 300 * (40 to 90)   # two independent guesses
+shared
+separate
+P(shared > 30k)
+P(separate > 30k)

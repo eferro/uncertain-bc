@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/rogpeppe/go-internal/testscript"
@@ -11,16 +12,34 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestTutorial_EveryConsoleBlockMatchesTheBinary(t *testing.T) {
-	markdown, err := os.ReadFile("../../docs/TUTORIAL.md")
-	require.NoError(t, err)
-	archive, err := tutorialArchive(string(markdown))
-	require.NoError(t, err)
-	require.NotEmpty(t, archive.Files)
-	dir := t.TempDir()
-	require.NoError(t, os.WriteFile(filepath.Join(dir, "tutorial.txtar"), txtar.Format(archive), 0o600))
+func TestGuides_EveryConsoleBlockMatchesTheBinary(t *testing.T) {
+	for _, guide := range []string{"TUTORIAL.md", "MODELLING.md"} {
+		t.Run(guide, func(t *testing.T) {
+			markdown, err := os.ReadFile(filepath.Join("..", "..", "docs", guide))
+			require.NoError(t, err)
+			archive, err := tutorialArchive(string(markdown))
+			require.NoError(t, err)
+			require.NotEmpty(t, archive.Files)
+			dir := t.TempDir()
+			require.NoError(t, os.WriteFile(filepath.Join(dir, "guide.txtar"), txtar.Format(archive), 0o600))
 
-	testscript.Run(t, testscript.Params{Dir: dir, Setup: copyModels})
+			testscript.Run(t, testscript.Params{Dir: dir, Setup: copyModels})
+		})
+	}
+}
+
+func TestModellingGuide_IsLinkedFromTheReadmeTheTutorialAndTheCatalogue(t *testing.T) {
+	for doc, link := range map[string]string{
+		"README.md":           "(docs/MODELLING.md)",
+		"docs/TUTORIAL.md":    "(MODELLING.md)",
+		"scenarios/README.md": "(../docs/MODELLING.md)",
+	} {
+		t.Run(doc, func(t *testing.T) {
+			content, err := os.ReadFile(filepath.Join("..", "..", doc))
+			require.NoError(t, err)
+			assert.True(t, strings.Contains(string(content), link), "%s does not link to %s", doc, link)
+		})
+	}
 }
 
 func TestTutorialArchive_ChecksTheOutputOfEveryCommand(t *testing.T) {
