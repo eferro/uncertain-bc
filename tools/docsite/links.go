@@ -42,8 +42,8 @@ func resolve(page, target string, site config, repo repository) (string, error) 
 	if strings.Contains(target, ":") || strings.HasPrefix(target, "#") {
 		return target, nil
 	}
-	file, anchor, _ := strings.Cut(target, "#")
-	repoPath := path.Join(path.Dir(page), file)
+	linkPath, _, _ := strings.Cut(target, "#")
+	repoPath := path.Join(path.Dir(page), linkPath)
 	if site.publishes(repoPath) {
 		return target, nil
 	}
@@ -51,23 +51,19 @@ func resolve(page, target string, site config, repo repository) (string, error) 
 	if !ok || !filepath.IsLocal(repoPath) {
 		return target, fmt.Errorf("broken link to %s", repoPath)
 	}
-	return githubURL(site.repoURL, kind, file, repoPath) + withHash(anchor), nil
+	return site.githubURL(kind, repoPath) + afterThePath(target, linkPath), nil
 }
 
-func githubURL(repoURL string, kind targetKind, target, repoPath string) string {
+// afterThePath is what follows the file or directory in a link, a trailing
+// slash or an anchor, which the GitHub URL keeps as the link had it.
+func afterThePath(target, linkPath string) string {
+	return strings.TrimPrefix(target, strings.TrimSuffix(linkPath, "/"))
+}
+
+func (c config) githubURL(kind targetKind, repoPath string) string {
 	view := "blob"
 	if kind == directory {
 		view = "tree"
 	}
-	if strings.HasSuffix(target, "/") {
-		repoPath += "/"
-	}
-	return fmt.Sprintf("%s/%s/main/%s", repoURL, view, repoPath)
-}
-
-func withHash(anchor string) string {
-	if anchor == "" {
-		return ""
-	}
-	return "#" + anchor
+	return fmt.Sprintf("%s/%s/main/%s", c.repoURL, view, repoPath)
 }
