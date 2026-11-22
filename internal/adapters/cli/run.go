@@ -136,11 +136,11 @@ func (a App) inform(opts options, stdout, stderr io.Writer) (int, bool) {
 		fmt.Fprintf(stdout, "ubc %s\n", a.Version)
 		return exitOK, true
 	case opts.completion != "":
-		return printCompletion(opts.completion, scenarioNames(a.catalogue()), stdout, stderr), true
+		return printCompletion(opts.completion, a.catalogue().names(), stdout, stderr), true
 	case opts.scenarios:
-		return listScenarios(a.catalogue(), stdout), true
+		return a.catalogue().list(stdout), true
 	case opts.scenarioSrc != "":
-		return printScenarioSource(a.catalogue(), opts.scenarioSrc, stdout, stderr), true
+		return a.catalogue().printSource(opts.scenarioSrc, stdout, stderr), true
 	}
 	return exitOK, false
 }
@@ -150,7 +150,7 @@ func (a App) resolve(opts options) (options, error) {
 	if err != nil {
 		return opts, err
 	}
-	opts.preloaded, err = scenarioSources(a.catalogue(), opts.scenario)
+	opts.preloaded, err = a.catalogue().sources(opts.scenario)
 	return opts, err
 }
 

@@ -25,18 +25,22 @@ func (e unknownScenarioError) Error() string {
 	return fmt.Sprintf("unknown scenario '%s'; ubc --scenarios lists them", e.name)
 }
 
+// catalogue is the set of built-in scenarios: formulas.ubc and
+// <area>/<name>.ubc, named by their path without the extension (ADR 0054).
+type catalogue struct{ files fs.FS }
+
 // catalogue falls back to an empty one, so an App built without scenarios
 // (tests, other embedders) reports every name as unknown instead of panicking.
-func (a App) catalogue() fs.FS {
+func (a App) catalogue() catalogue {
 	if a.Scenarios == nil {
-		return embed.FS{}
+		return catalogue{embed.FS{}}
 	}
-	return a.Scenarios
+	return catalogue{a.Scenarios}
 }
 
-func scenarioNames(catalogue fs.FS) []string {
+func (c catalogue) names() []string {
 	var names []string
-	_ = fs.WalkDir(catalogue, ".", func(file string, entry fs.DirEntry, err error) error {
+	_ = fs.WalkDir(c.files, ".", func(file string, entry fs.DirEntry, err error) error {
 		if err == nil && !entry.IsDir() && path.Ext(file) == scenarioExt && path.Dir(file) != "." {
 			names = append(names, strings.TrimSuffix(file, scenarioExt))
 		}
@@ -45,23 +49,23 @@ func scenarioNames(catalogue fs.FS) []string {
 	return names
 }
 
-func readScenario(catalogue fs.FS, name string) (string, error) {
-	content, err := fs.ReadFile(catalogue, name+scenarioExt)
+func (c catalogue) read(name string) (string, error) {
+	content, err := fs.ReadFile(c.files, name+scenarioExt)
 	if err != nil {
 		return "", unknownScenarioError{name}
 	}
 	return string(content), nil
 }
 
-// scenarioSources is the program --scenario runs: the shared formulas, then
-// the scenario itself.
-func scenarioSources(catalogue fs.FS, name string) ([]source, error) {
+// sources is the program --scenario runs: the shared formulas, then the
+// scenario itself.
+func (c catalogue) sources(name string) ([]source, error) {
 	if name == "" {
 		return nil, nil
 	}
 	var sources []source
 	for _, part := range scenarioParts(name) {
-		program, err := readScenario(catalogue, part)
+		program, err := c.read(part)
 		if err != nil {
 			return nil, unknownScenarioError{name}
 		}
@@ -77,22 +81,22 @@ func scenarioParts(name string) []string {
 	return []string{formulas, name}
 }
 
-func listScenarios(catalogue fs.FS, stdout io.Writer) int {
-	names := scenarioNames(catalogue)
+func (c catalogue) list(stdout io.Writer) int {
+	names := c.names()
 	width := 0
 	for _, name := range names {
 		width = max(width, len(name))
 	}
 	for _, name := range names {
-		program, _ := readScenario(catalogue, name)
+		program, _ := c.read(name)
 		line := fmt.Sprintf("%-*s   %s", width, name, question(program))
 		fmt.Fprintln(stdout, strings.TrimRight(line, " "))
 	}
 	return exitOK
 }
 
-func printScenarioSource(catalogue fs.FS, name string, stdout, stderr io.Writer) int {
-	program, err := readScenario(catalogue, name)
+func (c catalogue) printSource(name string, stdout, stderr io.Writer) int {
+	program, err := c.read(name)
 	if err != nil {
 		fmt.Fprintf(stderr, "ubc: %v\n", err)
 		return exitUsageError
