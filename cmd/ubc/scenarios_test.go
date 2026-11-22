@@ -70,6 +70,16 @@ func TestMissingFromIndex_ListsFilesWithoutALink(t *testing.T) {
 	assert.Equal(t, []string{"team/b.ubc", "team/c.ubc"}, missing)
 }
 
+func missingFromIndex(index string, files []string) []string {
+	var missing []string
+	for _, file := range files {
+		if !strings.Contains(index, "]("+file+")") {
+			missing = append(missing, file)
+		}
+	}
+	return missing
+}
+
 func writeFile(t *testing.T, root, name string) {
 	t.Helper()
 	path := filepath.Join(root, filepath.FromSlash(name))

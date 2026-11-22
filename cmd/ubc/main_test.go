@@ -2,7 +2,6 @@ package main
 
 import (
 	"os"
-	"path/filepath"
 	"strconv"
 	"strings"
 	"testing"
@@ -22,38 +21,6 @@ func TestScripts(t *testing.T) {
 		Setup: copyModels,
 		Cmds:  map[string]func(*testscript.TestScript, bool, []string){"unescape": unescape},
 	})
-}
-
-// copyModels gives every scenario the models a reader runs from the
-// repository root, so commands read exactly as in the docs.
-func copyModels(env *testscript.Env) error {
-	for _, dir := range []string{"examples", "scenarios"} {
-		if err := copyTree(filepath.Join("..", "..", dir), filepath.Join(env.WorkDir, dir)); err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-func copyTree(from, to string) error {
-	files, err := modelFiles(from)
-	if err != nil {
-		return err
-	}
-	for _, file := range files {
-		content, err := os.ReadFile(filepath.Join(from, file))
-		if err != nil {
-			return err
-		}
-		target := filepath.Join(to, filepath.FromSlash(file))
-		if err := os.MkdirAll(filepath.Dir(target), 0o700); err != nil {
-			return err
-		}
-		if err := os.WriteFile(target, content, 0o600); err != nil {
-			return err
-		}
-	}
-	return nil
 }
 
 // unescape rewrites a one-line file holding Go escapes (\n, \x01) into the
