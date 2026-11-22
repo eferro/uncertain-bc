@@ -20,8 +20,9 @@ cost_per_hour = 0.5 to 2          # one environment: the application, a database
 working_days = 21                 # working days in a month
 
 # Calculation
-alive = prs_per_day * working_days / 30 * hours_alive / 24        # environments up at the same time on average (Little's law)
-monthly_cost = prs_per_day * working_days * hours_alive * cost_per_hour   # environments a month × hours × cost per hour
+environment_hours = prs_per_day * working_days * hours_alive     # hours of environments a month
+alive = environment_hours / (30 * 24)                            # environments up at the same time on average (Little's law)
+monthly_cost = environment_hours * cost_per_hour                 # the monthly bill
 
 # Result
 alive
