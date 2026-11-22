@@ -5,7 +5,7 @@
 ## Read first
 
 - [docs/VISION.md](docs/VISION.md): why, goals, non-goals, roadmap.
-- [docs/SPEC.md](docs/SPEC.md): MVP behaviour (CLI, grammar, semantics, output, REPL). Source of truth for what to build.
+- [docs/SPEC.md](docs/SPEC.md): Behaviour (CLI, grammar, semantics, output, REPL). Source of truth for what to build.
 - [docs/adr/](docs/adr/README.md): decisions already taken. Do not reopen them silently; propose a new ADR that supersedes one if needed.
 - [docs/research/](docs/research/): origin and early experiments.
 

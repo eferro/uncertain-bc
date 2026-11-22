@@ -1,8 +1,6 @@
-# Uncertain bc — MVP Specification
+# Uncertain bc — Specification
 
-Scope: phases 0–3 of the roadmap in [VISION.md](VISION.md). Everything here is a proposal until it is implemented and covered by tests; deviations must update this file or add an ADR in [adr/](adr/README.md).
-
-Status: draft. Date: 2026-11-21.
+The complete behaviour of `ubc`: invocation, language, semantics, output and REPL. It describes what the released binary does and is kept in sync with the code: any change in behaviour updates this file in the same commit, and any change of decision adds an ADR in [adr/](adr/README.md).
 
 ## 1. Invocation
 
@@ -73,13 +71,13 @@ Errors go to stderr as `ubc: line L, col C: message`, with the file name for err
 
 - **Numbers:** `42`, `3.14`, `.5`, `1e6`, `2.5e-3`.
 - **Suffixes** (no space between number and suffix): `k` = 1e3, `M` = 1e6, `B` = 1e9, `T` = 1e12, `%` = 1e-2.
-- **Identifiers:** `[A-Za-z_][A-Za-z0-9_]*`, case-sensitive. Unicode identifiers are a non-goal for the MVP.
+- **Identifiers:** `[A-Za-z_][A-Za-z0-9_]*`, case-sensitive. Unicode identifiers are not supported.
 - **Keywords:** `to`.
 - **Operators:** `+ - * / ^ ( ) , = < > <= >= == !=`.
 - **Comments:** `#` to end of line.
 - **Statements** are separated by newlines or `;`.
 
-## 3. Grammar (MVP)
+## 3. Grammar
 
 ```
 program     = { statement ( NEWLINE | ";" ) } ;
@@ -122,9 +120,9 @@ Rules:
 - If `a > 0` and `b > 0`: lognormal with `μ = (ln a + ln b) / 2`, `σ = (ln b − ln a) / (2 · 1.6449)`.
 - Otherwise: normal with `μ = (a + b) / 2`, `σ = (b − a) / (2 · 1.6449)`.
 - `a >= b` is an evaluation error.
-- Both bounds must be plain numbers: `(1 to 2) to 3` is an evaluation error (uncertain bounds are out of the MVP).
+- Both bounds must be plain numbers: `(1 to 2) to 3` is an evaluation error (uncertain bounds are not supported).
 
-## 5. Built-in functions (MVP)
+## 5. Built-in functions
 
 | Function | Returns |
 |---|---|
@@ -203,7 +201,7 @@ One line per top-level expression. In the REPL, assignments print too, as `name 
 
 ## 9. Acceptance examples
 
-These must hold with the default seed and sample count (exact digits are fixed once the RNG is implemented; until then, check the shape).
+These hold with the default seed and sample count.
 
 | Input | Expected |
 |---|---|
@@ -217,6 +215,6 @@ These must hold with the default seed and sample count (exact digits are fixed o
 | `-10 to 10` | normal, median ≈ 0 |
 | `echo '1 + 2' \| ubc --plain` | `3` |
 
-## 10. Out of scope for the MVP
+## 10. Out of scope
 
-Units, symbolic distributions, correlation between distinct ranges, a TUI with sliders, Squiggle compatibility, Unicode identifiers.
+Not supported today, by decision: units (ADR 0008), symbolic distributions, correlation between distinct ranges, a TUI with sliders, Squiggle compatibility, Unicode identifiers.

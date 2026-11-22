@@ -9,8 +9,6 @@ $ ubc -e '(8 to 25) * 12'
 
 Type ranges instead of exact numbers (`10 to 20` means "90 % sure it is between 10 and 20"). `ubc` runs a Monte Carlo simulation and answers with a central value, two nested intervals (90 % and 98 %) and a small chart, right in the terminal. A single Go binary, inspired by [Guesstimate](https://www.getguesstimate.com) and [Squiggle](https://www.squiggle-language.com).
 
-Status: calculator MVP with an interactive REPL, JSON output and chart export (phase 3, v0.4.0).
-
 ```console
 $ ubc -e '(8 to 25) * 12'
 ≈ 170   90% [96 … 296]   98% [80 … 380]   ▃▅▆██▇▆▅▄▃▂▂▂▁▁▁

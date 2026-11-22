@@ -2,7 +2,7 @@
 
 > `ubc` is `bc` for numbers you are not sure about. You type ranges instead of numbers, it runs a Monte Carlo simulation behind the scenes and answers with a distribution: a central value, an interval and a small chart, right in the terminal.
 
-Status: phase 4 done (expressiveness, v0.5.0). Date: 2026-11-21. Detailed MVP behaviour: [SPEC.md](SPEC.md). Decisions: [adr/](adr/README.md).
+Status: in use; roadmap phases 0–4 are done, plus the work listed after them in section 9. Detailed behaviour: [SPEC.md](SPEC.md). Decisions: [adr/](adr/README.md).
 
 ## 1. The problem
 
@@ -142,24 +142,27 @@ Key decisions:
 
 ## 8. Risks and open questions
 
-1. **Scope creep in the language.** Writing an interpreter is the fun part and the easy place to lose months. Mitigation: a fixed MVP grammar (section 5 minus user functions) and a test corpus of real estimates.
+1. **Scope creep in the language.** Writing an interpreter is the fun part and the easy place to lose months. Mitigation: a small grammar that grows only through ADRs, and a test corpus of real estimates (the tutorial and the scenario catalogue).
 2. **Semantics that look like Squiggle but are not.** People coming from Squiggle will expect the same results. Mitigation: document every deliberate difference; reuse Squiggle's `to` rule.
 3. **Monte Carlo noise.** Percentiles move between seeds. Mitigation: fixed seed, three significant figures, a `:samples` knob.
 4. **Correlations and independence.** Two different ranges are always independent; users may not expect that. Document it clearly.
 5. **Heavy tails.** Lognormals with wide ranges produce huge outliers that break histograms and means. Mitigation: clip histogram axes to p1–p99 and say so.
 6. **Name searchability.** "ubc" alone is dominated by the University of British Columbia. The repo name "uncertain-bc" carries discovery; see section 10.
 7. **Decided:** `to` is lognormal for positive ranges and normal otherwise (ADR 0004).
-8. **Decided:** units (`€`, `h`, `kWh`) are out of the MVP (ADR 0008).
+8. **Decided:** units (`€`, `h`, `kWh`) are out of scope until a new ADR says otherwise (ADR 0008).
 
 ## 9. Roadmap
 
 | Phase | Outcome |
 |---|---|
 | 0. Walking skeleton ✅ (v0.1.0) | `ubc -e '1 + 2'` and `ubc -e '10 to 20'` print a result; CI, release binaries with goreleaser |
-| 1. Calculator MVP ✅ (v0.2.0) | Lexer, parser, scalar + sample-set evaluation, `to`, suffixes, arithmetic, summaries, `P(...)`, default output line with sparkline, stdin and file modes |
+| 1. Calculator core ✅ (v0.2.0) | Lexer, parser, scalar + sample-set evaluation, `to`, suffixes, arithmetic, summaries, `P(...)`, default output line with sparkline, stdin and file modes |
 | 2. REPL ✅ (v0.3.0) | History, persistent variables, `last`, `:` commands, `:hist` |
 | 3. Sharing ✅ (v0.4.0) | `--json`, `--plain` (landed in phase 1), `:plot` to SVG/PNG, model files |
 | 4. Expressiveness ✅ (v0.5.0) | User functions, more distributions, empirical data |
+| Command-line UX ✅ (v0.6.0) | `--echo`, `--hist`, `--quantiles`, `--watch`, shell completion (ADR 0025) |
+| Installation ✅ (v0.7.x) | Install scripts, `.deb`/`.rpm`/`.apk`, Homebrew, Scoop (ADR 0026) |
+| Modelling and scenarios ✅ | `--set`, `--assert`, `--data`, `--samples-out`, `--sens`, `--interval`, `poisson`/`binomial`, the 98 % interval, the tutorial and the scenario catalogue |
 | 5. Maybe | Units, interactive sliders (Guesstimate-style "calculators") in a TUI |
 
 ## 10. Name

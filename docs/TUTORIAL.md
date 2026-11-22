@@ -99,7 +99,7 @@ L4: ≈ 5.65   90% [3.59 … 8.64]   98% [3.2 … 9.8]   ▄▆▇▇█▇▇�
 L5: ≈ 15   90% [12 … 31]   98% [12 … 31]   ▅▁█▁▁▅▁▁▁▁▁▁▁▁▁▅
 ```
 
-`pert` is the classic three-point estimate: it leans towards the most likely value. A list of numbers is empirical data: each sample picks one of them at random. The [specification](SPEC.md#5-built-in-functions-mvp) lists every distribution (`lognormal`, `triangular`, `beta`, `exponential`, `gamma`).
+`pert` is the classic three-point estimate: it leans towards the most likely value. A list of numbers is empirical data: each sample picks one of them at random. The [specification](SPEC.md#5-built-in-functions) lists every distribution (`lognormal`, `triangular`, `beta`, `exponential`, `gamma`).
 
 ## 5. Functions
 
