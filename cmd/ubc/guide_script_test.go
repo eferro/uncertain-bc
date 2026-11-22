@@ -20,7 +20,7 @@ type guideScript struct {
 	files    []txtar.File
 	source   *fencedBlock
 	outputs  int
-	errors   int
+	messages int
 	sources  int
 }
 
@@ -111,21 +111,34 @@ func (s *guideScript) addCommand(command string, output []string) error {
 		return err
 	}
 	stdout, stderr := splitErrors(output)
-	if len(stderr) > 0 {
+	s.exec(command, len(stderr) > 0)
+	s.expectStdout(stdout)
+	s.expectStderr(stderr)
+	return nil
+}
+
+func (s *guideScript) exec(command string, fails bool) {
+	if fails {
 		s.commands.WriteString("! ")
 	}
 	fmt.Fprintf(&s.commands, "exec %s\n", command)
-	if len(stdout) == 0 {
+}
+
+func (s *guideScript) expectStdout(lines []string) {
+	if len(lines) == 0 {
 		s.commands.WriteString("! stdout .\n")
-	} else {
-		s.outputs++
-		s.expect("stdout", fmt.Sprintf("output%d", s.outputs), stdout)
+		return
 	}
-	if len(stderr) > 0 {
-		s.errors++
-		s.expect("stderr", fmt.Sprintf("error%d", s.errors), stderr)
+	s.outputs++
+	s.expect("stdout", fmt.Sprintf("output%d", s.outputs), lines)
+}
+
+func (s *guideScript) expectStderr(lines []string) {
+	if len(lines) == 0 {
+		return
 	}
-	return nil
+	s.messages++
+	s.expect("stderr", fmt.Sprintf("error%d", s.messages), lines)
 }
 
 // splitErrors separates the lines ubc writes to stderr, which all start with
