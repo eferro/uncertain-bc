@@ -1,10 +1,10 @@
-exec ubc scenarios/formulas.ubc scenarios/reliability/incident-cost.ubc
+exec ubc --scenario reliability/incident-cost
 stdout '^incident_cost = ≈ 36\.2k '
 stdout '^yearly_cost = ≈ 398k '
 stdout '^P\(yearly_cost > 500k\) = 0\.40\n\z'
 ! stderr .
-exec ubc --set 'mttr_hours = 0.5 to 2' scenarios/formulas.ubc scenarios/reliability/incident-cost.ubc
+exec ubc --set 'mttr_hours = 0.5 to 2' --scenario reliability/incident-cost
 stdout '^P\(yearly_cost > 500k\) = 0\.09\n\z'
-exec ubc --sens yearly_cost scenarios/formulas.ubc scenarios/reliability/incident-cost.ubc
+exec ubc --sens yearly_cost --scenario reliability/incident-cost
 stdout '^sensitivity of yearly_cost \(rank correlation\):\n'
 stdout '^  downtime_cost +\+0\.\d\d '

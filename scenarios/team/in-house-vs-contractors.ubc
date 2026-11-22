@@ -3,11 +3,11 @@
 # how likely is hiring to be the cheapest option?
 #
 # Run it (it uses the shared formulas):
-#   ubc scenarios/formulas.ubc scenarios/team/in-house-vs-contractors.ubc
+#   ubc --scenario team/in-house-vs-contractors
 # Change an assumption, for example contractors from a cheaper market:
-#   ubc --set 'day_rate = 300 to 500' scenarios/formulas.ubc scenarios/team/in-house-vs-contractors.ubc
+#   ubc --set 'day_rate = 300 to 500' --scenario team/in-house-vs-contractors
 # See which assumption matters most:
-#   ubc --sens in_house scenarios/formulas.ubc scenarios/team/in-house-vs-contractors.ubc
+#   ubc --sens in_house --scenario team/in-house-vs-contractors
 #
 # Every "a to b" is a 90% confidence interval. Amounts are in euros for one
 # year. Only the money is compared: knowledge that stays in the company when

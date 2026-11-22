@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/eferro/uncertain-bc/internal/adapters/cli"
+	"github.com/eferro/uncertain-bc/scenarios"
 )
 
 var version = "dev"
@@ -20,6 +21,7 @@ func main() {
 		Interactive: isTerminal(os.Stdin),
 		HistoryPath: historyPath(),
 		Wait:        pollEvery(300 * time.Millisecond),
+		Scenarios:   scenarios.Files,
 	}
 	os.Exit(app.Run(os.Args[1:], os.Stdin, os.Stdout, os.Stderr))
 }

@@ -1,10 +1,10 @@
-exec ubc scenarios/cloud/observability.ubc
+exec ubc --scenario cloud/observability
 stdout '^daily_gb = ≈ 41\.9 '
 stdout '^monthly_cost = ≈ 902 '
 stdout '^P\(monthly_cost > 1\.5k\) = 0\.27\n\z'
 ! stderr .
-exec ubc --set 'gb_per_service = 0.2 to 1' scenarios/cloud/observability.ubc
+exec ubc --set 'gb_per_service = 0.2 to 1' --scenario cloud/observability
 stdout '^P\(monthly_cost > 1\.5k\) = 0\.02\n\z'
-exec ubc --sens monthly_cost scenarios/cloud/observability.ubc
+exec ubc --sens monthly_cost --scenario cloud/observability
 stdout '^sensitivity of monthly_cost \(rank correlation\):\n'
 stdout '^  gb_per_service +\+0\.\d\d '

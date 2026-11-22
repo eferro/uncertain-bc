@@ -2,11 +2,11 @@
 # and how likely is it to cost more than 50k euros?
 #
 # Run it:
-#   ubc scenarios/team/replace-a-person.ubc
+#   ubc --scenario team/replace-a-person
 # Change an assumption, for example a faster hiring process:
-#   ubc --set 'vacancy_months = 1 to 3' scenarios/team/replace-a-person.ubc
+#   ubc --set 'vacancy_months = 1 to 3' --scenario team/replace-a-person
 # See which assumption matters most:
-#   ubc --sens total scenarios/team/replace-a-person.ubc
+#   ubc --sens total --scenario team/replace-a-person
 #
 # Every "a to b" is a 90% confidence interval. Amounts are in euros.
 

@@ -3,11 +3,11 @@
 # likely is the fix to pay for itself within a year?
 #
 # Run it (it uses the shared formulas):
-#   ubc scenarios/formulas.ubc scenarios/engineering/debt-cost.ubc
+#   ubc --scenario engineering/debt-cost
 # Change an assumption, for example a fix that takes much longer:
-#   ubc --set 'fix_weeks = 20 to 40' scenarios/formulas.ubc scenarios/engineering/debt-cost.ubc
+#   ubc --set 'fix_weeks = 20 to 40' --scenario engineering/debt-cost
 # See which assumption matters most:
-#   ubc --sens yearly_cost scenarios/formulas.ubc scenarios/engineering/debt-cost.ubc
+#   ubc --sens yearly_cost --scenario engineering/debt-cost
 #
 # Every "a to b" is a 90% confidence interval. Amounts are in euros. A fix
 # rarely gives back every lost hour, so only the recovered share counts

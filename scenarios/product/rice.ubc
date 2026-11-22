@@ -3,11 +3,11 @@
 # likely is the onboarding revamp to score higher than the integrations?
 #
 # Run it:
-#   ubc scenarios/product/rice.ubc
+#   ubc --scenario product/rice
 # Change an assumption, for example integrations that turn out cheaper:
-#   ubc --set 'effort_integrations = 1 to 3' scenarios/product/rice.ubc
+#   ubc --set 'effort_integrations = 1 to 3' --scenario product/rice
 # See which assumption matters most:
-#   ubc --sens onboarding scenarios/product/rice.ubc
+#   ubc --sens onboarding --scenario product/rice
 #
 # Every "a to b" is a 90% confidence interval. RICE (Intercom) multiplies by a
 # confidence percentage to discount shaky guesses. Here the ranges carry the

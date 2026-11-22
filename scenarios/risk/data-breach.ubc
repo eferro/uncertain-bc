@@ -3,11 +3,11 @@
 # how likely is one breach to cost more than 5M euros?
 #
 # Run it (it uses the shared formulas):
-#   ubc scenarios/formulas.ubc scenarios/risk/data-breach.ubc
+#   ubc --scenario risk/data-breach
 # Change an assumption, for example a small breach of a few thousand records:
-#   ubc --set 'records = 1k to 20k' scenarios/formulas.ubc scenarios/risk/data-breach.ubc
+#   ubc --set 'records = 1k to 20k' --scenario risk/data-breach
 # See which assumption matters most:
-#   ubc --sens breach_cost scenarios/formulas.ubc scenarios/risk/data-breach.ubc
+#   ubc --sens breach_cost --scenario risk/data-breach
 #
 # Every "a to b" is a 90% confidence interval. Amounts are in euros. The
 # cost per record (detection, notification, response and lost business)

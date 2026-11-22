@@ -3,11 +3,11 @@
 # how likely is the monthly bill to exceed 3k dollars by then?
 #
 # Run it (it uses the shared formulas):
-#   ubc scenarios/formulas.ubc scenarios/cloud/storage-growth.ubc
+#   ubc --scenario cloud/storage-growth
 # Change an assumption, for example a retention policy that deletes old data:
-#   ubc --set 'growth = 1% to 3%' scenarios/formulas.ubc scenarios/cloud/storage-growth.ubc
+#   ubc --set 'growth = 1% to 3%' --scenario cloud/storage-growth
 # See which assumption matters most:
-#   ubc --sens bill_later scenarios/formulas.ubc scenarios/cloud/storage-growth.ubc
+#   ubc --sens bill_later --scenario cloud/storage-growth
 #
 # Every "a to b" is a 90% confidence interval. Amounts are in dollars.
 # Growth compounds: 5% a month is not 120% in two years but 223%, so a

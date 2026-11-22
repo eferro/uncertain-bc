@@ -3,11 +3,11 @@
 # is it to exceed 10k dollars?
 #
 # Run it:
-#   ubc scenarios/cloud/ephemeral-environments.ubc
+#   ubc --scenario cloud/ephemeral-environments
 # Change an assumption, for example environments shut down when idle:
-#   ubc --set 'hours_alive = 2 to 8' scenarios/cloud/ephemeral-environments.ubc
+#   ubc --set 'hours_alive = 2 to 8' --scenario cloud/ephemeral-environments
 # See which assumption matters most:
-#   ubc --sens monthly_cost scenarios/cloud/ephemeral-environments.ubc
+#   ubc --sens monthly_cost --scenario cloud/ephemeral-environments
 #
 # Every "a to b" is a 90% confidence interval. Amounts are in dollars. An
 # environment lives from the pull request's first push until it is merged

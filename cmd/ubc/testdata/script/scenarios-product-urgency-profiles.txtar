@@ -1,13 +1,13 @@
-exec ubc scenarios/formulas.ubc scenarios/product/urgency-profiles.ubc
+exec ubc --scenario product/urgency-profiles
 stdout '^standard = ≈ 19\.6k '
 stdout '^expedite = ≈ 138k '
 stdout '^fixed_date = ≈ 0 '
 stdout '^intangible = ≈ 2360 '
 stdout '^P\(fixed_date > standard\) = 0\.15\n\z'
 ! stderr .
-exec ubc --set 'slack_weeks = 3' scenarios/formulas.ubc scenarios/product/urgency-profiles.ubc
+exec ubc --set 'slack_weeks = 3' --scenario product/urgency-profiles
 stdout '^fixed_date = ≈ 85k '
 stdout '^P\(fixed_date > standard\) = 0\.75\n\z'
-exec ubc --sens fixed_date scenarios/formulas.ubc scenarios/product/urgency-profiles.ubc
+exec ubc --sens fixed_date --scenario product/urgency-profiles
 stdout '^sensitivity of fixed_date \(rank correlation\):\n'
 stdout '^  delay_weeks +\+0\.\d\d '

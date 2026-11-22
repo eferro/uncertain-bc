@@ -3,11 +3,11 @@
 # spent spreading the knowledge (pairing, documentation, rotations)?
 #
 # Run it (it uses the shared formulas):
-#   ubc scenarios/formulas.ubc scenarios/team/bus-factor.ubc
+#   ubc --scenario team/bus-factor
 # Change an assumption, for example a system that is easy to pick up:
-#   ubc --set 'recovery_months = 1 to 2' scenarios/formulas.ubc scenarios/team/bus-factor.ubc
+#   ubc --set 'recovery_months = 1 to 2' --scenario team/bus-factor
 # See which assumption matters most:
-#   ubc --sens yearly_risk scenarios/formulas.ubc scenarios/team/bus-factor.ubc
+#   ubc --sens yearly_risk --scenario team/bus-factor
 #
 # Every "a to b" is a 90% confidence interval. Amounts are in euros.
 

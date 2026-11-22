@@ -3,11 +3,11 @@
 # more than 300 hours?
 #
 # Run it:
-#   ubc scenarios/engineering/flaky-tests.ubc
+#   ubc --scenario engineering/flaky-tests
 # Change an assumption, for example after quarantining the worst tests:
-#   ubc --set 'flaky_rate = 0.5% to 2%' scenarios/engineering/flaky-tests.ubc
+#   ubc --set 'flaky_rate = 0.5% to 2%' --scenario engineering/flaky-tests
 # See which assumption matters most:
-#   ubc --sens hours_lost scenarios/engineering/flaky-tests.ubc
+#   ubc --sens hours_lost --scenario engineering/flaky-tests
 #
 # Every "a to b" is a 90% confidence interval. The wait for a rerun counts
 # whole: a red build blocks the merge, so the person who pushed has to come

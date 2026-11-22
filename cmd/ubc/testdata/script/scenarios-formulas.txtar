@@ -1,12 +1,12 @@
-exec ubc scenarios/formulas.ubc
+exec ubc --scenario formulas
 ! stdout .
 ! stderr .
 
-exec ubc scenarios/formulas.ubc check.ubc
+exec ubc --scenario formulas check.ubc
 cmp stdout check.out
 ! stderr .
 
-exec ubc scenarios/formulas.ubc uncertain.ubc
+exec ubc --scenario formulas uncertain.ubc
 stdout '^lead_time\(15 to 30, 3 to 6\) = ≈ 4\.99 '
 stdout '^npv\(50k, 2k to 4k, 0\.01, 36\) = ≈ 34\.9k '
 ! stderr .

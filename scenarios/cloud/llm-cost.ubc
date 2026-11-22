@@ -3,11 +3,11 @@
 # exceed 3k dollars a month?
 #
 # Run it:
-#   ubc scenarios/cloud/llm-cost.ubc
+#   ubc --scenario cloud/llm-cost
 # Change an assumption, for example a shorter prompt with less context:
-#   ubc --set 'input_tokens = 300 to 1k' scenarios/cloud/llm-cost.ubc
+#   ubc --set 'input_tokens = 300 to 1k' --scenario cloud/llm-cost
 # See which assumption matters most:
-#   ubc --sens monthly_cost scenarios/cloud/llm-cost.ubc
+#   ubc --sens monthly_cost --scenario cloud/llm-cost
 #
 # Every "a to b" is a 90% confidence interval. Amounts are in dollars, the
 # currency API providers bill in. Input tokens are everything sent to the

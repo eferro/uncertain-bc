@@ -3,11 +3,11 @@
 # likely is it to cost more than three full months of an engineer?
 #
 # Run it:
-#   ubc scenarios/team/onboarding.ubc
+#   ubc --scenario team/onboarding
 # Change an assumption, for example a well-documented codebase:
-#   ubc --set 'ramp_up_months = 2 to 4' scenarios/team/onboarding.ubc
+#   ubc --set 'ramp_up_months = 2 to 4' --scenario team/onboarding
 # See which assumption matters most:
-#   ubc --sens lost_months scenarios/team/onboarding.ubc
+#   ubc --sens lost_months --scenario team/onboarding
 #
 # Every "a to b" is a 90% confidence interval. Work is in person-months,
 # amounts in euros.

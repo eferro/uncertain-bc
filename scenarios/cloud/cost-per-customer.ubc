@@ -3,11 +3,11 @@
 # likely is it to take more than 30% of the price they pay?
 #
 # Run it:
-#   ubc scenarios/cloud/cost-per-customer.ubc
+#   ubc --scenario cloud/cost-per-customer
 # Change an assumption, for example twice as many customers on the same platform:
-#   ubc --set 'customers = 1k to 3k' scenarios/cloud/cost-per-customer.ubc
+#   ubc --set 'customers = 1k to 3k' --scenario cloud/cost-per-customer
 # See which assumption matters most:
-#   ubc --sens cost_per_customer scenarios/cloud/cost-per-customer.ubc
+#   ubc --sens cost_per_customer --scenario cloud/cost-per-customer
 #
 # Every "a to b" is a 90% confidence interval. Amounts are in dollars a
 # month. SaaS companies usually aim for a gross margin of 75-80%, and

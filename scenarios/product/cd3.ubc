@@ -3,11 +3,11 @@
 # small export feature to be the right first pick?
 #
 # Run it (it uses the shared formulas):
-#   ubc scenarios/formulas.ubc scenarios/product/cd3.ubc
+#   ubc --scenario product/cd3
 # Change an assumption, for example a search feature that turns out smaller:
-#   ubc --set 'weeks_search = 2 to 3' scenarios/formulas.ubc scenarios/product/cd3.ubc
+#   ubc --set 'weeks_search = 2 to 3' --scenario product/cd3
 # See which assumption matters most:
-#   ubc --sens cd3_export scenarios/formulas.ubc scenarios/product/cd3.ubc
+#   ubc --sens cd3_export --scenario product/cd3
 #
 # Every "a to b" is a 90% confidence interval. Costs of delay are in euros a
 # week, durations in weeks. CD3 (Reinertsen; Joshua Arnold) does first the

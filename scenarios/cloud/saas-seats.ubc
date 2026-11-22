@@ -3,11 +3,11 @@
 # month by then?
 #
 # Run it (it uses the shared formulas):
-#   ubc scenarios/formulas.ubc scenarios/cloud/saas-seats.ubc
+#   ubc --scenario cloud/saas-seats
 # Change an assumption, for example a hiring freeze:
-#   ubc --set 'growth = 0.2% to 1%' scenarios/formulas.ubc scenarios/cloud/saas-seats.ubc
+#   ubc --set 'growth = 0.2% to 1%' --scenario cloud/saas-seats
 # See which assumption matters most:
-#   ubc --sens bill_later scenarios/formulas.ubc scenarios/cloud/saas-seats.ubc
+#   ubc --sens bill_later --scenario cloud/saas-seats
 #
 # Every "a to b" is a 90% confidence interval. Amounts are in dollars. Seats
 # are bought for everyone, and some are never given back: people who left,

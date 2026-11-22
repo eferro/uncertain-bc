@@ -7,6 +7,7 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"io/fs"
 	"os"
 	"slices"
 
@@ -30,6 +31,8 @@ type App struct {
 	Interactive bool
 	HistoryPath string
 	Wait        func() bool
+	// Scenarios is the catalogue behind --scenarios and --scenario (ADR 0054).
+	Scenarios fs.FS
 }
 
 type options struct {
@@ -58,6 +61,10 @@ type options struct {
 	samplesPath string
 	samplesOut  *samplesOut
 	sens        string
+	scenarios   bool
+	scenario    string
+	scenarioSrc string
+	preloaded   []source
 }
 
 type multiString []string
@@ -84,6 +91,11 @@ Flags:
       --samples-out FILE
                       after the program, write every variable's samples to FILE (.csv or .json)
       --sens EXPR     after the program, rank the variables that drive EXPR's uncertainty
+      --scenarios     list the built-in scenarios with the question each one answers
+      --scenario NAME run a built-in scenario, e.g. team/replace-a-person, after the
+                      shared formulas and before -e and files; 'formulas' loads only them
+      --scenario-source NAME
+                      print a built-in scenario's source, to copy and edit it
   -n, --samples N     Monte Carlo sample count (default 5000)
   -s, --seed N        random seed (default 1)
       --random        seed from the clock
@@ -105,14 +117,10 @@ func (a App) Run(args []string, stdin io.Reader, stdout, stderr io.Writer) int {
 	if !proceed {
 		return code
 	}
-	if opts.version {
-		fmt.Fprintf(stdout, "ubc %s\n", a.Version)
-		return exitOK
+	if code, done := a.inform(opts, stdout, stderr); done {
+		return code
 	}
-	if opts.completion != "" {
-		return printCompletion(opts.completion, stdout, stderr)
-	}
-	opts, err := resolveFlags(opts)
+	opts, err := a.resolve(opts)
 	if err != nil {
 		fmt.Fprintf(stderr, "ubc: %v\n", err)
 		return exitUsageError
@@ -120,8 +128,34 @@ func (a App) Run(args []string, stdin io.Reader, stdout, stderr io.Writer) int {
 	return a.execute(opts, a.settings(opts), stdin, stdout, stderr)
 }
 
+// inform handles the flags that print something about ubc itself instead of
+// running a program.
+func (a App) inform(opts options, stdout, stderr io.Writer) (int, bool) {
+	switch {
+	case opts.version:
+		fmt.Fprintf(stdout, "ubc %s\n", a.Version)
+		return exitOK, true
+	case opts.completion != "":
+		return printCompletion(opts.completion, scenarioNames(a.catalogue()), stdout, stderr), true
+	case opts.scenarios:
+		return listScenarios(a.catalogue(), stdout), true
+	case opts.scenarioSrc != "":
+		return printScenarioSource(a.catalogue(), opts.scenarioSrc, stdout, stderr), true
+	}
+	return exitOK, false
+}
+
+func (a App) resolve(opts options) (options, error) {
+	opts, err := resolveFlags(opts)
+	if err != nil {
+		return opts, err
+	}
+	opts.preloaded, err = scenarioSources(a.catalogue(), opts.scenario)
+	return opts, err
+}
+
 func (a App) execute(opts options, settings application.Settings, stdin io.Reader, stdout, stderr io.Writer) int {
-	if a.Interactive && len(opts.expressions) == 0 && len(opts.files) == 0 {
+	if a.Interactive && len(opts.preloaded) == 0 && len(opts.expressions) == 0 && len(opts.files) == 0 {
 		if name := programOnlyFlag(opts); name != "" {
 			fmt.Fprintf(stderr, "ubc: %s needs a program: -e, files or stdin\n", name)
 			return exitUsageError
@@ -262,6 +296,7 @@ func parseFlags(args []string, stderr io.Writer) (options, error) {
 
 func registerFlags(fs *flag.FlagSet, opts *options) {
 	registerInputFlags(fs, opts)
+	registerScenarioFlags(fs, opts)
 	registerOutputFlags(fs, opts)
 }
 
@@ -284,6 +319,12 @@ func registerInputFlags(fs *flag.FlagSet, opts *options) {
 	fs.BoolVar(&opts.watch, "watch", false, "evaluate the files again whenever they change")
 	fs.BoolVar(&opts.version, "version", false, "print the version and exit")
 	fs.StringVar(&opts.completion, "completion", "", "print a completion script for bash, zsh or fish")
+}
+
+func registerScenarioFlags(fs *flag.FlagSet, opts *options) {
+	fs.BoolVar(&opts.scenarios, "scenarios", false, "list the built-in scenarios")
+	fs.StringVar(&opts.scenario, "scenario", "", "run a built-in scenario after the shared formulas")
+	fs.StringVar(&opts.scenarioSrc, "scenario-source", "", "print the source of a built-in scenario")
 }
 
 func registerOutputFlags(fs *flag.FlagSet, opts *options) {
@@ -310,7 +351,7 @@ type source struct {
 }
 
 func collectSources(opts options, stdin io.Reader) ([]source, error) {
-	var sources []source
+	sources := slices.Clone(opts.preloaded)
 	for _, expr := range opts.expressions {
 		sources = append(sources, source{program: expr})
 	}
@@ -359,8 +400,8 @@ func exitCode(err error) int {
 	return exitEvalError
 }
 
-func printCompletion(shell string, stdout, stderr io.Writer) int {
-	script, ok := completionScript(shell)
+func printCompletion(shell string, scenarios []string, stdout, stderr io.Writer) int {
+	script, ok := completionScript(shell, scenarios)
 	if !ok {
 		fmt.Fprintf(stderr, "ubc: --completion expects bash, zsh or fish, got '%s'\n", shell)
 		return exitUsageError

@@ -1,10 +1,10 @@
-exec ubc scenarios/formulas.ubc scenarios/engineering/migration.ubc
+exec ubc --scenario engineering/migration
 stdout '^engineer_weeks = ≈ 57\.2 '
 stdout '^cost = ≈ 144k '
 stdout '^P\(cost > budget\) = 0\.46\n\z'
 ! stderr .
-exec ubc --set 'services = 10 to 15' scenarios/formulas.ubc scenarios/engineering/migration.ubc
+exec ubc --set 'services = 10 to 15' --scenario engineering/migration
 stdout '^P\(cost > budget\) = 0\.14\n\z'
-exec ubc --sens cost scenarios/formulas.ubc scenarios/engineering/migration.ubc
+exec ubc --sens cost --scenario engineering/migration
 stdout '^sensitivity of cost \(rank correlation\):\n'
 stdout '^  weeks_per_service +\+0\.\d\d '

@@ -3,11 +3,11 @@
 # euros?
 #
 # Run it (it uses the shared formulas):
-#   ubc scenarios/formulas.ubc scenarios/team/meeting-cost.ubc
+#   ubc --scenario team/meeting-cost
 # Change an assumption, for example inviting only the people who must decide:
-#   ubc --set 'attendees = 4' scenarios/formulas.ubc scenarios/team/meeting-cost.ubc
+#   ubc --set 'attendees = 4' --scenario team/meeting-cost
 # See which assumption matters most:
-#   ubc --sens yearly_cost scenarios/formulas.ubc scenarios/team/meeting-cost.ubc
+#   ubc --sens yearly_cost --scenario team/meeting-cost
 #
 # Every "a to b" is a 90% confidence interval. Amounts are in euros.
 

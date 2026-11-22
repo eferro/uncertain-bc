@@ -1,10 +1,10 @@
-exec ubc scenarios/cloud/ephemeral-environments.ubc
+exec ubc --scenario cloud/ephemeral-environments
 stdout '^alive = ≈ 7\.89 '
 stdout '^monthly_cost = ≈ 5730 '
 stdout '^P\(monthly_cost > 10k\) = 0\.29\n\z'
 ! stderr .
-exec ubc --set 'hours_alive = 2 to 8' scenarios/cloud/ephemeral-environments.ubc
+exec ubc --set 'hours_alive = 2 to 8' --scenario cloud/ephemeral-environments
 stdout '^P\(monthly_cost > 10k\) = <0\.01\n\z'
-exec ubc --sens monthly_cost scenarios/cloud/ephemeral-environments.ubc
+exec ubc --sens monthly_cost --scenario cloud/ephemeral-environments
 stdout '^sensitivity of monthly_cost \(rank correlation\):\n'
 stdout '^  hours_alive +\+0\.\d\d '

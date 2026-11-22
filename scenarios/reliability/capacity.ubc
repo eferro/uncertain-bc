@@ -3,11 +3,11 @@
 # nodes to fall short?
 #
 # Run it:
-#   ubc scenarios/reliability/capacity.ubc
+#   ubc --scenario reliability/capacity
 # Change an assumption, for example nodes that handle more after tuning:
-#   ubc --set 'rps_per_node = 600 to 900' scenarios/reliability/capacity.ubc
+#   ubc --set 'rps_per_node = 600 to 900' --scenario reliability/capacity
 # See which assumption matters most:
-#   ubc --sens nodes scenarios/reliability/capacity.ubc
+#   ubc --sens nodes --scenario reliability/capacity
 #
 # Every "a to b" is a 90% confidence interval. Nodes are not run at 100%:
 # the target utilisation leaves headroom for spikes inside the peak hour,

@@ -3,11 +3,11 @@
 # how likely is it to pay back what it costs?
 #
 # Run it:
-#   ubc scenarios/product/ab-experiment.ubc
+#   ubc --scenario product/ab-experiment
 # Change an assumption, for example a flow with less revenue behind it:
-#   ubc --set 'monthly_revenue = 50k to 100k' scenarios/product/ab-experiment.ubc
+#   ubc --set 'monthly_revenue = 50k to 100k' --scenario product/ab-experiment
 # See which assumption matters most:
-#   ubc --sens net scenarios/product/ab-experiment.ubc
+#   ubc --sens net --scenario product/ab-experiment
 #
 # Every "a to b" is a 90% confidence interval. Amounts are in euros. Large
 # experimentation programs report that only a minority of experiments win, so

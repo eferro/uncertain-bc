@@ -2,11 +2,11 @@
 # many can we expect, and how likely are we to overspend the error budget?
 #
 # Run it:
-#   ubc scenarios/reliability/error-budget.ubc
+#   ubc --scenario reliability/error-budget
 # Change an assumption, for example a looser 99.5% SLO:
-#   ubc --set 'slo = 99.5%' scenarios/reliability/error-budget.ubc
+#   ubc --set 'slo = 99.5%' --scenario reliability/error-budget
 # See which assumption matters most:
-#   ubc --sens expected_minutes scenarios/reliability/error-budget.ubc
+#   ubc --sens expected_minutes --scenario reliability/error-budget
 #
 # Every "a to b" is a 90% confidence interval. The error budget (Google's
 # Site Reliability Engineering book) is the downtime the SLO allows: 1 - SLO

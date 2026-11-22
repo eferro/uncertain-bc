@@ -1,11 +1,11 @@
-exec ubc scenarios/formulas.ubc scenarios/product/queue-cost.ubc
+exec ubc --scenario product/queue-cost
 stdout '^wait = ≈ 3\.26 '
 stdout '^weekly_cost = ≈ 20\.9k '
 stdout '^yearly_cost = ≈ 1\.09M '
 stdout '^P\(yearly_cost > 1M\) = 0\.56\n\z'
 ! stderr .
-exec ubc --set 'queued = 4 to 8' scenarios/formulas.ubc scenarios/product/queue-cost.ubc
+exec ubc --set 'queued = 4 to 8' --scenario product/queue-cost
 stdout '^P\(yearly_cost > 1M\) = 0\.04\n\z'
-exec ubc --sens yearly_cost scenarios/formulas.ubc scenarios/product/queue-cost.ubc
+exec ubc --sens yearly_cost --scenario product/queue-cost
 stdout '^sensitivity of yearly_cost \(rank correlation\):\n'
 stdout '^  cod_per_item +\+0\.\d\d '

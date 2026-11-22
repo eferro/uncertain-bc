@@ -3,11 +3,11 @@
 # run, and how likely is it to make money?
 #
 # Run it:
-#   ubc scenarios/product/business-case.ubc
+#   ubc --scenario product/business-case
 # Change an assumption, for example a feature that converts better:
-#   ubc --set 'conversion = 5% to 15%' scenarios/product/business-case.ubc
+#   ubc --set 'conversion = 5% to 15%' --scenario product/business-case
 # See which assumption matters most:
-#   ubc --sens net scenarios/product/business-case.ubc
+#   ubc --sens net --scenario product/business-case
 #
 # Every "a to b" is a 90% confidence interval. Amounts are in euros. Each
 # factor is a funnel step: being honest about each one beats one big guess.

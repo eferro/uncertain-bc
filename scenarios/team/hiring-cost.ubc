@@ -3,11 +3,11 @@
 # stay empty for more than three months?
 #
 # Run it:
-#   ubc scenarios/team/hiring-cost.ubc
+#   ubc --scenario team/hiring-cost
 # Change an assumption, for example candidates with a short notice period:
-#   ubc --set 'notice_weeks = 2 to 4' scenarios/team/hiring-cost.ubc
+#   ubc --set 'notice_weeks = 2 to 4' --scenario team/hiring-cost
 # See which assumption matters most:
-#   ubc --sens time_to_fill scenarios/team/hiring-cost.ubc
+#   ubc --sens time_to_fill --scenario team/hiring-cost
 #
 # Every "a to b" is a 90% confidence interval. Times are in weeks, amounts in
 # euros.

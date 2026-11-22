@@ -3,11 +3,11 @@
 # target?
 #
 # Run it (it uses the shared formulas):
-#   ubc scenarios/formulas.ubc scenarios/reliability/availability.ubc
+#   ubc --scenario reliability/availability
 # Change an assumption, for example a managed database that is down much less:
-#   ubc --set 'database_down = 0.01% to 0.05%' scenarios/formulas.ubc scenarios/reliability/availability.ubc
+#   ubc --set 'database_down = 0.01% to 0.05%' --scenario reliability/availability
 # See which assumption matters most:
-#   ubc --sens availability scenarios/formulas.ubc scenarios/reliability/availability.ubc
+#   ubc --sens availability --scenario reliability/availability
 #
 # Every "a to b" is a 90% confidence interval. Each piece is described by
 # the share of the time it is down, because a range of availabilities such

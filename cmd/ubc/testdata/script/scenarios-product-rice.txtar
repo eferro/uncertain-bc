@@ -1,10 +1,10 @@
-exec ubc scenarios/product/rice.ubc
+exec ubc --scenario product/rice
 stdout '^onboarding = ≈ 546 '
 stdout '^integrations = ≈ 234 '
 stdout '^P\(onboarding > integrations\) = 0\.82\n\z'
 ! stderr .
-exec ubc --set 'effort_integrations = 1 to 3' scenarios/product/rice.ubc
+exec ubc --set 'effort_integrations = 1 to 3' --scenario product/rice
 stdout '^P\(onboarding > integrations\) = 0\.41\n\z'
-exec ubc --sens onboarding scenarios/product/rice.ubc
+exec ubc --sens onboarding --scenario product/rice
 stdout '^sensitivity of onboarding \(rank correlation\):\n'
 stdout '^  impact_onboarding +\+0\.\d\d '

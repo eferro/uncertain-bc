@@ -3,11 +3,11 @@
 # saves to exceed the time spent building and maintaining it?
 #
 # Run it:
-#   ubc scenarios/engineering/automation.ubc
+#   ubc --scenario engineering/automation
 # Change an assumption, for example a task done only once or twice a week:
-#   ubc --set 'runs_per_week = 1 to 2' scenarios/engineering/automation.ubc
+#   ubc --set 'runs_per_week = 1 to 2' --scenario engineering/automation
 # See which assumption matters most:
-#   ubc --sens net_hours scenarios/engineering/automation.ubc
+#   ubc --sens net_hours --scenario engineering/automation
 #
 # Every "a to b" is a 90% confidence interval. Everything is in hours of the
 # same people, so the cost of an hour cancels out. Like the xkcd table, it

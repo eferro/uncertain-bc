@@ -3,11 +3,11 @@
 # reduced scope to lose less value?
 #
 # Run it (it uses the shared formulas):
-#   ubc scenarios/formulas.ubc scenarios/product/delay-vs-reduced-scope.ubc
+#   ubc --scenario product/delay-vs-reduced-scope
 # Change an assumption, for example a reduced scope that delivers less:
-#   ubc --set 'reduced_share = 30% to 50%' scenarios/formulas.ubc scenarios/product/delay-vs-reduced-scope.ubc
+#   ubc --set 'reduced_share = 30% to 50%' --scenario product/delay-vs-reduced-scope
 # See which assumption matters most:
-#   ubc --sens reduced scenarios/formulas.ubc scenarios/product/delay-vs-reduced-scope.ubc
+#   ubc --sens reduced --scenario product/delay-vs-reduced-scope
 #
 # Every "a to b" is a 90% confidence interval. Amounts are in euros. Both
 # options are measured by the value lost against shipping everything today.

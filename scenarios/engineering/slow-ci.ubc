@@ -3,11 +3,11 @@
 # than 100k euros?
 #
 # Run it (it uses the shared formulas):
-#   ubc scenarios/formulas.ubc scenarios/engineering/slow-ci.ubc
+#   ubc --scenario engineering/slow-ci
 # Change an assumption, for example a pipeline sped up to five to eight minutes:
-#   ubc --set 'minutes_waiting = 5 to 8' scenarios/formulas.ubc scenarios/engineering/slow-ci.ubc
+#   ubc --set 'minutes_waiting = 5 to 8' --scenario engineering/slow-ci
 # See which assumption matters most:
-#   ubc --sens yearly_cost scenarios/formulas.ubc scenarios/engineering/slow-ci.ubc
+#   ubc --sens yearly_cost --scenario engineering/slow-ci
 #
 # Every "a to b" is a 90% confidence interval. Amounts are in euros. Not all
 # the waiting is lost: people switch to something else, so only the idle

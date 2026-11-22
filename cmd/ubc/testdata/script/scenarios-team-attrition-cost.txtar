@@ -1,10 +1,10 @@
-exec ubc scenarios/team/attrition-cost.ubc
+exec ubc --scenario team/attrition-cost
 stdout '^leavers = ≈ 5\.07 '
 stdout '^yearly_cost = ≈ 318k '
 stdout '^P\(yearly_cost > 500k\) = 0\.12\n\z'
 ! stderr .
-exec ubc --set 'people = 100' scenarios/team/attrition-cost.ubc
+exec ubc --set 'people = 100' --scenario team/attrition-cost
 stdout '^P\(yearly_cost > 500k\) = 0\.88\n\z'
-exec ubc --sens yearly_cost scenarios/team/attrition-cost.ubc
+exec ubc --sens yearly_cost --scenario team/attrition-cost
 stdout '^sensitivity of yearly_cost \(rank correlation\):\n'
 stdout '^  replacement_cost +\+0\.69 '

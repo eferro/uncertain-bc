@@ -1,10 +1,10 @@
-exec ubc scenarios/product/ab-experiment.ubc
+exec ubc --scenario product/ab-experiment
 stdout '^gain = ≈ 14\.3k '
 stdout '^net = ≈ -2870 '
 stdout '^P\(net > 0\) = 0\.37\n\z'
 ! stderr .
-exec ubc --set 'monthly_revenue = 50k to 100k' scenarios/product/ab-experiment.ubc
+exec ubc --set 'monthly_revenue = 50k to 100k' --scenario product/ab-experiment
 stdout '^P\(net > 0\) = <0\.01\n\z'
-exec ubc --sens net scenarios/product/ab-experiment.ubc
+exec ubc --sens net --scenario product/ab-experiment
 stdout '^sensitivity of net \(rank correlation\):\n'
 stdout '^  cost +-0\.\d\d '

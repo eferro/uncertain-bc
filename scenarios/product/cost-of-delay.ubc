@@ -2,11 +2,11 @@
 # and how likely is the delay to cost more than 100k euros?
 #
 # Run it (it uses the shared formulas):
-#   ubc scenarios/formulas.ubc scenarios/product/cost-of-delay.ubc
+#   ubc --scenario product/cost-of-delay
 # Change an assumption, for example a delay of two to four weeks:
-#   ubc --set 'delay_weeks = 2 to 4' scenarios/formulas.ubc scenarios/product/cost-of-delay.ubc
+#   ubc --set 'delay_weeks = 2 to 4' --scenario product/cost-of-delay
 # See which assumption matters most:
-#   ubc --sens cost scenarios/formulas.ubc scenarios/product/cost-of-delay.ubc
+#   ubc --sens cost --scenario product/cost-of-delay
 #
 # Every "a to b" is a 90% confidence interval. Amounts are in euros. Cost of
 # delay (Don Reinertsen): the value a feature brings every week it is in

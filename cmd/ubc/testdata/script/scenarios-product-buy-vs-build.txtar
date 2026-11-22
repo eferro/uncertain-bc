@@ -1,10 +1,10 @@
-exec ubc scenarios/product/buy-vs-build.ubc
+exec ubc --scenario product/buy-vs-build
 stdout '^buy = ≈ 260k '
 stdout '^build = ≈ 312k '
 stdout '^P\(build < buy\) = 0\.33\n\z'
 ! stderr .
-exec ubc --set 'seats = 50 to 100' scenarios/product/buy-vs-build.ubc
+exec ubc --set 'seats = 50 to 100' --scenario product/buy-vs-build
 stdout '^P\(build < buy\) = 0\.01\n\z'
-exec ubc --sens build scenarios/product/buy-vs-build.ubc
+exec ubc --sens build --scenario product/buy-vs-build
 stdout '^sensitivity of build \(rank correlation\):\n'
 stdout '^  build_cost +\+0\.\d\d '

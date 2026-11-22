@@ -2,11 +2,11 @@
 # than the plan says, and how likely are we to miss the date?
 #
 # Run it:
-#   ubc scenarios/delivery/scope-creep.ubc
+#   ubc --scenario delivery/scope-creep
 # Change an assumption, for example scope that is kept under control:
-#   ubc --set 'growth = 5% to 15%' scenarios/delivery/scope-creep.ubc
+#   ubc --set 'growth = 5% to 15%' --scenario delivery/scope-creep
 # See which assumption matters most:
-#   ubc --sens weeks scenarios/delivery/scope-creep.ubc
+#   ubc --sens weeks --scenario delivery/scope-creep
 #
 # Every "a to b" is a 90% confidence interval.
 

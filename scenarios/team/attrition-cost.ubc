@@ -2,11 +2,11 @@
 # year, and how likely is it to cost more than 500k euros?
 #
 # Run it:
-#   ubc scenarios/team/attrition-cost.ubc
+#   ubc --scenario team/attrition-cost
 # Change an assumption, for example a bigger organisation:
-#   ubc --set 'people = 100' scenarios/team/attrition-cost.ubc
+#   ubc --set 'people = 100' --scenario team/attrition-cost
 # See which assumption matters most:
-#   ubc --sens yearly_cost scenarios/team/attrition-cost.ubc
+#   ubc --sens yearly_cost --scenario team/attrition-cost
 #
 # Every "a to b" is a 90% confidence interval. Amounts are in euros.
 

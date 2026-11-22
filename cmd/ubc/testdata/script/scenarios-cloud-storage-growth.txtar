@@ -1,11 +1,11 @@
-exec ubc scenarios/formulas.ubc scenarios/cloud/storage-growth.ubc
+exec ubc --scenario cloud/storage-growth
 stdout '^data_later = ≈ 101 '
 stdout '^bill_later = ≈ 2260 '
 stdout '^total = ≈ 31\.8k '
 stdout '^P\(bill_later > 3k\) = 0\.27\n\z'
 ! stderr .
-exec ubc --set 'growth = 1% to 3%' scenarios/formulas.ubc scenarios/cloud/storage-growth.ubc
+exec ubc --set 'growth = 1% to 3%' --scenario cloud/storage-growth
 stdout '^P\(bill_later > 3k\) = <0\.01\n\z'
-exec ubc --sens bill_later scenarios/formulas.ubc scenarios/cloud/storage-growth.ubc
+exec ubc --sens bill_later --scenario cloud/storage-growth
 stdout '^sensitivity of bill_later \(rank correlation\):\n'
 stdout '^  growth +\+0\.\d\d '

@@ -3,11 +3,11 @@
 # once work in progress is limited?
 #
 # Run it (it uses the shared formulas):
-#   ubc scenarios/formulas.ubc scenarios/delivery/littles-law.ubc
+#   ubc --scenario delivery/littles-law
 # Change an assumption, for example a stricter limit:
-#   ubc --set 'wip_limit = 5' scenarios/formulas.ubc scenarios/delivery/littles-law.ubc
+#   ubc --set 'wip_limit = 5' --scenario delivery/littles-law
 # See which assumption matters most:
-#   ubc --sens lead_limited scenarios/formulas.ubc scenarios/delivery/littles-law.ubc
+#   ubc --sens lead_limited --scenario delivery/littles-law
 #
 # Every "a to b" is a 90% confidence interval. Little's law holds for averages
 # in a stable system: limiting work in progress does not make the team finish

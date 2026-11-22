@@ -3,11 +3,11 @@
 # it to exceed 500k euros?
 #
 # Run it (it uses the shared formulas):
-#   ubc scenarios/formulas.ubc scenarios/reliability/incident-cost.ubc
+#   ubc --scenario reliability/incident-cost
 # Change an assumption, for example incidents restored in half an hour to two hours:
-#   ubc --set 'mttr_hours = 0.5 to 2' scenarios/formulas.ubc scenarios/reliability/incident-cost.ubc
+#   ubc --set 'mttr_hours = 0.5 to 2' --scenario reliability/incident-cost
 # See which assumption matters most:
-#   ubc --sens yearly_cost scenarios/formulas.ubc scenarios/reliability/incident-cost.ubc
+#   ubc --sens yearly_cost --scenario reliability/incident-cost
 #
 # Every "a to b" is a 90% confidence interval. Amounts are in euros. The
 # cost of an hour of downtime is what the business loses while the service

@@ -3,11 +3,11 @@
 # taken out, and how likely is it to fall short of what the roadmap needs?
 #
 # Run it (it uses the shared formulas):
-#   ubc scenarios/formulas.ubc scenarios/team/team-capacity.ubc
+#   ubc --scenario team/team-capacity
 # Change an assumption, for example a team that protects its focus time:
-#   ubc --set 'focus = 0.6 to 0.9' scenarios/formulas.ubc scenarios/team/team-capacity.ubc
+#   ubc --set 'focus = 0.6 to 0.9' --scenario team/team-capacity
 # See which assumption matters most:
-#   ubc --sens capacity scenarios/formulas.ubc scenarios/team/team-capacity.ubc
+#   ubc --sens capacity --scenario team/team-capacity
 #
 # Every "a to b" is a 90% confidence interval. Days are working days per
 # person in one quarter.

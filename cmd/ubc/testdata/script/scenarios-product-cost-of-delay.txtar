@@ -1,10 +1,10 @@
-exec ubc scenarios/formulas.ubc scenarios/product/cost-of-delay.ubc
+exec ubc --scenario product/cost-of-delay
 stdout '^weekly_value = ≈ 11\.9k '
 stdout '^cost = ≈ 82\.6k '
 stdout '^P\(cost > 100k\) = 0\.38\n\z'
 ! stderr .
-exec ubc --set 'delay_weeks = 2 to 4' scenarios/formulas.ubc scenarios/product/cost-of-delay.ubc
+exec ubc --set 'delay_weeks = 2 to 4' --scenario product/cost-of-delay
 stdout '^P\(cost > 100k\) = 0\.02\n\z'
-exec ubc --sens cost scenarios/formulas.ubc scenarios/product/cost-of-delay.ubc
+exec ubc --sens cost --scenario product/cost-of-delay
 stdout '^sensitivity of cost \(rank correlation\):\n'
 stdout '^  delay_weeks +\+0\.\d\d '

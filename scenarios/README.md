@@ -2,11 +2,16 @@
 
 Ready-to-use `ubc` models for questions that come up in software engineering and product strategy. Pick the one closest to your question, change the assumptions you know better, and run it. You do not need to learn the whole language first: every scenario explains itself in its comments. If you want to learn the language, start with the [tutorial](../docs/TUTORIAL.md).
 
-Run a scenario from the repository root:
+Every scenario is built into `ubc`, so it runs wherever `ubc` is installed, with no clone of this repository ([ADR 0054](../docs/adr/0054-scenarios-built-into-the-binary.md)). List them, run one, or print one to copy and edit it:
 
 ```console
-$ ubc scenarios/team/replace-a-person.ubc
+$ ubc --scenarios
+$ ubc --scenario team/replace-a-person
+$ ubc --set 'vacancy_months = 1 to 3' --scenario team/replace-a-person
+$ ubc --scenario-source team/replace-a-person > replace-a-person.ubc
 ```
+
+`--scenario` combines with every other flag (`--set`, `--data`, `--sens`, `--echo`, `--assert`, …), runs before any `-e` or file, and loads the [shared formulas](#reusable-formulas) first. From a clone, the files run as any model does: `ubc scenarios/formulas.ubc scenarios/team/replace-a-person.ubc`.
 
 Every scenario is checked by the test suite: it must evaluate without errors and be listed in the index below, and every model the index links to must exist ([ADR 0042](../docs/adr/0042-scenario-catalogue.md), [ADR 0045](../docs/adr/0045-delivery-scenarios.md)).
 
@@ -63,14 +68,13 @@ Every scenario is checked by the test suite: it must evaluate without errors and
 
 ## Reusable formulas
 
-[`formulas.ubc`](formulas.ubc) defines formulas that come up again and again as `ubc` user functions, each with a comment explaining it and where it comes from. Run it before a model, in the same command: files run in one session, so the functions flow from one file to the next.
+[`formulas.ubc`](formulas.ubc) defines formulas that come up again and again as `ubc` user functions, each with a comment explaining it and where it comes from. `ubc --scenario <area>/<name>` loads them before the scenario by itself. To use them in your own model, load them with `--scenario formulas`: everything runs in one session, so the functions flow into the files that follow.
 
 ```console
-$ ubc scenarios/formulas.ubc scenarios/<area>/<name>.ubc
-$ ubc scenarios/formulas.ubc my-model.ubc
+$ ubc --scenario formulas my-model.ubc
 ```
 
-Inside the model, call them with plain or uncertain arguments, for example `lead_time(15 to 30, 3 to 6)` or `npv(50k, 2k to 4k, 0.01, 36)`. The test suite runs every scenario after `formulas.ubc`, so a scenario may use them; when it does, its "Run it" lines show the two-file command.
+Inside the model, call them with plain or uncertain arguments, for example `lead_time(15 to 30, 3 to 6)` or `npv(50k, 2k to 4k, 0.01, 36)`. The test suite runs every scenario after `formulas.ubc`, as `--scenario` does, so a scenario may use them.
 
 ## Template
 
@@ -86,11 +90,11 @@ Every scenario lives in `scenarios/<area>/<name>.ubc` and follows the same shape
 # Question: <what does this answer?>
 #
 # Run it:
-#   ubc scenarios/<area>/<name>.ubc
+#   ubc --scenario <area>/<name>
 # Change an assumption:
-#   ubc --set '<variable> = <a> to <b>' scenarios/<area>/<name>.ubc
+#   ubc --set '<variable> = <a> to <b>' --scenario <area>/<name>
 # See which assumption matters most:
-#   ubc --sens <result> scenarios/<area>/<name>.ubc
+#   ubc --sens <result> --scenario <area>/<name>
 
 # Assumptions
 <variable> = <a> to <b>      # where these numbers come from
@@ -103,4 +107,6 @@ Every scenario lives in `scenarios/<area>/<name>.ubc` and follows the same shape
 P(<result> > <threshold>)    # the answer to the question
 ```
 
-To add a scenario: copy the template, put the file under its area, add a row to the index, and run `make validate`.
+The first line, `# Question:`, and the comment lines that follow it up to the first empty `#` are what `ubc --scenarios` prints next to the name.
+
+To add a scenario: copy the template, put the file under its area (one level deep: `<area>/<name>.ubc` is what the binary embeds), add a row to the index, and run `make validate`.

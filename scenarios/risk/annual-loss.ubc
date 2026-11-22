@@ -3,11 +3,11 @@
 # what it costs?
 #
 # Run it (it uses the shared formulas):
-#   ubc scenarios/formulas.ubc scenarios/risk/annual-loss.ubc
+#   ubc --scenario risk/annual-loss
 # Change an assumption, for example a cheaper mitigation:
-#   ubc --set 'mitigation_cost = 5k to 15k' scenarios/formulas.ubc scenarios/risk/annual-loss.ubc
+#   ubc --set 'mitigation_cost = 5k to 15k' --scenario risk/annual-loss
 # See which assumption matters most:
-#   ubc --sens net_benefit scenarios/formulas.ubc scenarios/risk/annual-loss.ubc
+#   ubc --sens net_benefit --scenario risk/annual-loss
 #
 # Every "a to b" is a 90% confidence interval. Amounts are in euros. The
 # annual loss expectancy is the loss to expect on average each year, not

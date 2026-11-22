@@ -1,9 +1,9 @@
-exec ubc scenarios/formulas.ubc scenarios/team/team-capacity.ubc
+exec ubc --scenario team/team-capacity
 stdout '^capacity = ≈ 191 '
 stdout '^P\(capacity < planned\) = 0\.35\n\z'
 ! stderr .
-exec ubc --set 'focus = 0.6 to 0.9' scenarios/formulas.ubc scenarios/team/team-capacity.ubc
+exec ubc --set 'focus = 0.6 to 0.9' --scenario team/team-capacity
 stdout '^P\(capacity < planned\) = 0\.06\n\z'
-exec ubc --sens capacity scenarios/formulas.ubc scenarios/team/team-capacity.ubc
+exec ubc --sens capacity --scenario team/team-capacity
 stdout '^sensitivity of capacity \(rank correlation\):\n'
 stdout '^  focus +\+0\.\d\d '

@@ -3,11 +3,11 @@
 # 1.5k dollars a month?
 #
 # Run it:
-#   ubc scenarios/cloud/observability.ubc
+#   ubc --scenario cloud/observability
 # Change an assumption, for example dropping debug logs and sampling the rest:
-#   ubc --set 'gb_per_service = 0.2 to 1' scenarios/cloud/observability.ubc
+#   ubc --set 'gb_per_service = 0.2 to 1' --scenario cloud/observability
 # See which assumption matters most:
-#   ubc --sens monthly_cost scenarios/cloud/observability.ubc
+#   ubc --sens monthly_cost --scenario cloud/observability
 #
 # Every "a to b" is a 90% confidence interval. Amounts are in dollars.
 # Vendors charge once to ingest a gigabyte and again to keep it searchable

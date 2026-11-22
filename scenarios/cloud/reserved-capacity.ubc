@@ -3,11 +3,11 @@
 # commitment to come out cheaper than paying on demand?
 #
 # Run it:
-#   ubc scenarios/cloud/reserved-capacity.ubc
+#   ubc --scenario cloud/reserved-capacity
 # Change an assumption, for example a usage that may shrink after a migration:
-#   ubc --set 'usage = 20k to 60k' scenarios/cloud/reserved-capacity.ubc
+#   ubc --set 'usage = 20k to 60k' --scenario cloud/reserved-capacity
 # See which assumption matters most:
-#   ubc --sens savings scenarios/cloud/reserved-capacity.ubc
+#   ubc --sens savings --scenario cloud/reserved-capacity
 #
 # Every "a to b" is a 90% confidence interval. Amounts are in dollars a
 # month, at on-demand prices. The commitment is paid whether it is used or

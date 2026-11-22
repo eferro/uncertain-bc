@@ -1,9 +1,10 @@
 # Reusable formulas for the scenarios: ubc user functions that any model can
-# call. Defining them prints nothing; run this file before your own model,
-# in the same command, so the functions flow into it:
+# call. Defining them prints nothing. Every built-in scenario loads them
+# first; load them before your own model, in the same command, so the
+# functions flow into it:
 #
-#   ubc scenarios/formulas.ubc scenarios/<area>/<name>.ubc
-#   ubc scenarios/formulas.ubc my-model.ubc
+#   ubc --scenario <area>/<name>
+#   ubc --scenario formulas my-model.ubc
 #
 # Every argument can be a plain number or an uncertain one ("a to b"). Keep
 # the time units consistent: a monthly rate with a number of months, a weekly

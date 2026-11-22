@@ -3,13 +3,13 @@
 # weeks?
 #
 # Run it with the example throughput below:
-#   ubc scenarios/delivery/delivery-date.ubc
+#   ubc --scenario delivery/delivery-date
 # Use your own history, one number per line (items finished each week):
-#   ubc --data throughput=weeks.txt scenarios/delivery/delivery-date.ubc
+#   ubc --data throughput=weeks.txt --scenario delivery/delivery-date
 # Change an assumption, for example a backlog that has been trimmed:
-#   ubc --set 'backlog = 30 to 40' scenarios/delivery/delivery-date.ubc
+#   ubc --set 'backlog = 30 to 40' --scenario delivery/delivery-date
 # See which assumption matters most:
-#   ubc --sens weeks scenarios/delivery/delivery-date.ubc
+#   ubc --sens weeks --scenario delivery/delivery-date
 #
 # Every "a to b" is a 90% confidence interval. A list "[...]" is observed data:
 # every sample picks one of its values at random.

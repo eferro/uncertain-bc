@@ -1,0 +1,43 @@
+mkdir elsewhere
+cd elsewhere
+
+exec ubc --scenarios
+stdout '^team/replace-a-person +How much does it cost to replace an engineer who leaves the team, and how likely is it to cost more than 50k euros\?\n'
+stdout '^cloud/cost-per-customer +What does the infrastructure for one customer cost a month '
+! stdout 'formulas'
+! stderr .
+
+exec ubc --scenario team/replace-a-person
+cmp stdout $WORK/replace.out
+! stderr .
+
+exec ubc --set 'vacancy_months = 1 to 3' --scenario team/replace-a-person -e 'P(total > 40k)'
+stdout '^P\(total > 50k\) = 0\.43\n'
+stdout '^0\.71\n\z'
+
+exec ubc --scenario team/meeting-cost
+stdout '^yearly_cost = '
+! stderr .
+
+exec ubc --scenario formulas $WORK/model.ubc
+stdout '^5\n\z'
+! stderr .
+
+exec ubc --scenario-source team/replace-a-person
+cmp stdout $WORK/scenarios/team/replace-a-person.ubc
+
+! exec ubc --scenario team/nobody
+! stdout .
+stderr '^ubc: unknown scenario ''team/nobody''; ubc --scenarios lists them\n\z'
+
+! exec ubc --scenario-source nobody
+stderr '^ubc: unknown scenario ''nobody''; ubc --scenarios lists them\n\z'
+
+exec ubc --completion bash
+stdout 'compgen -W "formulas cloud/cost-per-customer .* team/team-capacity"'
+
+-- model.ubc --
+lead_time(20, 4)
+-- replace.out --
+total = ≈ 61.1k   90% [37.8k … 100k]   98% [30k … 122k]   ▃▅▆██▇▇▆▅▄▃▂▂▂▁▁
+P(total > 50k) = 0.75

@@ -1,11 +1,11 @@
-exec ubc scenarios/formulas.ubc scenarios/risk/annual-loss.ubc
+exec ubc --scenario risk/annual-loss
 stdout '^loss_before = ≈ 34\.9k '
 stdout '^loss_after = ≈ 11\.1k '
 stdout '^net_benefit = ≈ -8250 '
 stdout '^P\(net_benefit > 0\) = 0\.36\n\z'
 ! stderr .
-exec ubc --set 'mitigation_cost = 5k to 15k' scenarios/formulas.ubc scenarios/risk/annual-loss.ubc
+exec ubc --set 'mitigation_cost = 5k to 15k' --scenario risk/annual-loss
 stdout '^P\(net_benefit > 0\) = 0\.86\n\z'
-exec ubc --sens net_benefit scenarios/formulas.ubc scenarios/risk/annual-loss.ubc
+exec ubc --sens net_benefit --scenario risk/annual-loss
 stdout '^sensitivity of net_benefit \(rank correlation\):\n'
 stdout '^  impact +\+0\.\d\d '

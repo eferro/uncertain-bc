@@ -3,11 +3,11 @@
 # increase revenue?
 #
 # Run it:
-#   ubc scenarios/product/price-change.ubc
+#   ubc --scenario product/price-change
 # Change an assumption, for example a bigger increase that drives more away:
-#   ubc --set 'increase = 30%' --set 'lost = 10% to 30%' scenarios/product/price-change.ubc
+#   ubc --set 'increase = 30%' --set 'lost = 10% to 30%' --scenario product/price-change
 # See which assumption matters most:
-#   ubc --sens gain scenarios/product/price-change.ubc
+#   ubc --sens gain --scenario product/price-change
 #
 # Every "a to b" is a 90% confidence interval. Amounts are in euros a year.
 # The change pays off while the share lost stays under increase / (1 +

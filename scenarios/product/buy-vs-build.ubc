@@ -2,11 +2,11 @@
 # and maintain our own, and how likely is building to be the cheaper option?
 #
 # Run it:
-#   ubc scenarios/product/buy-vs-build.ubc
+#   ubc --scenario product/buy-vs-build
 # Change an assumption, for example a smaller team using the tool:
-#   ubc --set 'seats = 50 to 100' scenarios/product/buy-vs-build.ubc
+#   ubc --set 'seats = 50 to 100' --scenario product/buy-vs-build
 # See which assumption matters most:
-#   ubc --sens build scenarios/product/buy-vs-build.ubc
+#   ubc --sens build --scenario product/buy-vs-build
 #
 # Every "a to b" is a 90% confidence interval. Amounts are in euros over the
 # three years. Only the money is compared: building also takes the team away

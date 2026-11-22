@@ -2,11 +2,11 @@
 # it cost a year, and how likely is it to be more than a quarter of the day?
 #
 # Run it (it uses the shared formulas):
-#   ubc scenarios/formulas.ubc scenarios/delivery/context-switching.ubc
+#   ubc --scenario delivery/context-switching
 # Change an assumption, for example a team with protected focus hours:
-#   ubc --set 'interruptions = 1 to 4' scenarios/formulas.ubc scenarios/delivery/context-switching.ubc
+#   ubc --set 'interruptions = 1 to 4' --scenario delivery/context-switching
 # See which assumption matters most:
-#   ubc --sens lost_share scenarios/formulas.ubc scenarios/delivery/context-switching.ubc
+#   ubc --sens lost_share --scenario delivery/context-switching
 #
 # Every "a to b" is a 90% confidence interval. Amounts are in euros.
 

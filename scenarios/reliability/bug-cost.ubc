@@ -3,11 +3,11 @@
 # than ten times one caught in QA?
 #
 # Run it (it uses the shared formulas):
-#   ubc scenarios/formulas.ubc scenarios/reliability/bug-cost.ubc
+#   ubc --scenario reliability/bug-cost
 # Change an assumption, for example production bugs that reach few users:
-#   ubc --set 'customer_impact = 200 to 2k' scenarios/formulas.ubc scenarios/reliability/bug-cost.ubc
+#   ubc --set 'customer_impact = 200 to 2k' --scenario reliability/bug-cost
 # See which assumption matters most:
-#   ubc --sens production_cost scenarios/formulas.ubc scenarios/reliability/bug-cost.ubc
+#   ubc --sens production_cost --scenario reliability/bug-cost
 #
 # Every "a to b" is a 90% confidence interval. Amounts are in euros. The
 # often quoted 1:10:100 rule has weak evidence behind it, so the model uses

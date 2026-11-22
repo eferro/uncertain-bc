@@ -2,11 +2,11 @@
 # cost, and how likely is it to exceed the approved budget?
 #
 # Run it (it uses the shared formulas):
-#   ubc scenarios/formulas.ubc scenarios/engineering/migration.ubc
+#   ubc --scenario engineering/migration
 # Change an assumption, for example migrating only the core services:
-#   ubc --set 'services = 10 to 15' scenarios/formulas.ubc scenarios/engineering/migration.ubc
+#   ubc --set 'services = 10 to 15' --scenario engineering/migration
 # See which assumption matters most:
-#   ubc --sens cost scenarios/formulas.ubc scenarios/engineering/migration.ubc
+#   ubc --sens cost --scenario engineering/migration
 #
 # Every "a to b" is a 90% confidence interval. Amounts are in euros.
 # Migrations overrun mostly through the work nobody listed, so it gets its

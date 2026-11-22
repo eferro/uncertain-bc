@@ -1,10 +1,10 @@
-exec ubc scenarios/cloud/llm-cost.ubc
+exec ubc --scenario cloud/llm-cost
 stdout '^cost_per_request = ≈ 0\.00746 '
 stdout '^monthly_cost = ≈ 1470 '
 stdout '^P\(monthly_cost > 3k\) = 0\.18\n\z'
 ! stderr .
-exec ubc --set 'input_tokens = 300 to 1k' scenarios/cloud/llm-cost.ubc
+exec ubc --set 'input_tokens = 300 to 1k' --scenario cloud/llm-cost
 stdout '^P\(monthly_cost > 3k\) = 0\.07\n\z'
-exec ubc --sens monthly_cost scenarios/cloud/llm-cost.ubc
+exec ubc --sens monthly_cost --scenario cloud/llm-cost
 stdout '^sensitivity of monthly_cost \(rank correlation\):\n'
 stdout '^  requests_per_user +\+0\.\d\d '

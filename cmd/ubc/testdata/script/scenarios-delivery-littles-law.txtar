@@ -1,12 +1,12 @@
-exec ubc scenarios/formulas.ubc scenarios/delivery/littles-law.ubc
+exec ubc --scenario delivery/littles-law
 stdout '^lead = ≈ 4 '
 stdout '^lead_limited = ≈ 1\.51 '
 stdout '^weeks_saved = ≈ 2\.48 '
 stdout '^P\(lead_limited <= target\) = 0\.95\n\z'
 ! stderr .
-exec ubc --set 'wip_limit = 5' scenarios/formulas.ubc scenarios/delivery/littles-law.ubc
+exec ubc --set 'wip_limit = 5' --scenario delivery/littles-law
 stdout '^lead_limited = ≈ 0\.947 '
 stdout '^P\(lead_limited <= target\) = 1\n\z'
-exec ubc --sens lead_limited scenarios/formulas.ubc scenarios/delivery/littles-law.ubc
+exec ubc --sens lead_limited --scenario delivery/littles-law
 stdout '^sensitivity of lead_limited \(rank correlation\):\n'
 stdout '^  throughput +-1\.00 '

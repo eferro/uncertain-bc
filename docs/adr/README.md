@@ -61,3 +61,4 @@ Template: Status, Effective date, Deciders, then Context, Decision, Consequences
 | [0051](0051-round-the-98-percent-ends-outwards.md) | Round the ends of the 98% interval outwards (amends 0040) | Accepted | 2026-11-22 |
 | [0052](0052-keep-enough-digits-for-narrow-intervals.md) | Keep enough digits to tell the ends of a narrow interval apart (amends 0006) | Accepted | 2026-11-22 |
 | [0053](0053-label-results-with-their-expression.md) | Label results with their variable name or short expression (amends 0025) | Accepted | 2026-11-22 |
+| [0054](0054-scenarios-built-into-the-binary.md) | Scenarios built into the binary, with `--scenarios`, `--scenario` and `--scenario-source` (amends 0042, 0043) | Accepted | 2026-11-22 |

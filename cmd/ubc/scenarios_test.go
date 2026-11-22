@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -13,6 +14,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/eferro/uncertain-bc/internal/adapters/cli"
+	"github.com/eferro/uncertain-bc/scenarios"
 )
 
 const (
@@ -35,6 +37,20 @@ func TestScenarios_EveryFileEvaluates(t *testing.T) {
 			assert.Empty(t, stderr.String())
 		})
 	}
+}
+
+func TestScenarios_TheBinaryEmbedsEveryFile(t *testing.T) {
+	files, err := modelFiles(scenariosDir)
+	require.NoError(t, err)
+	var embedded []string
+	require.NoError(t, fs.WalkDir(scenarios.Files, ".", func(path string, entry fs.DirEntry, err error) error {
+		if err == nil && !entry.IsDir() {
+			embedded = append(embedded, path)
+		}
+		return err
+	}))
+
+	assert.Equal(t, files, embedded)
 }
 
 func TestScenarios_TheIndexListsEveryFile(t *testing.T) {

@@ -3,11 +3,11 @@
 # and how likely is the payback to stay within 12 months?
 #
 # Run it (it uses the shared formulas):
-#   ubc scenarios/formulas.ubc scenarios/product/ltv-cac.ubc
+#   ubc --scenario product/ltv-cac
 # Change an assumption, for example a more expensive acquisition channel:
-#   ubc --set 'cac = 1.5k to 4k' scenarios/formulas.ubc scenarios/product/ltv-cac.ubc
+#   ubc --set 'cac = 1.5k to 4k' --scenario product/ltv-cac
 # See which assumption matters most:
-#   ubc --sens payback scenarios/formulas.ubc scenarios/product/ltv-cac.ubc
+#   ubc --sens payback --scenario product/ltv-cac
 #
 # Every "a to b" is a 90% confidence interval. Amounts are in euros, periods
 # in months. SaaS benchmarks: LTV at least 3 times CAC, payback under 12

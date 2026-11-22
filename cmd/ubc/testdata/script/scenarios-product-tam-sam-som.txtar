@@ -1,11 +1,11 @@
-exec ubc scenarios/product/tam-sam-som.ubc
+exec ubc --scenario product/tam-sam-som
 stdout '^tam = ≈ 1\.38B '
 stdout '^sam = ≈ 389M '
 stdout '^som = ≈ 8\.75M '
 stdout '^P\(som > 10M\) = 0\.42\n\z'
 ! stderr .
-exec ubc --set 'serviceable = 5% to 10%' scenarios/product/tam-sam-som.ubc
+exec ubc --set 'serviceable = 5% to 10%' --scenario product/tam-sam-som
 stdout '^P\(som > 10M\) = <0\.01\n\z'
-exec ubc --sens som scenarios/product/tam-sam-som.ubc
+exec ubc --sens som --scenario product/tam-sam-som
 stdout '^sensitivity of som \(rank correlation\):\n'
 stdout '^  obtainable +\+0\.\d\d '

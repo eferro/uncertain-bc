@@ -3,11 +3,11 @@
 # how likely is the SOM to exceed 10M euros a year?
 #
 # Run it:
-#   ubc scenarios/product/tam-sam-som.ubc
+#   ubc --scenario product/tam-sam-som
 # Change an assumption, for example a product that only serves one country:
-#   ubc --set 'serviceable = 5% to 10%' scenarios/product/tam-sam-som.ubc
+#   ubc --set 'serviceable = 5% to 10%' --scenario product/tam-sam-som
 # See which assumption matters most:
-#   ubc --sens som scenarios/product/tam-sam-som.ubc
+#   ubc --sens som --scenario product/tam-sam-som
 #
 # Every "a to b" is a 90% confidence interval. Amounts are in euros a year.
 # Fermi estimation: break the number into factors you can guess within a

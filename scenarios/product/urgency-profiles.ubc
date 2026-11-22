@@ -3,11 +3,11 @@
 # fixed-date work to lose more than the standard one?
 #
 # Run it (it uses the shared formulas):
-#   ubc scenarios/formulas.ubc scenarios/product/urgency-profiles.ubc
+#   ubc --scenario product/urgency-profiles
 # Change an assumption, for example less slack before the fixed date:
-#   ubc --set 'slack_weeks = 3' scenarios/formulas.ubc scenarios/product/urgency-profiles.ubc
+#   ubc --set 'slack_weeks = 3' --scenario product/urgency-profiles
 # See which assumption matters most:
-#   ubc --sens fixed_date scenarios/formulas.ubc scenarios/product/urgency-profiles.ubc
+#   ubc --sens fixed_date --scenario product/urgency-profiles
 #
 # Every "a to b" is a 90% confidence interval. Amounts are in euros. The
 # profiles come from the Kanban classes of service: the shape of the cost over
