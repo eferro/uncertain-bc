@@ -1,0 +1,33 @@
+# Question: how many minutes of downtime does an SLO allow in a month, how
+# many can we expect, and how likely are we to overspend the error budget?
+#
+# Run it:
+#   ubc scenarios/reliability/error-budget.ubc
+# Change an assumption, for example a looser 99.5% SLO:
+#   ubc --set 'slo = 99.5%' scenarios/reliability/error-budget.ubc
+# See which assumption matters most:
+#   ubc --sens expected_minutes scenarios/reliability/error-budget.ubc
+#
+# Every "a to b" is a 90% confidence interval. The error budget (Google's
+# Site Reliability Engineering book) is the downtime the SLO allows: 1 - SLO
+# of the period. An incident that hurts only some users spends only that
+# share of its minutes, as a request-based SLO counts it.
+
+# Assumptions
+slo = 99.9%                       # the availability objective
+minutes_per_month = 43200         # 30 days, the SLO window
+incidents_per_month = 1 to 4      # incidents that break the SLO's indicator
+minutes_per_incident = 10 to 60   # from the start of the impact until it is mitigated
+affected_share = 20% to 80%       # share of the requests that fail during an incident
+planned_minutes = 5 to 15         # maintenance windows counted against the SLO
+
+# Calculation
+allowed_minutes = (1 - slo) * minutes_per_month                                               # the error budget
+expected_minutes = incidents_per_month * minutes_per_incident * affected_share + planned_minutes   # downtime we expect
+budget_used = expected_minutes / allowed_minutes                                              # 1 means the budget is spent
+
+# Result
+allowed_minutes
+expected_minutes
+budget_used
+P(expected_minutes > allowed_minutes)   # how likely are we to overspend the error budget this month?

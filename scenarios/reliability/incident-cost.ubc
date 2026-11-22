@@ -1,0 +1,35 @@
+# Question: what do incidents cost a year (incidents × hours to restore ×
+# cost per hour of downtime, plus the responders' time), and how likely is
+# it to exceed 500k euros?
+#
+# Run it (it uses the shared formulas):
+#   ubc scenarios/formulas.ubc scenarios/reliability/incident-cost.ubc
+# Change an assumption, for example incidents restored in half an hour to two hours:
+#   ubc --set 'mttr_hours = 0.5 to 2' scenarios/formulas.ubc scenarios/reliability/incident-cost.ubc
+# See which assumption matters most:
+#   ubc --sens yearly_cost scenarios/formulas.ubc scenarios/reliability/incident-cost.ubc
+#
+# Every "a to b" is a 90% confidence interval. Amounts are in euros. The
+# cost of an hour of downtime is what the business loses while the service
+# is down (sales, SLA credits, support load), not the whole revenue: most
+# users retry later.
+
+# Assumptions
+incidents_per_year = 6 to 20      # incidents that hurt users; count last year's postmortems
+mttr_hours = 1 to 6               # mean time to restore: from the first alert to users served again
+downtime_cost = 5k to 40k         # what an hour of downtime loses
+responders = 3 to 8               # people pulled into each incident
+followup_hours = 8 to 30          # person-hours after each one: postmortem and its actions
+hourly_salary = 30 to 60          # gross salary per hour (a yearly salary divided by ~1700 hours)
+overhead = 1.25 to 1.4            # taxes, benefits and equipment on top of the salary
+
+# Calculation
+hour_cost = loaded_cost(hourly_salary, overhead)                          # what an hour of a person costs the company
+people_cost = (responders * mttr_hours + followup_hours) * hour_cost      # the team's time on one incident
+incident_cost = mttr_hours * downtime_cost + people_cost                  # what one incident costs
+yearly_cost = annual_loss(incidents_per_year, incident_cost)              # incidents a year times the cost of one
+
+# Result
+incident_cost
+yearly_cost
+P(yearly_cost > 500k)             # how likely are incidents to cost more than 500k euros a year?

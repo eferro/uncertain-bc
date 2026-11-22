@@ -44,6 +44,11 @@ Every scenario is checked by the test suite: it must evaluate without errors and
 | engineering | [slow-ci](engineering/slow-ci.ubc) | What does a slow CI pipeline cost a year (minutes waiting × builds a day × people × cost per hour), and how likely is it to cost more than 100k euros? |
 | engineering | [flaky-tests](engineering/flaky-tests.ubc) | How much time do flaky tests waste a year (failed runs × retries × pipeline duration, plus checking each failure), and how likely is it to be more than 300 hours? |
 | engineering | [migration](engineering/migration.ubc) | What will a migration to a new framework, language or cloud cost, forgotten work and running both systems included, and how likely is it to exceed the budget? |
+| reliability | [incident-cost](reliability/incident-cost.ubc) | What do incidents cost a year (incidents × hours to restore × cost per hour of downtime, plus the responders' time), and how likely is it to exceed 500k euros? |
+| reliability | [availability](reliability/availability.ubc) | What availability does a service get from pieces in series and in parallel, how many minutes a month is it down, and how likely is it to meet a 99.9% target? |
+| reliability | [error-budget](reliability/error-budget.ubc) | How many minutes of downtime does an SLO allow in a month, how many can we expect, and how likely are we to overspend the error budget? |
+| reliability | [capacity](reliability/capacity.ubc) | How many nodes does next year's peak traffic need, with headroom and one spare, and how likely is the current cluster to fall short? |
+| reliability | [bug-cost](reliability/bug-cost.ubc) | What does a bug cost when it is caught in code review, in QA or in production, and how likely is a production bug to cost more than ten times one caught in QA? |
 | all | [formulas](formulas.ubc) | Reusable formulas shared by every scenario: loaded cost, real capacity, Little's law, cost of delay and CD3, LTV and CAC payback, annual loss expectancy, availability in series and in parallel, compound growth, present value and NPV. |
 
 ## Reusable formulas

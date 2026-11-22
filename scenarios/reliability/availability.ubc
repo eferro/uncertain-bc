@@ -1,0 +1,35 @@
+# Question: what availability does a service get from the pieces it runs on,
+# some in series and some in parallel, and how likely is it to meet a 99.9%
+# target?
+#
+# Run it (it uses the shared formulas):
+#   ubc scenarios/formulas.ubc scenarios/reliability/availability.ubc
+# Change an assumption, for example a managed database that is down much less:
+#   ubc --set 'database_down = 0.01% to 0.05%' scenarios/formulas.ubc scenarios/reliability/availability.ubc
+# See which assumption matters most:
+#   ubc --sens availability scenarios/formulas.ubc scenarios/reliability/availability.ubc
+#
+# Every "a to b" is a 90% confidence interval. Each piece is described by
+# the share of the time it is down, because a range of availabilities such
+# as 99.9% to 99.99% would put some samples above 100%. A request needs the
+# load balancer, one of two application instances and the database: the
+# pieces in series multiply, the two instances are in parallel. It assumes
+# the pieces fail independently; a shared cause (a bad deploy, a zone
+# outage) takes both instances down at once and makes it worse.
+
+# Assumptions
+balancer_down = 0.01% to 0.05%    # share of the time the load balancer is down; see its provider's SLA
+instance_down = 0.2% to 2%        # share of the time one application instance is down, deploys included
+database_down = 0.05% to 0.3%     # share of the time the single database is down
+minutes_per_month = 43200         # 30 days
+
+# Calculation
+application = availability_parallel(1 - instance_down, 1 - instance_down)                     # either instance is enough
+availability = availability_series(1 - balancer_down, availability_series(application, 1 - database_down))   # all three steps are needed
+downtime_minutes = (1 - availability) * minutes_per_month                                      # minutes down a month
+nines = -log10(1 - availability)                                                               # 3 nines is 99.9%
+
+# Result
+nines
+downtime_minutes
+P(availability > 99.9%)           # how likely is the service to meet a 99.9% availability target?

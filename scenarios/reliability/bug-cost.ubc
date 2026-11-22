@@ -1,0 +1,36 @@
+# Question: what does a bug cost when it is caught in code review, in QA or
+# in production, and how likely is a bug caught in production to cost more
+# than ten times one caught in QA?
+#
+# Run it (it uses the shared formulas):
+#   ubc scenarios/formulas.ubc scenarios/reliability/bug-cost.ubc
+# Change an assumption, for example production bugs that reach few users:
+#   ubc --set 'customer_impact = 200 to 2k' scenarios/formulas.ubc scenarios/reliability/bug-cost.ubc
+# See which assumption matters most:
+#   ubc --sens production_cost scenarios/formulas.ubc scenarios/reliability/bug-cost.ubc
+#
+# Every "a to b" is a 90% confidence interval. Amounts are in euros. The
+# often quoted 1:10:100 rule has weak evidence behind it, so the model uses
+# hours and impacts you can estimate for your own team instead of fixed
+# multipliers. Later stages cost more because the bug must be reproduced,
+# the context is gone and, in production, users are hurt.
+
+# Assumptions
+review_hours = 0.5 to 2           # pointing it out and fixing it before the merge
+qa_hours = 3 to 10                # reporting, reproducing, fixing and testing it again
+production_hours = 10 to 40       # triage, support, the fix, a hotfix release
+customer_impact = 1k to 20k       # lost customers, SLA credits and support tickets
+hourly_salary = 30 to 60          # gross salary per hour (a yearly salary divided by ~1700 hours)
+overhead = 1.25 to 1.4            # taxes, benefits and equipment on top of the salary
+
+# Calculation
+hour_cost = loaded_cost(hourly_salary, overhead)                  # what an hour of a person costs the company
+review_cost = review_hours * hour_cost                            # caught in code review
+qa_cost = qa_hours * hour_cost                                    # caught in QA
+production_cost = production_hours * hour_cost + customer_impact  # caught by users
+
+# Result
+review_cost
+qa_cost
+production_cost
+P(production_cost > 10 * qa_cost) # how likely is a production bug to cost more than ten times one caught in QA?

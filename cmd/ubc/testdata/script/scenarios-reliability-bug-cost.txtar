@@ -1,0 +1,11 @@
+exec ubc scenarios/formulas.ubc scenarios/reliability/bug-cost.ubc
+stdout '^L33: ≈ 56\.3 '
+stdout '^L34: ≈ 306 '
+stdout '^L35: ≈ 5730 '
+stdout '^L36: 0\.80\n\z'
+! stderr .
+exec ubc --set 'customer_impact = 200 to 2k' scenarios/formulas.ubc scenarios/reliability/bug-cost.ubc
+stdout '^L36: 0\.18\n\z'
+exec ubc --sens production_cost scenarios/formulas.ubc scenarios/reliability/bug-cost.ubc
+stdout '^sensitivity of production_cost \(rank correlation\):\n'
+stdout '^  customer_impact +\+0\.\d\d '

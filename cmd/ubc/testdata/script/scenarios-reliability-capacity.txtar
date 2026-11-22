@@ -1,0 +1,11 @@
+exec ubc scenarios/reliability/capacity.ubc
+stdout '^L30: ≈ 6020 '
+stdout '^L31: ≈ 18 '
+stdout '^L32: 29\n'
+stdout '^L33: 0\.35\n\z'
+! stderr .
+exec ubc --set 'rps_per_node = 600 to 900' scenarios/reliability/capacity.ubc
+stdout '^L33: 0\.06\n\z'
+exec ubc --sens nodes scenarios/reliability/capacity.ubc
+stdout '^sensitivity of nodes \(rank correlation\):\n'
+stdout '^  rps_per_node +-0\.\d\d '

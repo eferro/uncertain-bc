@@ -1,0 +1,33 @@
+# Question: how many nodes does a service need for next year's peak traffic,
+# with headroom and one spare, and how likely is the current cluster of 20
+# nodes to fall short?
+#
+# Run it:
+#   ubc scenarios/reliability/capacity.ubc
+# Change an assumption, for example nodes that handle more after tuning:
+#   ubc --set 'rps_per_node = 600 to 900' scenarios/reliability/capacity.ubc
+# See which assumption matters most:
+#   ubc --sens nodes scenarios/reliability/capacity.ubc
+#
+# Every "a to b" is a 90% confidence interval. Nodes are not run at 100%:
+# the target utilisation leaves headroom for spikes inside the peak hour,
+# and one extra node (N+1) keeps the peak served while a node fails or is
+# being deployed.
+
+# Assumptions
+peak_rps = 3k to 6k               # requests per second at this year's busiest hour
+growth = 20% to 80%               # traffic growth until next year's peak
+rps_per_node = 400 to 700         # what one node sustains, from a load test
+target_utilisation = 60% to 75%   # the share of a node's capacity we plan to use
+spare_nodes = 1                   # N+1
+current_nodes = 20                # nodes running today
+
+# Calculation
+next_peak = peak_rps * (1 + growth)                                           # requests per second to serve next year
+nodes = ceil(next_peak / (rps_per_node * target_utilisation)) + spare_nodes   # whole nodes needed
+
+# Result
+next_peak
+nodes
+p(nodes, 0.95)                    # nodes to provision to be covered in 95% of the cases
+P(nodes > current_nodes)          # how likely is the current cluster to fall short?
