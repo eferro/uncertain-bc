@@ -45,15 +45,7 @@ func TestCompletion_RegistersItselfForUbc(t *testing.T) {
 func TestCompletion_ProducesValidScripts(t *testing.T) {
 	for _, shell := range []string{"bash", "zsh", "fish"} {
 		t.Run(shell, func(t *testing.T) {
-			binary, err := exec.LookPath(shell)
-			if err != nil {
-				t.Skip(shell + " is not installed")
-			}
-			script, _ := completionScript(shell)
-			dir := t.TempDir()
-			require.NoError(t, os.WriteFile(filepath.Join(dir, "ubc."+shell), []byte(script), 0o600))
-			check := exec.Command(binary, "-n", "ubc."+shell)
-			check.Dir = dir
+			check := shellBesideCompletionScript(t, shell, t.TempDir(), "-n", "ubc."+shell)
 
 			out, err := check.CombinedOutput()
 
@@ -68,17 +60,23 @@ func TestCompletion_KnowsOnlyThreeShells(t *testing.T) {
 	assert.False(t, ok)
 }
 
+func shellBesideCompletionScript(t *testing.T, shell, dir string, args ...string) *exec.Cmd {
+	t.Helper()
+	binary, err := exec.LookPath(shell)
+	if err != nil {
+		t.Skip(shell + " is not installed")
+	}
+	script, _ := completionScript(shell)
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "ubc."+shell), []byte(script), 0o600))
+	cmd := exec.Command(binary, args...)
+	cmd.Dir = dir
+	return cmd
+}
+
 func bashCompletes(t *testing.T, dir, word string) string {
 	t.Helper()
-	bash, err := exec.LookPath("bash")
-	if err != nil {
-		t.Skip("bash is not installed")
-	}
-	script, _ := completionScript("bash")
-	require.NoError(t, os.WriteFile(filepath.Join(dir, "ubc.bash"), []byte(script), 0o600))
 	probe := `source ubc.bash; COMP_WORDS=(ubc "$1"); COMP_CWORD=1; _ubc; echo "${COMPREPLY[*]}"`
-	complete := exec.Command(bash, "-c", probe, "bash", word)
-	complete.Dir = dir
+	complete := shellBesideCompletionScript(t, "bash", dir, "-c", probe, "bash", word)
 
 	out, err := complete.Output()
 
