@@ -7,7 +7,7 @@ $ ubc -e '(8 to 25) * 12'
 ≈ 170   90% [96 … 296]   98% [80 … 380]   ▃▅▆██▇▆▅▄▃▂▂▂▁▁▁
 ```
 
-Type ranges instead of exact numbers (`10 to 20` means "90 % sure it is between 10 and 20"). `ubc` runs a Monte Carlo simulation and answers with a central value, two nested intervals (90 % and 98 %) and a small chart, right in the terminal. A single Go binary, inspired by [Guesstimate](https://www.getguesstimate.com) and [Squiggle](https://www.squiggle-language.com).
+Type ranges instead of exact numbers (`10 to 20` means "90 % sure it is between 10 and 20"). `ubc` runs a Monte Carlo simulation and answers with a central value, two nested intervals (90 % and 98 %) and a small chart, right in the terminal. A single Go binary, inspired by the Unix calculator [`bc`](https://www.gnu.org/software/bc/) (quick calculations in the terminal, from the command line, a pipe or an interactive session) and by [Guesstimate](https://www.getguesstimate.com) and [Squiggle](https://www.squiggle-language.com) (modelling uncertainty with ranges).
 
 ```console
 $ ubc -e '(8 to 25) * 12'
