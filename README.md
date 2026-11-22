@@ -55,7 +55,7 @@ What the language has today:
 - Comparisons and `P(...)`; summaries `mean`, `median`, `stdev`, `min`, `max`, `p(x, q)`; `sqrt`, `exp`, `log`, `log10`, `abs`, `round`, `floor`, `ceil`.
 - Input from `-e` (repeatable), files or stdin; flags `-n/--samples`, `-s/--seed`, `--random`, `--plain`, `--ascii` (see `ubc --help`).
 
-New to `ubc`? Start with the [tutorial](docs/TUTORIAL.md): from plain arithmetic to project estimates, Fermi problems and cloud costs, with every example in [examples/](examples/). Have a question rather than time for a tutorial? The [scenario catalogue](scenarios/README.md) has ready-to-use models, such as the cost of replacing a person: change the assumptions and run. Full behaviour: [docs/SPEC.md](docs/SPEC.md). Goals and roadmap: [docs/VISION.md](docs/VISION.md).
+New to `ubc`? Start with the [tutorial](docs/TUTORIAL.md): from plain arithmetic to project estimates, Fermi problems and cloud costs, with every example in [examples/](examples/). Have a question rather than time for a tutorial? The [scenario catalogue](scenarios/README.md) has ready-to-use models, such as the cost of replacing a person, hiring, attrition, a team's real capacity, a recurring meeting or the bus factor: change the assumptions and run. Full behaviour: [docs/SPEC.md](docs/SPEC.md). Goals and roadmap: [docs/VISION.md](docs/VISION.md).
 
 ## Install
 

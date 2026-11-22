@@ -1,0 +1,31 @@
+# Question: how much does a recurring weekly meeting cost in a year, counting
+# the time to refocus afterwards, and how likely is it to cost more than 30k
+# euros?
+#
+# Run it (it uses the shared formulas):
+#   ubc scenarios/formulas.ubc scenarios/team/meeting-cost.ubc
+# Change an assumption, for example inviting only the people who must decide:
+#   ubc --set 'attendees = 4' scenarios/formulas.ubc scenarios/team/meeting-cost.ubc
+# See which assumption matters most:
+#   ubc --sens yearly_cost scenarios/formulas.ubc scenarios/team/meeting-cost.ubc
+#
+# Every "a to b" is a 90% confidence interval. Amounts are in euros.
+
+# Assumptions
+attendees = 8                     # people invited who attend
+minutes = 45 to 75                # how long it really lasts, overruns included
+refocus_minutes = 10 to 25        # time lost around it to switch context, per person
+meetings_per_year = 46            # weekly, minus holidays
+hourly_salary = 30 to 60          # gross salary per hour (a yearly salary divided by ~1700 hours)
+overhead = 1.25 to 1.4            # taxes, benefits and equipment on top of the salary
+
+# Calculation
+hour_cost = loaded_cost(hourly_salary, overhead)                # what an hour of a person costs the company
+hours_per_meeting = attendees * (minutes + refocus_minutes) / 60 # person-hours one meeting takes
+yearly_hours = hours_per_meeting * meetings_per_year            # person-hours in a year
+yearly_cost = yearly_hours * hour_cost                          # what those hours cost
+
+# Result
+yearly_hours
+yearly_cost
+P(yearly_cost > 30k)              # how likely is the meeting to cost more than 30k euros a year?

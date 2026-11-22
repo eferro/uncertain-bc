@@ -198,7 +198,7 @@ One line per top-level expression. In the REPL, assignments print too, as `name 
 - Extension `.ubc`, UTF-8 text, same syntax as the REPL (no `:` commands).
 - `ubc model.ubc` prints the result of every top-level expression, prefixed with the source line when there is more than one (`L12: ≈ 97   90% [22 … 237]   98% [0 … 330]   ▁▂▅█▆▃▁`).
 - `examples/` holds the worked models of [TUTORIAL.md](TUTORIAL.md); the test suite runs every command shown in the tutorial and compares its output (ADR 0030).
-- `scenarios/<area>/<name>.ubc` is a catalogue of ready-to-use models that follow one template, indexed in `scenarios/README.md`; the test suite fails when a scenario does not evaluate or is missing from the index (ADR 0042).
+- `scenarios/<area>/<name>.ubc` is a catalogue of ready-to-use models that follow one template, indexed in `scenarios/README.md`; the test suite fails when a scenario does not evaluate or is missing from the index (ADR 0042). The `team` area covers replacing a person, hiring, attrition, onboarding, real team capacity, the cost of a recurring meeting, in-house vs contractors vs outsourcing and the bus factor; each team scenario has a testscript that runs the commands in its header and pins its medians and its answer (ADR 0044).
 - `scenarios/formulas.ubc` defines reusable formulas as user functions (loaded cost, real capacity, Little's law, cost of delay, CD3, LTV, CAC payback, annual loss expectancy, availability in series and in parallel, compound growth, present value, NPV) and prints nothing; run it before a model in the same command (`ubc scenarios/formulas.ubc model.ubc`). The test suite runs every scenario after it and checks each formula with plain numbers (ADR 0043).
 
 ## 9. Acceptance examples

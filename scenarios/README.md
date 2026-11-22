@@ -15,6 +15,13 @@ Every scenario is checked by the test suite: it must evaluate without errors and
 | Area | Scenario | Question it answers |
 |------|----------|---------------------|
 | team | [replace-a-person](team/replace-a-person.ubc) | How much does it cost to replace an engineer who leaves, and how likely is it to exceed 50k euros? |
+| team | [hiring-cost](team/hiring-cost.ubc) | How long does it take to fill a position, how many hours does the hiring process take, and how likely is the seat to stay empty for more than three months? |
+| team | [attrition-cost](team/attrition-cost.ubc) | How much does attrition cost in a year (people × chance of leaving × replacement cost), and how likely is it to exceed 500k euros? |
+| team | [onboarding](team/onboarding.ubc) | How much work does onboarding a new engineer take, ramp-up and the team's help included, and how likely is it to exceed three months of an engineer? |
+| team | [team-capacity](team/team-capacity.ubc) | How many person-days can a team really deliver in a quarter, after holidays, sick leave, on-call and the focus factor, and how likely is it to fall short of the roadmap? |
+| team | [meeting-cost](team/meeting-cost.ubc) | How much does a recurring weekly meeting cost in a year, and how likely is it to exceed 30k euros? |
+| team | [in-house-vs-contractors](team/in-house-vs-contractors.ubc) | For a year of work, what do hiring, contractors and outsourcing cost, and how likely is hiring to be the cheapest? |
+| team | [bus-factor](team/bus-factor.ubc) | What does it cost a year to depend on the only person who knows a system, and is spreading the knowledge worth it? |
 | all | [formulas](formulas.ubc) | Reusable formulas shared by every scenario: loaded cost, real capacity, Little's law, cost of delay and CD3, LTV and CAC payback, annual loss expectancy, availability in series and in parallel, compound growth, present value and NPV. |
 
 ## Reusable formulas

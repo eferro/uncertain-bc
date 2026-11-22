@@ -1,0 +1,10 @@
+exec ubc scenarios/formulas.ubc scenarios/team/meeting-cost.ubc
+stdout '^L29: ≈ 457 '
+stdout '^L30: ≈ 25\.7k '
+stdout '^L31: 0\.27\n\z'
+! stderr .
+exec ubc --set 'attendees = 4' scenarios/formulas.ubc scenarios/team/meeting-cost.ubc
+stdout '^L31: <0\.01\n\z'
+exec ubc --sens yearly_cost scenarios/formulas.ubc scenarios/team/meeting-cost.ubc
+stdout '^sensitivity of yearly_cost \(rank correlation\):\n'
+stdout '^  hourly_salary +\+0\.\d\d '

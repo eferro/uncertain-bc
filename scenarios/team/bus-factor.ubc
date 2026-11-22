@@ -1,0 +1,31 @@
+# Question: what does it cost a year to depend on the only person who knows a
+# critical system, and how likely is that risk to be worth more than two weeks
+# spent spreading the knowledge (pairing, documentation, rotations)?
+#
+# Run it (it uses the shared formulas):
+#   ubc scenarios/formulas.ubc scenarios/team/bus-factor.ubc
+# Change an assumption, for example a system that is easy to pick up:
+#   ubc --set 'recovery_months = 1 to 2' scenarios/formulas.ubc scenarios/team/bus-factor.ubc
+# See which assumption matters most:
+#   ubc --sens yearly_risk scenarios/formulas.ubc scenarios/team/bus-factor.ubc
+#
+# Every "a to b" is a 90% confidence interval. Amounts are in euros.
+
+# Assumptions
+leave_rate = 0.08 to 0.2          # chance the person leaves within a year; voluntary attrition in tech is often 10-15%
+recovery_months = 2 to 6          # until someone else masters the system: reading code, asking around, breaking things
+people_recovering = 1 to 2        # engineers working on it during that time
+value_per_month = 6k to 15k       # value one engineer delivers a month; at least their loaded cost
+incident_chance = 0.1 to 0.5      # chance of an outage or a stuck delivery while nobody knows the system
+incident_cost = 5k to 100k        # what such an incident costs
+cross_training = 5k               # two weeks of one engineer spreading the knowledge
+
+# Calculation
+recovery = recovery_months * people_recovering * value_per_month   # work spent learning the system again
+impact = recovery + incident_chance * incident_cost                # what the person leaving costs
+yearly_risk = annual_loss(leave_rate, impact)                      # expected loss per year
+
+# Result
+impact
+yearly_risk
+P(yearly_risk > cross_training)   # how likely is the risk to be worth more than spreading the knowledge?

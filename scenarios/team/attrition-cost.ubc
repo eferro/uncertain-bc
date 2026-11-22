@@ -1,0 +1,25 @@
+# Question: how much does attrition cost an engineering organisation in a
+# year, and how likely is it to cost more than 500k euros?
+#
+# Run it (it uses the shared formulas):
+#   ubc scenarios/formulas.ubc scenarios/team/attrition-cost.ubc
+# Change an assumption, for example a bigger organisation:
+#   ubc --set 'people = 100' scenarios/formulas.ubc scenarios/team/attrition-cost.ubc
+# See which assumption matters most:
+#   ubc --sens yearly_cost scenarios/formulas.ubc scenarios/team/attrition-cost.ubc
+#
+# Every "a to b" is a 90% confidence interval. Amounts are in euros.
+
+# Assumptions
+people = 40                       # engineers in the organisation
+leave_rate = 0.08 to 0.2          # share who leave in a year; voluntary attrition in tech is often 10-15%
+replacement_cost = 40k to 100k    # average cost of replacing one; replace-a-person.ubc gives about 38k to 100k
+
+# Calculation
+leavers = people * leave_rate                                   # people expected to leave this year
+yearly_cost = people * annual_loss(leave_rate, replacement_cost)  # each person: chance of leaving times the cost of replacing them
+
+# Result
+leavers
+yearly_cost
+P(yearly_cost > 500k)             # how likely is attrition to cost more than 500k euros this year?

@@ -1,0 +1,11 @@
+exec ubc scenarios/formulas.ubc scenarios/team/in-house-vs-contractors.ubc
+stdout '^L33: ≈ 328k '
+stdout '^L34: ≈ 361k '
+stdout '^L35: ≈ 476k '
+stdout '^L36: 0\.66\n\z'
+! stderr .
+exec ubc --set 'day_rate = 300 to 500' scenarios/formulas.ubc scenarios/team/in-house-vs-contractors.ubc
+stdout '^L36: 0\.17\n\z'
+exec ubc --sens in_house scenarios/formulas.ubc scenarios/team/in-house-vs-contractors.ubc
+stdout '^sensitivity of in_house \(rank correlation\):\n'
+stdout '^  salary +\+0\.\d\d '

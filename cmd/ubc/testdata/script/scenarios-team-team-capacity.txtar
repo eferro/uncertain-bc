@@ -1,0 +1,9 @@
+exec ubc scenarios/formulas.ubc scenarios/team/team-capacity.ubc
+stdout '^L29: ≈ 191 '
+stdout '^L30: 0\.35\n\z'
+! stderr .
+exec ubc --set 'focus = 0.6 to 0.9' scenarios/formulas.ubc scenarios/team/team-capacity.ubc
+stdout '^L30: 0\.06\n\z'
+exec ubc --sens capacity scenarios/formulas.ubc scenarios/team/team-capacity.ubc
+stdout '^sensitivity of capacity \(rank correlation\):\n'
+stdout '^  focus +\+0\.\d\d '

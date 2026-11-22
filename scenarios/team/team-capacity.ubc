@@ -1,0 +1,30 @@
+# Question: how many person-days of planned work can a team really deliver in
+# a quarter, once holidays, sick leave, on-call and everyday interruptions are
+# taken out, and how likely is it to fall short of what the roadmap needs?
+#
+# Run it (it uses the shared formulas):
+#   ubc scenarios/formulas.ubc scenarios/team/team-capacity.ubc
+# Change an assumption, for example a team that protects its focus time:
+#   ubc --set 'focus = 0.6 to 0.9' scenarios/formulas.ubc scenarios/team/team-capacity.ubc
+# See which assumption matters most:
+#   ubc --sens capacity scenarios/formulas.ubc scenarios/team/team-capacity.ubc
+#
+# Every "a to b" is a 90% confidence interval. Days are working days per
+# person in one quarter.
+
+# Assumptions
+people = 6                        # engineers in the team
+working_days = 63                 # weekdays in a quarter (65) minus a couple of public holidays
+holidays = 4 to 9                 # vacation days per person in the quarter; 22-30 a year in much of Europe
+sick_days = 1 to 4                # sick leave per person in the quarter
+on_call_days = 2 to 8             # days per person lost to the on-call or support rotation
+focus = 0.5 to 0.8                # share of the remaining time that goes to planned work; 0.5-0.8 is common
+planned = 180                     # person-days of work the roadmap needs this quarter
+
+# Calculation
+available_days = working_days - holidays - sick_days - on_call_days   # days each person is at work and not on call
+capacity = real_capacity(people, available_days, focus)              # person-days left for planned work
+
+# Result
+capacity
+P(capacity < planned)             # how likely is the team to fall short of the roadmap this quarter?
