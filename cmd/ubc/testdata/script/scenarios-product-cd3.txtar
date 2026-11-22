@@ -1,7 +1,7 @@
 exec ubc scenarios/formulas.ubc scenarios/product/cd3.ubc
-stdout '^L31: ≈ 1520 '
-stdout '^L32: ≈ 2010 '
-stdout '^L33: ≈ 1200 '
+stdout '^cd3_search = ≈ 1520 '
+stdout '^cd3_export = ≈ 2010 '
+stdout '^cd3_billing = ≈ 1200 '
 stdout '^L34: 0\.58\n\z'
 ! stderr .
 exec ubc --set 'weeks_search = 2 to 3' scenarios/formulas.ubc scenarios/product/cd3.ubc

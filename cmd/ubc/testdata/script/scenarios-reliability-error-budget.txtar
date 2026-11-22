@@ -1,7 +1,7 @@
 exec ubc scenarios/reliability/error-budget.ubc
-stdout '^L30: 43\.2\n'
-stdout '^L31: ≈ 29 '
-stdout '^L32: ≈ 0\.67 '
+stdout '^allowed_minutes = 43\.2\n'
+stdout '^expected_minutes = ≈ 29 '
+stdout '^budget_used = ≈ 0\.67 '
 stdout '^L33: 0\.25\n\z'
 ! stderr .
 exec ubc --set 'slo = 99.5%' scenarios/reliability/error-budget.ubc

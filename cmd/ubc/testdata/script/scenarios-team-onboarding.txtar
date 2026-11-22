@@ -1,10 +1,10 @@
 exec ubc scenarios/team/onboarding.ubc
-stdout '^L28: ≈ 3\.7 '
-stdout '^L29: ≈ 35k '
-stdout '^L30: 0\.70\n\z'
+stdout '^lost_months = ≈ 3\.7 '
+stdout '^cost = ≈ 35k '
+stdout '^P\(lost_months > 3\) = 0\.70\n\z'
 ! stderr .
 exec ubc --set 'ramp_up_months = 2 to 4' scenarios/team/onboarding.ubc
-stdout '^L30: 0\.08\n\z'
+stdout '^P\(lost_months > 3\) = 0\.08\n\z'
 exec ubc --sens lost_months scenarios/team/onboarding.ubc
 stdout '^sensitivity of lost_months \(rank correlation\):\n'
 stdout '^  ramp_up_months +\+0\.85 '

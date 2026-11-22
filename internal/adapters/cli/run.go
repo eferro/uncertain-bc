@@ -305,9 +305,8 @@ func (a App) settings(opts options) application.Settings {
 }
 
 type source struct {
-	name        string
-	program     string
-	prefixLines bool
+	name    string
+	program string
 }
 
 func collectSources(opts options, stdin io.Reader) ([]source, error) {
@@ -320,7 +319,7 @@ func collectSources(opts options, stdin io.Reader) ([]source, error) {
 		if err != nil {
 			return nil, err
 		}
-		sources = append(sources, source{name: path, program: string(content), prefixLines: true})
+		sources = append(sources, source{name: path, program: string(content)})
 	}
 	if len(sources) > 0 {
 		return sources, nil
@@ -329,13 +328,13 @@ func collectSources(opts options, stdin io.Reader) ([]source, error) {
 	if err != nil {
 		return nil, fmt.Errorf("stdin: %w", err)
 	}
-	return []source{{program: string(content), prefixLines: true}}, nil
+	return []source{{program: string(content)}}, nil
 }
 
 func evaluateAll(session *application.Session, sources []source, st style, stdout, stderr io.Writer) int {
 	for _, src := range sources {
 		results, err := session.Evaluate(src.program)
-		printResults(results, src.prefixLines, st, stdout)
+		printResults(results, st, stdout)
 		if err != nil {
 			reportError(src, err, stderr)
 			return exitCode(err)
@@ -345,24 +344,30 @@ func evaluateAll(session *application.Session, sources []source, st style, stdou
 }
 
 // printResults prints expressions, and assignments too with --echo. In a
-// program that prints several expressions each one says its line.
-func printResults(results []domain.Result, prefixLines bool, st style, stdout io.Writer) {
-	prefix := prefixLines && !st.plain && !st.json && countExpressions(results) > 1
+// program that prints several expressions each one says what it is (ADR 0053).
+func printResults(results []domain.Result, st style, stdout io.Writer) {
+	label := !st.plain && countExpressions(results) > 1
 	for _, result := range results {
-		if line, shown := resultLine(result, prefix, st); shown {
+		if line, shown := resultLine(result, label, st); shown {
 			fmt.Fprintln(stdout, line)
 		}
 	}
 }
 
-func resultLine(result domain.Result, prefix bool, st style) (string, bool) {
+func resultLine(result domain.Result, label bool, st style) (string, bool) {
 	switch {
 	case result.Name != "":
 		return display(result, st), st.echo
-	case prefix:
-		return fmt.Sprintf("L%d: %s", result.Line, display(result, st)), true
+	case !label:
+		return display(result, st), true
 	}
-	return display(result, st), true
+	if named, ok := labelled(result); ok {
+		return display(named, st), true
+	}
+	if st.json {
+		return display(result, st), true
+	}
+	return fmt.Sprintf("L%d: %s", result.Line, display(result, st)), true
 }
 
 func countExpressions(results []domain.Result) int {

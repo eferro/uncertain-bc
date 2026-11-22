@@ -1,6 +1,6 @@
 # ADR 0025: Command-line UX additions
 
-- Status: Accepted
+- Status: Accepted, amended by [ADR 0053](0053-label-results-with-their-expression.md)
 - Effective date: 2026-11-21
 - Deciders: eduardo.ferro
 

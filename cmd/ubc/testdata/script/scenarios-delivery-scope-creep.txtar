@@ -1,11 +1,11 @@
 exec ubc scenarios/delivery/scope-creep.ubc
-stdout '^L26: ≈ 9\.96 '
-stdout '^L27: ≈ 12\.7 '
-stdout '^L28: ≈ 2\.42 '
-stdout '^L29: 0\.60\n\z'
+stdout '^planned_weeks = ≈ 9\.96 '
+stdout '^weeks = ≈ 12\.7 '
+stdout '^weeks_late = ≈ 2\.42 '
+stdout '^P\(weeks > deadline\) = 0\.60\n\z'
 ! stderr .
 exec ubc --set 'growth = 5% to 15%' scenarios/delivery/scope-creep.ubc
-stdout '^L29: 0\.29\n\z'
+stdout '^P\(weeks > deadline\) = 0\.29\n\z'
 exec ubc --sens weeks scenarios/delivery/scope-creep.ubc
 stdout '^sensitivity of weeks \(rank correlation\):\n'
 stdout '^  growth +\+0\.\d\d '

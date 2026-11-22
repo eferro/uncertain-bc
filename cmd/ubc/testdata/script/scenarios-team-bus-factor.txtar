@@ -1,6 +1,6 @@
 exec ubc scenarios/formulas.ubc scenarios/team/bus-factor.ubc
-stdout '^L29: ≈ 54\.7k '
-stdout '^L30: ≈ 6970 '
+stdout '^impact = ≈ 54\.7k '
+stdout '^yearly_risk = ≈ 6970 '
 stdout '^L31: 0\.73\n\z'
 ! stderr .
 exec ubc --set 'recovery_months = 1 to 2' scenarios/formulas.ubc scenarios/team/bus-factor.ubc

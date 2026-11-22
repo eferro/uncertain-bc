@@ -94,10 +94,13 @@ func (r rangeNode) bounds(env Env) (from, to float64, err error) {
 	return from, to, nil
 }
 
+// Result is what a statement printed: Source is its expression as written,
+// the right-hand side for an assignment.
 type Result struct {
-	Line  int
-	Name  string
-	Value Value
+	Line   int
+	Name   string
+	Source string
+	Value  Value
 }
 
 func Evaluate(program string, env Env) ([]Result, error) {
@@ -109,10 +112,10 @@ func Evaluate(program string, env Env) ([]Result, error) {
 	if err != nil {
 		return nil, err
 	}
-	return run(statements, env)
+	return run(program, statements, env)
 }
 
-func run(statements []statement, env Env) ([]Result, error) {
+func run(program string, statements []statement, env Env) ([]Result, error) {
 	results := make([]Result, 0, len(statements))
 	for _, stmt := range statements {
 		if stmt.function != nil {
@@ -125,7 +128,7 @@ func run(statements []statement, env Env) ([]Result, error) {
 		if err != nil {
 			return results, err
 		}
-		results = append(results, Result{Line: stmt.line, Name: stmt.name, Value: value})
+		results = append(results, Result{Line: stmt.line, Name: stmt.name, Source: program[stmt.source.from:stmt.source.to], Value: value})
 	}
 	return results, nil
 }

@@ -1,7 +1,7 @@
 exec ubc scenarios/formulas.ubc scenarios/reliability/bug-cost.ubc
-stdout '^L33: ≈ 56\.3 '
-stdout '^L34: ≈ 306 '
-stdout '^L35: ≈ 5730 '
+stdout '^review_cost = ≈ 56\.3 '
+stdout '^qa_cost = ≈ 306 '
+stdout '^production_cost = ≈ 5730 '
 stdout '^L36: 0\.80\n\z'
 ! stderr .
 exec ubc --set 'customer_impact = 200 to 2k' scenarios/formulas.ubc scenarios/reliability/bug-cost.ubc

@@ -78,7 +78,7 @@ func TestRun_PrintsTheVersion_WhenAskedFor(t *testing.T) {
 }
 
 func TestRun_PrintsEveryExpressionButNoAssignment(t *testing.T) {
-	assert.Equal(t, outcome{code: 0, stdout: "6\n3\n"}, run(t, "", "-e", "x = 2; x * 3; y = x; y + 1"))
+	assert.Equal(t, outcome{code: 0, stdout: "x * 3 = 6\ny + 1 = 3\n"}, run(t, "", "-e", "x = 2; x * 3; y = x; y + 1"))
 }
 
 func TestRun_PrintsAPlainNumber_WhenEverySampleIsTheSame(t *testing.T) {
@@ -103,10 +103,6 @@ func TestRun_StopsAtTheFirstFailingExpression(t *testing.T) {
 
 func TestRun_ReadsTheProgramFromStdin_WhenThereAreNoExpressionsOrFiles(t *testing.T) {
 	assert.Equal(t, outcome{code: 0, stdout: "3\n"}, run(t, "1 + 2\n"))
-}
-
-func TestRun_PrefixesTheLine_WhenAProgramPrintsMoreThanOneResult(t *testing.T) {
-	assert.Equal(t, outcome{code: 0, stdout: "L1: 1\nL3: 3\n"}, run(t, "1\nx = 2\nx + 1\n"))
 }
 
 func TestRun_EvaluatesFilesInOrderInOneSession(t *testing.T) {

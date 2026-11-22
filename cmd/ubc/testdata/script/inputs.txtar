@@ -1,6 +1,6 @@
 stdin program.ubc
 exec ubc
-stdout '^L2: 6\nL4: 4\n$'
+stdout '^x \* 2 = 6\ny = 4\n$'
 
 exec ubc first.ubc second.ubc
 stdout '^3\n$'

@@ -1,12 +1,12 @@
 exec ubc scenarios/delivery/delivery-date.ubc
-stdout '^L28: ≈ 11\.7 '
-stdout '^L29: 0\.55\n\z'
+stdout '^weeks = ≈ 11\.7 '
+stdout '^P\(weeks <= deadline\) = 0\.55\n\z'
 ! stderr .
 exec ubc --data throughput=weeks.txt scenarios/delivery/delivery-date.ubc
-stdout '^L28: ≈ 18\.4 '
-stdout '^L29: <0\.01\n\z'
+stdout '^weeks = ≈ 18\.4 '
+stdout '^P\(weeks <= deadline\) = <0\.01\n\z'
 exec ubc --set 'backlog = 30 to 40' scenarios/delivery/delivery-date.ubc
-stdout '^L29: 0\.98\n\z'
+stdout '^P\(weeks <= deadline\) = 0\.98\n\z'
 exec ubc --sens weeks scenarios/delivery/delivery-date.ubc
 stdout '^sensitivity of weeks \(rank correlation\):\n'
 stdout '^  backlog +\+0\.\d\d '

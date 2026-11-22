@@ -1,0 +1,41 @@
+exec ubc model.ubc
+cmp stdout want.txt
+! stderr .
+
+exec ubc -e 'x = 2; x; x * 3'
+cmp stdout want_eval.txt
+
+exec ubc -e 'x = 2' -e 'x * 3'
+stdout '^6\n\z'
+
+stdin model.ubc
+exec ubc
+cmp stdout want.txt
+
+exec ubc --json model.ubc
+stdout '^\{"name":"total","kind":"samples",'
+stdout '^\{"name":"P\(total > 50k\)","kind":"probability","value":0\.7256\}$'
+stdout '^\{"kind":"scalar","value":5\}$'
+
+exec ubc --plain model.ubc
+stdout '^56620\.\d+$'
+! stdout 'total'
+
+exec ubc --echo model.ubc
+stdout '^price = 2\n'
+stdout '^total = ≈ .*\ntotal = ≈ '
+
+-- model.ubc --
+price = 2
+units = 20k to 40k   # a comment is not part of the label
+total = price * units
+total
+P(total > 50k)       # a comment is not part of the label
+max(price, 1) + max(price, 2) + 1
+-- want.txt --
+total = ≈ 56.6k   90% [40k … 79.3k]   98% [34k … 93k]   ▂▄▅▆▇██▇▅▅▃▃▂▂▁▁
+P(total > 50k) = 0.73
+L6: 5
+-- want_eval.txt --
+x = 2
+x * 3 = 6

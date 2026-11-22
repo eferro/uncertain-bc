@@ -14,9 +14,9 @@ func TestEvaluate_ReturnsOneResultPerStatement(t *testing.T) {
 
 	require.NoError(t, err)
 	assert.Equal(t, []domain.Result{
-		{Line: 1, Value: domain.Scalar(3)},
-		{Line: 1, Value: domain.Scalar(12)},
-		{Line: 2, Value: domain.Scalar(5)},
+		{Line: 1, Source: "1 + 2", Value: domain.Scalar(3)},
+		{Line: 1, Source: "3 * 4", Value: domain.Scalar(12)},
+		{Line: 2, Source: "5", Value: domain.Scalar(5)},
 	}, results)
 }
 
@@ -24,7 +24,7 @@ func TestEvaluate_SkipsBlankLinesAndComments(t *testing.T) {
 	results, err := domain.Evaluate("# header\n\n  ;\n1 # trailing\r\n", domain.NewEnv(1, samples))
 
 	require.NoError(t, err)
-	assert.Equal(t, []domain.Result{{Line: 4, Value: domain.Scalar(1)}}, results)
+	assert.Equal(t, []domain.Result{{Line: 4, Source: "1", Value: domain.Scalar(1)}}, results)
 }
 
 func TestEvaluate_BindsAVariable_WhenAStatementIsAnAssignment(t *testing.T) {
@@ -32,9 +32,25 @@ func TestEvaluate_BindsAVariable_WhenAStatementIsAnAssignment(t *testing.T) {
 
 	require.NoError(t, err)
 	assert.Equal(t, []domain.Result{
-		{Line: 1, Name: "x", Value: domain.Scalar(2)},
-		{Line: 2, Value: domain.Scalar(6)},
+		{Line: 1, Name: "x", Source: "2", Value: domain.Scalar(2)},
+		{Line: 2, Source: "x * 3", Value: domain.Scalar(6)},
 	}, results)
+}
+
+func TestEvaluate_KeepsTheSourceOfEachExpressionAsWritten(t *testing.T) {
+	results, err := domain.Evaluate("x  =  2 * 3   # six\n  P(x  > 5) ;max(x, 1)\n", domain.NewEnv(1, samples))
+
+	require.NoError(t, err)
+	require.Len(t, results, 3)
+	assert.Equal(t, []string{"2 * 3", "P(x  > 5)", "max(x, 1)"}, sources(results))
+}
+
+func sources(results []domain.Result) []string {
+	texts := make([]string, 0, len(results))
+	for _, result := range results {
+		texts = append(texts, result.Source)
+	}
+	return texts
 }
 
 func TestEvaluate_LetsAVariableBeReassigned(t *testing.T) {
@@ -79,7 +95,7 @@ func TestEvaluate_ReturnsTheResultsBeforeAnEvaluationError(t *testing.T) {
 	var evalErr *domain.EvalError
 	require.ErrorAs(t, err, &evalErr)
 	assert.Equal(t, domain.EvalError{Line: 2, Col: 4, Msg: "range start 10 must be below its end 5"}, *evalErr)
-	assert.Equal(t, []domain.Result{{Line: 1, Value: domain.Scalar(1)}}, results)
+	assert.Equal(t, []domain.Result{{Line: 1, Source: "1", Value: domain.Scalar(1)}}, results)
 }
 
 func TestEvaluate_EvaluatesNothing_WhenAnyStatementHasASyntaxError(t *testing.T) {
@@ -115,7 +131,7 @@ func TestEvaluate_AcceptsWindowsLineEndings(t *testing.T) {
 
 	require.NoError(t, err)
 	assert.Equal(t, []domain.Result{
-		{Line: 1, Value: domain.Scalar(1)},
-		{Line: 2, Value: domain.Scalar(2)},
+		{Line: 1, Source: "1", Value: domain.Scalar(1)},
+		{Line: 2, Source: "2", Value: domain.Scalar(2)},
 	}, results)
 }

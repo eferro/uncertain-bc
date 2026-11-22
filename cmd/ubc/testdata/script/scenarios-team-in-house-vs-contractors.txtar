@@ -1,7 +1,7 @@
 exec ubc scenarios/formulas.ubc scenarios/team/in-house-vs-contractors.ubc
-stdout '^L33: ≈ 328k '
-stdout '^L34: ≈ 361k '
-stdout '^L35: ≈ 476k '
+stdout '^in_house = ≈ 328k '
+stdout '^contractors = ≈ 361k '
+stdout '^outsourcing = ≈ 476k '
 stdout '^L36: 0\.66\n\z'
 ! stderr .
 exec ubc --set 'day_rate = 300 to 500' scenarios/formulas.ubc scenarios/team/in-house-vs-contractors.ubc

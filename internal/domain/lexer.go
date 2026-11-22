@@ -57,9 +57,14 @@ type position struct {
 }
 
 type token struct {
-	kind tokenKind
-	text string
+	kind   tokenKind
+	text   string
+	offset int
 	position
+}
+
+func (t token) end() int {
+	return t.offset + len(t.text)
 }
 
 type lexer struct {
@@ -138,7 +143,7 @@ func (l *lexer) emitAndSkip(kind tokenKind, end int) {
 }
 
 func (l *lexer) emit(kind tokenKind, text string, at int) {
-	l.tokens = append(l.tokens, token{kind: kind, text: text, position: l.position(at)})
+	l.tokens = append(l.tokens, token{kind: kind, text: text, offset: at, position: l.position(at)})
 }
 
 func (l *lexer) position(at int) position {

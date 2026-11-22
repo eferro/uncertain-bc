@@ -68,5 +68,5 @@ func TestJSON_CannotBeCombinedWithPlain(t *testing.T) {
 func TestJSON_StaysParseable_WhenAProgramPrintsSeveralResults(t *testing.T) {
 	got := run(t, "1\n2\n", "--json")
 
-	assert.Equal(t, `{"kind":"scalar","value":1}`+"\n"+`{"kind":"scalar","value":2}`+"\n", got.stdout)
+	assert.Equal(t, `{"name":"1","kind":"scalar","value":1}`+"\n"+`{"name":"2","kind":"scalar","value":2}`+"\n", got.stdout)
 }

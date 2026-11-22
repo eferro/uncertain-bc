@@ -15,7 +15,7 @@ func TestUserFunction_IsDefinedSilentlyAndCalledLikeABuiltIn(t *testing.T) {
 	results, err := domain.Evaluate("cost(n) = n * 2\ncost(3)", domain.NewEnv(1, samples))
 
 	require.NoError(t, err)
-	assert.Equal(t, []domain.Result{{Line: 2, Value: domain.Scalar(6)}}, results)
+	assert.Equal(t, []domain.Result{{Line: 2, Source: "cost(3)", Value: domain.Scalar(6)}}, results)
 }
 
 func TestUserFunction_TakesSeveralParameters(t *testing.T) {

@@ -16,7 +16,7 @@ func TestSession_EvaluatesAProgram(t *testing.T) {
 	results, err := session.Evaluate("1 + 2")
 
 	require.NoError(t, err)
-	assert.Equal(t, []domain.Result{{Line: 1, Value: domain.Scalar(3)}}, results)
+	assert.Equal(t, []domain.Result{{Line: 1, Source: "1 + 2", Value: domain.Scalar(3)}}, results)
 }
 
 func TestSession_DrawsTheConfiguredNumberOfSamples(t *testing.T) {

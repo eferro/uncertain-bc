@@ -9,7 +9,14 @@ type statement struct {
 	line     int
 	name     string
 	expr     node
+	source   span
 	function *definition
+}
+
+// span is where a statement's expression sits in the program, so a result
+// can be labelled with the text the user wrote (ADR 0053).
+type span struct {
+	from, to int
 }
 
 type parser struct {
@@ -44,8 +51,9 @@ func (p *parser) statement() (statement, error) {
 		name = p.advance().text
 		p.advance()
 	}
+	from := p.peek().offset
 	expr, err := p.expression()
-	return statement{line: line, name: name, expr: expr}, err
+	return statement{line: line, name: name, expr: expr, source: span{from: from, to: p.tokens[p.pos-1].end()}}, err
 }
 
 // isDefinition looks ahead for name(...) followed by '=', which tells a

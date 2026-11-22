@@ -1,10 +1,10 @@
 exec ubc scenarios/formulas.ubc scenarios/engineering/slow-ci.ubc
-stdout '^L31: ≈ 1850 '
-stdout '^L32: ≈ 103k '
-stdout '^L33: 0\.52\n\z'
+stdout '^hours_lost = ≈ 1850 '
+stdout '^yearly_cost = ≈ 103k '
+stdout '^P\(yearly_cost > 100k\) = 0\.52\n\z'
 ! stderr .
 exec ubc --set 'minutes_waiting = 5 to 8' scenarios/formulas.ubc scenarios/engineering/slow-ci.ubc
-stdout '^L33: 0\.05\n\z'
+stdout '^P\(yearly_cost > 100k\) = 0\.05\n\z'
 exec ubc --sens yearly_cost scenarios/formulas.ubc scenarios/engineering/slow-ci.ubc
 stdout '^sensitivity of yearly_cost \(rank correlation\):\n'
 stdout '^  builds_per_day +\+0\.\d\d '

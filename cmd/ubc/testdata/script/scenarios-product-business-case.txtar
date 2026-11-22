@@ -1,10 +1,10 @@
 exec ubc scenarios/product/business-case.ubc
-stdout '^L29: ≈ 80\.7k '
-stdout '^L30: ≈ 45\.5k '
-stdout '^L31: 0\.68\n\z'
+stdout '^yearly_revenue = ≈ 80\.7k '
+stdout '^net = ≈ 45\.5k '
+stdout '^P\(net > 0\) = 0\.68\n\z'
 ! stderr .
 exec ubc --set 'conversion = 5% to 15%' scenarios/product/business-case.ubc
-stdout '^L31: 0\.87\n\z'
+stdout '^P\(net > 0\) = 0\.87\n\z'
 exec ubc --sens net scenarios/product/business-case.ubc
 stdout '^sensitivity of net \(rank correlation\):\n'
 stdout '^  conversion +\+0\.\d\d '

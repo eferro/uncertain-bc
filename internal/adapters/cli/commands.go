@@ -178,9 +178,9 @@ func load(r replSession, path string) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	src := source{name: path, program: string(content), prefixLines: true}
+	src := source{name: path, program: string(content)}
 	results, err := r.session.Evaluate(src.program)
-	printResults(results, src.prefixLines, r.style, r.stdout)
+	printResults(results, r.style, r.stdout)
 	if err != nil {
 		reportError(src, err, r.stderr)
 	}

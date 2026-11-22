@@ -32,8 +32,8 @@ func TestOverride_SkipsLaterAssignmentsToTheName_AndReportsTheOverride(t *testin
 
 	require.NoError(t, err)
 	assert.Equal(t, []domain.Result{
-		{Line: 1, Name: "team", Value: domain.Scalar(5)},
-		{Line: 2, Value: domain.Scalar(10)},
+		{Line: 1, Name: "team", Source: "3", Value: domain.Scalar(5)},
+		{Line: 2, Source: "team * 2", Value: domain.Scalar(10)},
 	}, results)
 }
 
@@ -53,7 +53,7 @@ func TestOverride_LeavesOtherAssignmentsAlone(t *testing.T) {
 	results, err := domain.Evaluate("rate = 3", env)
 
 	require.NoError(t, err)
-	assert.Equal(t, []domain.Result{{Line: 1, Name: "rate", Value: domain.Scalar(3)}}, results)
+	assert.Equal(t, []domain.Result{{Line: 1, Name: "rate", Source: "3", Value: domain.Scalar(3)}}, results)
 }
 
 func TestOverride_StillEvaluatesExpressions_WhenLastIsOverridden(t *testing.T) {

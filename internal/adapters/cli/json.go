@@ -1,7 +1,9 @@
 package cli
 
 import (
+	"bytes"
 	"encoding/json"
+	"strings"
 
 	"github.com/eferro/uncertain-bc/internal/domain"
 )
@@ -43,8 +45,17 @@ func jsonLine(value domain.Value, name string, quantiles []float64) string {
 	case domain.Scalar:
 		object = numberJSON{Name: name, Kind: "scalar", Value: finite(float64(v))}
 	}
-	line, _ := json.Marshal(object)
-	return string(line)
+	return marshal(object)
+}
+
+// marshal leaves <, > and & as they are: labels hold comparisons, and the
+// output is read by people and JSON parsers, never embedded in HTML (ADR 0053).
+func marshal(object any) string {
+	var line bytes.Buffer
+	encoder := json.NewEncoder(&line)
+	encoder.SetEscapeHTML(false)
+	_ = encoder.Encode(object)
+	return strings.TrimSuffix(line.String(), "\n")
 }
 
 // finite turns NaN and ±Inf into null, which JSON can represent.
