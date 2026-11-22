@@ -1,0 +1,36 @@
+# Question: for the same delay, what do the four cost of delay urgency profiles
+# (standard, expedite, fixed date, intangible) cost, and how likely is the
+# fixed-date work to lose more than the standard one?
+#
+# Run it (it uses the shared formulas):
+#   ubc scenarios/formulas.ubc scenarios/product/urgency-profiles.ubc
+# Change an assumption, for example less slack before the fixed date:
+#   ubc --set 'slack_weeks = 3' scenarios/formulas.ubc scenarios/product/urgency-profiles.ubc
+# See which assumption matters most:
+#   ubc --sens fixed_date scenarios/formulas.ubc scenarios/product/urgency-profiles.ubc
+#
+# Every "a to b" is a 90% confidence interval. Amounts are in euros. The
+# profiles come from the Kanban classes of service: the shape of the cost over
+# time matters as much as its size.
+
+# Assumptions
+delay_weeks = 2 to 8              # how late the work ends up shipping
+standard_weekly = 3k to 8k        # standard: the same value lost every week of delay
+expedite_weekly = 20k to 60k      # expedite: a large loss every week (an outage, a key customer blocked)
+slack_weeks = 6                   # fixed date: weeks until the date (a regulation, a trade fair)
+missed_date = 50k to 200k         # fixed date: lost all at once when the date is missed
+intangible_weekly = 200 to 1k     # intangible: little lost today (tech debt, an old platform)...
+intangible_growth = 10% to 30%    # ...but it grows every week as the problem gets closer
+
+# Calculation
+standard = delay_cost(standard_weekly, delay_weeks)              # linear in the delay
+expedite = delay_cost(expedite_weekly, delay_weeks)              # linear too, and steep
+fixed_date = (delay_weeks > slack_weeks) * missed_date           # nothing until the date, everything after it
+intangible = intangible_weekly * ((1 + intangible_growth) ^ delay_weeks - 1) / intangible_growth   # sum of a weekly loss that grows every week
+
+# Result
+standard
+expedite
+fixed_date
+intangible
+P(fixed_date > standard)          # how likely is the fixed-date work to lose more than the standard one?

@@ -53,3 +53,4 @@ Template: Status, Effective date, Deciders, then Context, Decision, Consequences
 | [0043](0043-reusable-formulas-for-the-scenarios.md) | Reusable formulas for the scenarios in one shared file | Accepted | 2026-11-22 |
 | [0044](0044-team-scenarios.md) | Team scenarios, self-contained and pinned by their answers | Accepted | 2026-11-22 |
 | [0045](0045-delivery-scenarios.md) | Delivery scenarios, with observed data as a replaceable default | Accepted | 2026-11-22 |
+| [0046](0046-product-scenarios.md) | Product scenarios around cost of delay, with ranges in place of confidence factors | Accepted | 2026-11-22 |

@@ -1,0 +1,27 @@
+# Question: how much value do we lose if a feature ships later than planned,
+# and how likely is the delay to cost more than 100k euros?
+#
+# Run it (it uses the shared formulas):
+#   ubc scenarios/formulas.ubc scenarios/product/cost-of-delay.ubc
+# Change an assumption, for example a delay of two to four weeks:
+#   ubc --set 'delay_weeks = 2 to 4' scenarios/formulas.ubc scenarios/product/cost-of-delay.ubc
+# See which assumption matters most:
+#   ubc --sens cost scenarios/formulas.ubc scenarios/product/cost-of-delay.ubc
+#
+# Every "a to b" is a 90% confidence interval. Amounts are in euros. Cost of
+# delay (Don Reinertsen): the value a feature brings every week it is in
+# users' hands is lost for every week it is not.
+
+# Assumptions
+customers = 200 to 600            # customers who would use the feature; ask sales or look at the requests
+value_per_customer = 20 to 60     # extra revenue or savings a week for each of them
+delay_weeks = 4 to 12             # how much later than planned it ships
+
+# Calculation
+weekly_value = customers * value_per_customer      # the cost of delay: value lost every week
+cost = delay_cost(weekly_value, delay_weeks)       # value lost over the whole delay
+
+# Result
+weekly_value
+cost
+P(cost > 100k)                    # how likely is the delay to cost more than 100k euros?

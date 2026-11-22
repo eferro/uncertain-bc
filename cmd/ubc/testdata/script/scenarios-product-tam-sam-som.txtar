@@ -1,0 +1,11 @@
+exec ubc scenarios/product/tam-sam-som.ubc
+stdout '^L28: ≈ 1\.38B '
+stdout '^L29: ≈ 389M '
+stdout '^L30: ≈ 8\.75M '
+stdout '^L31: 0\.42\n\z'
+! stderr .
+exec ubc --set 'serviceable = 5% to 10%' scenarios/product/tam-sam-som.ubc
+stdout '^L31: <0\.01\n\z'
+exec ubc --sens som scenarios/product/tam-sam-som.ubc
+stdout '^sensitivity of som \(rank correlation\):\n'
+stdout '^  obtainable +\+0\.\d\d '

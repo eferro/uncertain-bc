@@ -1,0 +1,11 @@
+exec ubc scenarios/formulas.ubc scenarios/product/ltv-cac.ubc
+stdout '^L28: ≈ 4850 '
+stdout '^L29: ≈ 10\.3 '
+stdout '^L30: ≈ 4\.81 '
+stdout '^L31: 0\.62\n\z'
+! stderr .
+exec ubc --set 'cac = 1.5k to 4k' scenarios/formulas.ubc scenarios/product/ltv-cac.ubc
+stdout '^L31: 0\.03\n\z'
+exec ubc --sens payback scenarios/formulas.ubc scenarios/product/ltv-cac.ubc
+stdout '^sensitivity of payback \(rank correlation\):\n'
+stdout '^  cac +\+0\.\d\d '

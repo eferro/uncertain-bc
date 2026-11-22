@@ -1,0 +1,31 @@
+# Question: what is a customer worth over their lifetime (LTV), how many
+# months does it take to recover what we spent acquiring them (CAC payback),
+# and how likely is the payback to stay within 12 months?
+#
+# Run it (it uses the shared formulas):
+#   ubc scenarios/formulas.ubc scenarios/product/ltv-cac.ubc
+# Change an assumption, for example a more expensive acquisition channel:
+#   ubc --set 'cac = 1.5k to 4k' scenarios/formulas.ubc scenarios/product/ltv-cac.ubc
+# See which assumption matters most:
+#   ubc --sens payback scenarios/formulas.ubc scenarios/product/ltv-cac.ubc
+#
+# Every "a to b" is a 90% confidence interval. Amounts are in euros, periods
+# in months. SaaS benchmarks: LTV at least 3 times CAC, payback under 12
+# months.
+
+# Assumptions
+arpa = 80 to 200                  # monthly revenue per account
+margin = 70% to 85%               # gross margin: revenue left after hosting and support
+churn = 1% to 4%                  # share of customers who cancel each month
+cac = 500 to 2k                   # sales and marketing spent per new customer
+
+# Calculation
+lifetime_value = ltv(arpa, margin, churn)      # margin over the expected lifetime (1 / churn months)
+payback = cac_payback(cac, arpa, margin)       # months until a customer's margin pays back the CAC
+ratio = lifetime_value / cac                   # LTV:CAC; above 3 is healthy
+
+# Result
+lifetime_value
+payback
+ratio
+P(payback <= 12)                  # how likely is the payback to stay within 12 months?

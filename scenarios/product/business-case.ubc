@@ -1,0 +1,31 @@
+# Question: does a new feature pay for itself in two years, counting the users
+# it reaches, how many adopt it and pay for it, and what it costs to build and
+# run, and how likely is it to make money?
+#
+# Run it:
+#   ubc scenarios/product/business-case.ubc
+# Change an assumption, for example a feature that converts better:
+#   ubc --set 'conversion = 5% to 15%' scenarios/product/business-case.ubc
+# See which assumption matters most:
+#   ubc --sens net scenarios/product/business-case.ubc
+#
+# Every "a to b" is a 90% confidence interval. Amounts are in euros. Each
+# factor is a funnel step: being honest about each one beats one big guess.
+
+# Assumptions
+reach = 20k to 60k                # users who see the feature in a year
+adoption = 10% to 30%             # share of them who try it
+conversion = 3% to 10%            # share of those who pay more because of it (upgrade, add-on)
+arpu = 150 to 400                 # extra yearly revenue from each paying user
+build = 50k to 120k               # building it: engineers × weeks × loaded cost
+run = 10k to 30k                  # hosting, support and maintenance a year
+years = 2                         # horizon of the business case
+
+# Calculation
+yearly_revenue = reach * adoption * conversion * arpu    # the funnel, step by step
+net = (yearly_revenue - run) * years - build             # what is left after building and running it
+
+# Result
+yearly_revenue
+net
+P(net > 0)                        # how likely is the feature to make money in two years?

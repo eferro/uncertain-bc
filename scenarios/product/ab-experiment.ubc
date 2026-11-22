@@ -1,0 +1,30 @@
+# Question: is an A/B experiment whose winning variant would likely lift
+# revenue by 1-3% worth running, knowing that most variants do not win, and
+# how likely is it to pay back what it costs?
+#
+# Run it:
+#   ubc scenarios/product/ab-experiment.ubc
+# Change an assumption, for example a flow with less revenue behind it:
+#   ubc --set 'monthly_revenue = 50k to 100k' scenarios/product/ab-experiment.ubc
+# See which assumption matters most:
+#   ubc --sens net scenarios/product/ab-experiment.ubc
+#
+# Every "a to b" is a 90% confidence interval. Amounts are in euros. Large
+# experimentation programs report that only a minority of experiments win, so
+# the expected gain is the uplift times the chance of winning.
+
+# Assumptions
+monthly_revenue = 200k to 400k    # monthly revenue through the flow the experiment changes
+uplift = 1% to 3%                 # revenue uplift if the variant wins
+win_chance = 15% to 40%           # chance the variant really wins
+months = 12                       # how long the gain lasts before the next redesign
+cost = 10k to 30k                 # design, engineering, analysis and the weeks of traffic it takes
+
+# Calculation
+gain = monthly_revenue * uplift * months * win_chance   # expected extra revenue
+net = gain - cost                                       # what is left once the experiment is paid
+
+# Result
+gain
+net
+P(net > 0)                        # how likely is the experiment to pay back what it costs?

@@ -1,0 +1,31 @@
+# Question: Fermi style, how big is the market for a B2B product (TAM), the
+# part we can serve (SAM) and the part we could win in three years (SOM), and
+# how likely is the SOM to exceed 10M euros a year?
+#
+# Run it:
+#   ubc scenarios/product/tam-sam-som.ubc
+# Change an assumption, for example a product that only serves one country:
+#   ubc --set 'serviceable = 5% to 10%' scenarios/product/tam-sam-som.ubc
+# See which assumption matters most:
+#   ubc --sens som scenarios/product/tam-sam-som.ubc
+#
+# Every "a to b" is a 90% confidence interval. Amounts are in euros a year.
+# Fermi estimation: break the number into factors you can guess within a
+# range; the errors partly cancel and the range of the result is honest.
+
+# Assumptions
+companies = 200k to 400k          # companies with 10 to 200 employees in the target countries; check official statistics
+price = 3k to 8k                  # yearly price for one company
+serviceable = 20% to 40%          # share we can serve: languages, integrations, sectors
+obtainable = 1% to 5%             # share of that we could win in three years, against the competition
+
+# Calculation
+tam = companies * price           # total addressable market: everyone buys
+sam = tam * serviceable           # serviceable available market
+som = sam * obtainable            # serviceable obtainable market
+
+# Result
+tam
+sam
+som
+P(som > 10M)                      # how likely is the SOM to exceed 10M euros a year?

@@ -1,0 +1,10 @@
+exec ubc scenarios/formulas.ubc scenarios/product/delay-vs-reduced-scope.ubc
+stdout '^L27: ≈ 109k '
+stdout '^L28: ≈ 71k '
+stdout '^L29: 0\.83\n\z'
+! stderr .
+exec ubc --set 'reduced_share = 30% to 50%' scenarios/formulas.ubc scenarios/product/delay-vs-reduced-scope.ubc
+stdout '^L29: 0\.46\n\z'
+exec ubc --sens reduced scenarios/formulas.ubc scenarios/product/delay-vs-reduced-scope.ubc
+stdout '^sensitivity of reduced \(rank correlation\):\n'
+stdout '^  reduced_share +-0\.\d\d '

@@ -1,0 +1,31 @@
+# Question: what does the work waiting in our queues (ready for development,
+# for review, for QA, for release) cost in value not delivered, and how likely
+# is it to exceed 1M euros a year?
+#
+# Run it (it uses the shared formulas):
+#   ubc scenarios/formulas.ubc scenarios/product/queue-cost.ubc
+# Change an assumption, for example a WIP limit that keeps the queues short:
+#   ubc --set 'queued = 4 to 8' scenarios/formulas.ubc scenarios/product/queue-cost.ubc
+# See which assumption matters most:
+#   ubc --sens yearly_cost scenarios/formulas.ubc scenarios/product/queue-cost.ubc
+#
+# Every "a to b" is a 90% confidence interval. Amounts are in euros. Every
+# item that waits loses its cost of delay for as long as it waits, so the
+# queue costs the number of items in it times their weekly cost of delay
+# (Reinertsen: queues are the biggest hidden cost in product development).
+
+# Assumptions
+queued = 10 to 30                 # items waiting, not being worked on; count them on the board
+cod_per_item = 500 to 3k          # average weekly cost of delay of one of them
+throughput = 4 to 7               # items the team finishes a week
+
+# Calculation
+wait = lead_time(queued, throughput)               # weeks an item spends in the queues (Little's law)
+weekly_cost = queued * cod_per_item                # value lost every week the queues stay this long
+yearly_cost = delay_cost(weekly_cost, 52)          # the same over a year
+
+# Result
+wait
+weekly_cost
+yearly_cost
+P(yearly_cost > 1M)               # how likely are the queues to cost more than 1M euros a year?

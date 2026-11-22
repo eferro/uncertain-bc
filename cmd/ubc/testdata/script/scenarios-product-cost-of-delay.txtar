@@ -1,0 +1,10 @@
+exec ubc scenarios/formulas.ubc scenarios/product/cost-of-delay.ubc
+stdout '^L25: ≈ 11\.9k '
+stdout '^L26: ≈ 82\.6k '
+stdout '^L27: 0\.38\n\z'
+! stderr .
+exec ubc --set 'delay_weeks = 2 to 4' scenarios/formulas.ubc scenarios/product/cost-of-delay.ubc
+stdout '^L27: 0\.02\n\z'
+exec ubc --sens cost scenarios/formulas.ubc scenarios/product/cost-of-delay.ubc
+stdout '^sensitivity of cost \(rank correlation\):\n'
+stdout '^  delay_weeks +\+0\.\d\d '

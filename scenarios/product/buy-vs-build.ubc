@@ -1,0 +1,30 @@
+# Question: over three years, is it cheaper to pay for a SaaS tool or to build
+# and maintain our own, and how likely is building to be the cheaper option?
+#
+# Run it:
+#   ubc scenarios/product/buy-vs-build.ubc
+# Change an assumption, for example a smaller team using the tool:
+#   ubc --set 'seats = 50 to 100' scenarios/product/buy-vs-build.ubc
+# See which assumption matters most:
+#   ubc --sens build scenarios/product/buy-vs-build.ubc
+#
+# Every "a to b" is a 90% confidence interval. Amounts are in euros over the
+# three years. Only the money is compared: building also takes the team away
+# from the product for the months it lasts, which is not priced here.
+
+# Assumptions
+years = 3                         # horizon of the comparison
+seats = 100 to 250                # people who need the tool
+licence = 30 to 60                # SaaS price per seat a month
+integration = 10k to 30k          # connecting the SaaS to our systems and single sign-on
+build_cost = 120k to 300k         # building our own: engineers × months × loaded cost
+maintenance = 15% to 30%          # share of the build cost spent every year on fixes, upgrades and security
+
+# Calculation
+buy = integration + seats * licence * 12 * years               # licences for every seat, every month
+build = build_cost * (1 + maintenance * years)                 # building it and keeping it alive
+
+# Result
+buy
+build
+P(build < buy)                    # how likely is building to be the cheaper option?

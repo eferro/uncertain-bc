@@ -27,6 +27,18 @@ Every scenario is checked by the test suite: it must evaluate without errors and
 | delivery | [littles-law](delivery/littles-law.ubc) | How long does an item take, given the work in progress and the throughput (Little's law), and how much shorter would a WIP limit make it? |
 | delivery | [scope-creep](delivery/scope-creep.ubc) | If the scope grows while we build it, how much later do we finish than the plan says, and how likely are we to miss the date? |
 | delivery | [context-switching](delivery/context-switching.ubc) | How much of the working day do interruptions eat (interruptions a day × minutes lost × people), what does it cost a year, and how likely is it to be more than a quarter of the day? |
+| product | [cost-of-delay](product/cost-of-delay.ubc) | How much value do we lose if a feature ships later than planned (weekly value × weeks of delay), and how likely is the delay to cost more than 100k euros? |
+| product | [cd3](product/cd3.ubc) | With three features competing for the same team, which one should go first by CD3 (cost of delay divided by duration), and how likely is the small one to be the right first pick? |
+| product | [urgency-profiles](product/urgency-profiles.ubc) | For the same delay, what do the standard, expedite, fixed-date and intangible urgency profiles cost, and how likely is the fixed-date work to lose more than the standard one? |
+| product | [delay-vs-reduced-scope](product/delay-vs-reduced-scope.ubc) | Should we delay the launch until the whole feature is ready or ship now with a reduced scope, and how likely is the reduced scope to lose less value? |
+| product | [queue-cost](product/queue-cost.ubc) | What does the work waiting in queues cost (items waiting × weekly cost of delay), and how likely is it to exceed 1M euros a year? |
+| product | [business-case](product/business-case.ubc) | Does a feature pay for itself in two years (reach × adoption × conversion × ARPU − build and run cost), and how likely is it to make money? |
+| product | [rice](product/rice.ubc) | Scored by RICE with ranges instead of false precision, how likely is one feature to score higher than another? |
+| product | [tam-sam-som](product/tam-sam-som.ubc) | Fermi style, how big are the TAM, SAM and SOM of a B2B product, and how likely is the SOM to exceed 10M euros a year? |
+| product | [ltv-cac](product/ltv-cac.ubc) | What is a customer worth over their lifetime, how many months until they pay back their acquisition cost, and how likely is the payback to stay within 12 months? |
+| product | [price-change](product/price-change.ubc) | If we raise the price, does the extra revenue from the customers who stay make up for the ones we lose, and how likely is revenue to grow? |
+| product | [ab-experiment](product/ab-experiment.ubc) | Is an A/B experiment with a likely 1–3% uplift worth running, knowing most variants do not win, and how likely is it to pay back its cost? |
+| product | [buy-vs-build](product/buy-vs-build.ubc) | Over three years, is a SaaS licence or building and maintaining our own tool cheaper, and how likely is building to be the cheaper option? |
 | all | [formulas](formulas.ubc) | Reusable formulas shared by every scenario: loaded cost, real capacity, Little's law, cost of delay and CD3, LTV and CAC payback, annual loss expectancy, availability in series and in parallel, compound growth, present value and NPV. |
 
 ## Reusable formulas

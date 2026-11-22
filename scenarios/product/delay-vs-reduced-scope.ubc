@@ -1,0 +1,29 @@
+# Question: should we delay the launch until the whole feature is ready, or
+# ship now with a reduced scope and the rest later, and how likely is the
+# reduced scope to lose less value?
+#
+# Run it (it uses the shared formulas):
+#   ubc scenarios/formulas.ubc scenarios/product/delay-vs-reduced-scope.ubc
+# Change an assumption, for example a reduced scope that delivers less:
+#   ubc --set 'reduced_share = 30% to 50%' scenarios/formulas.ubc scenarios/product/delay-vs-reduced-scope.ubc
+# See which assumption matters most:
+#   ubc --sens reduced scenarios/formulas.ubc scenarios/product/delay-vs-reduced-scope.ubc
+#
+# Every "a to b" is a 90% confidence interval. Amounts are in euros. Both
+# options are measured by the value lost against shipping everything today.
+
+# Assumptions
+weekly_value = 10k to 30k         # cost of delay of the whole feature: what it brings a week once live
+delay_weeks = 4 to 10             # extra weeks to finish the whole scope before launching
+reduced_share = 50% to 80%        # share of that value the reduced scope already delivers
+rest_weeks = 6 to 16              # weeks after the reduced launch until the rest ships; two releases take longer
+two_releases = 5k to 20k          # cost of shipping in two steps: release work, rework, support
+
+# Calculation
+delay = delay_cost(weekly_value, delay_weeks)                                         # nothing ships until it is complete
+reduced = delay_cost(weekly_value * (1 - reduced_share), rest_weeks) + two_releases   # only the missing share is lost, for longer
+
+# Result
+delay
+reduced
+P(reduced < delay)                # how likely is the reduced scope to lose less value?

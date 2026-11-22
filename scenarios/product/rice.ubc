@@ -1,0 +1,33 @@
+# Question: two features compete for the next quarter; scored by RICE (reach ×
+# impact × confidence / effort) with ranges instead of single numbers, how
+# likely is the onboarding revamp to score higher than the integrations?
+#
+# Run it:
+#   ubc scenarios/product/rice.ubc
+# Change an assumption, for example integrations that turn out cheaper:
+#   ubc --set 'effort_integrations = 1 to 3' scenarios/product/rice.ubc
+# See which assumption matters most:
+#   ubc --sens onboarding scenarios/product/rice.ubc
+#
+# Every "a to b" is a 90% confidence interval. RICE (Intercom) multiplies by a
+# confidence percentage to discount shaky guesses. Here the ranges carry the
+# confidence: a shaky guess is a wide range, so there is no separate factor,
+# and the answer says how sure the ranking is instead of one false-precise
+# score.
+
+# Assumptions
+reach_onboarding = 1k to 3k       # new users a quarter who go through onboarding
+impact_onboarding = 0.5 to 2      # RICE impact scale: 0.25 minimal, 1 medium, 3 massive
+effort_onboarding = 2 to 5        # person-months
+reach_integrations = 300 to 1.5k  # customers a quarter who would use the integrations
+impact_integrations = 1 to 3      # they unblock real work, so the impact is higher
+effort_integrations = 3 to 8      # person-months; third-party APIs are hard to estimate
+
+# Calculation
+onboarding = reach_onboarding * impact_onboarding / effort_onboarding          # score of the onboarding revamp
+integrations = reach_integrations * impact_integrations / effort_integrations  # score of the integrations
+
+# Result
+onboarding
+integrations
+P(onboarding > integrations)      # how likely is the onboarding revamp to score higher?

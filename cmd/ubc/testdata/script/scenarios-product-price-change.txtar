@@ -1,0 +1,10 @@
+exec ubc scenarios/product/price-change.ubc
+stdout '^L29: ≈ 47k '
+stdout '^L30: 0\.1304347826\n'
+stdout '^L31: 0\.97\n\z'
+! stderr .
+exec ubc --set 'increase = 30%' --set 'lost = 10% to 30%' scenarios/product/price-change.ubc
+stdout '^L31: 0\.81\n\z'
+exec ubc --sens gain scenarios/product/price-change.ubc
+stdout '^sensitivity of gain \(rank correlation\):\n'
+stdout '^  lost +-0\.\d\d '

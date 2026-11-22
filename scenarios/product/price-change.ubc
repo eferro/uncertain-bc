@@ -1,0 +1,31 @@
+# Question: if we raise the price, does the extra revenue from the customers
+# who stay make up for the ones we lose, and how likely is the change to
+# increase revenue?
+#
+# Run it:
+#   ubc scenarios/product/price-change.ubc
+# Change an assumption, for example a bigger increase that drives more away:
+#   ubc --set 'increase = 30%' --set 'lost = 10% to 30%' scenarios/product/price-change.ubc
+# See which assumption matters most:
+#   ubc --sens gain scenarios/product/price-change.ubc
+#
+# Every "a to b" is a 90% confidence interval. Amounts are in euros a year.
+# The change pays off while the share lost stays under increase / (1 +
+# increase): about 13% for a 15% increase.
+
+# Assumptions
+customers = 800 to 1.2k           # paying customers today
+price = 50                        # monthly price today
+increase = 15%                    # the proposed increase
+lost = 3% to 12%                  # share of customers who leave because of it; ask the ones who complained last time
+
+# Calculation
+before = customers * price * 12                                  # yearly revenue today
+after = customers * (1 - lost) * price * (1 + increase) * 12     # fewer customers paying more
+gain = after - before                                            # what the change adds a year
+breakeven = increase / (1 + increase)                            # the share we can lose before it stops paying
+
+# Result
+gain
+breakeven
+P(gain > 0)                       # how likely is the price change to increase revenue?

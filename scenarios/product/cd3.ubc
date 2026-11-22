@@ -1,0 +1,34 @@
+# Question: with three features competing for the same team, which one should
+# go first by CD3 (cost of delay divided by duration), and how likely is the
+# small export feature to be the right first pick?
+#
+# Run it (it uses the shared formulas):
+#   ubc scenarios/formulas.ubc scenarios/product/cd3.ubc
+# Change an assumption, for example a search feature that turns out smaller:
+#   ubc --set 'weeks_search = 2 to 3' scenarios/formulas.ubc scenarios/product/cd3.ubc
+# See which assumption matters most:
+#   ubc --sens cd3_export scenarios/formulas.ubc scenarios/product/cd3.ubc
+#
+# Every "a to b" is a 90% confidence interval. Costs of delay are in euros a
+# week, durations in weeks. CD3 (Reinertsen; Joshua Arnold) does first the
+# work that loses the most value per week the team spends on it, so a small
+# feature with a modest cost of delay can beat a big valuable one.
+
+# Assumptions
+cod_search = 5k to 15k            # better search: weekly value lost while it is missing
+weeks_search = 4 to 8             # weeks the team needs to build it
+cod_export = 2k to 6k             # export to spreadsheets: asked for by many customers
+weeks_export = 1 to 3
+cod_billing = 8k to 30k           # usage-based billing: big value, big job
+weeks_billing = 8 to 20
+
+# Calculation
+cd3_search = cd3(cod_search, weeks_search)        # value lost per week of work, search
+cd3_export = cd3(cod_export, weeks_export)        # the same for the export
+cd3_billing = cd3(cod_billing, weeks_billing)     # the same for billing
+
+# Result
+cd3_search
+cd3_export
+cd3_billing
+P(cd3_export > max(cd3_search, cd3_billing))      # how likely is the export to be the right first pick?

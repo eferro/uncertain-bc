@@ -1,0 +1,10 @@
+exec ubc scenarios/product/rice.ubc
+stdout '^L31: ≈ 546 '
+stdout '^L32: ≈ 234 '
+stdout '^L33: 0\.82\n\z'
+! stderr .
+exec ubc --set 'effort_integrations = 1 to 3' scenarios/product/rice.ubc
+stdout '^L33: 0\.41\n\z'
+exec ubc --sens onboarding scenarios/product/rice.ubc
+stdout '^sensitivity of onboarding \(rank correlation\):\n'
+stdout '^  impact_onboarding +\+0\.\d\d '
