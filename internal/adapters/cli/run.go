@@ -3,7 +3,6 @@
 package cli
 
 import (
-	"bufio"
 	"errors"
 	"flag"
 	"fmt"
@@ -246,7 +245,7 @@ func (a App) interactive(session *application.Session, st style, stdin io.Reader
 	if f, ok := stdin.(*os.File); ok && term.IsTerminal(int(f.Fd())) {
 		return a.terminalRepl(f, stdout, stderr, run)
 	}
-	return run(promptedScanner{lines: bufio.NewScanner(stdin), stdout: stdout}, stdout, stderr)
+	return run(newPromptedScanner(stdin, stdout), stdout, stderr)
 }
 
 func parseFlags(args []string, stderr io.Writer) (options, error) {

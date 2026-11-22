@@ -18,6 +18,10 @@ type promptedScanner struct {
 	stdout io.Writer
 }
 
+func newPromptedScanner(in io.Reader, stdout io.Writer) promptedScanner {
+	return promptedScanner{lines: bufio.NewScanner(in), stdout: stdout}
+}
+
 func (p promptedScanner) ReadLine() (string, error) {
 	fmt.Fprint(p.stdout, prompt)
 	if p.lines.Scan() {
@@ -41,7 +45,7 @@ func (a App) terminalRepl(in *os.File, stdout, stderr io.Writer, run func(lineRe
 	fd := int(in.Fd())
 	state, err := term.MakeRaw(fd)
 	if err != nil {
-		return run(promptedScanner{lines: bufio.NewScanner(in), stdout: stdout}, stdout, stderr)
+		return run(newPromptedScanner(in, stdout), stdout, stderr)
 	}
 	defer func() { _ = term.Restore(fd, state) }()
 	editor := newLineEditor(struct {
