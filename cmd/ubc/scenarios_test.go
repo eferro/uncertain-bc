@@ -69,6 +69,66 @@ func TestScenarios_EveryIndexLinkPointsToAFile(t *testing.T) {
 	assert.Empty(t, brokenLinks(string(index), scenariosDir))
 }
 
+func TestScenarios_TheIndexStartsWithFiveFeaturedScenarios(t *testing.T) {
+	index, err := os.ReadFile(filepath.Join(scenariosDir, "README.md"))
+	require.NoError(t, err)
+
+	assert.Len(t, indexLinks(section(string(index), "### Start here")), 5)
+}
+
+func TestScenarios_EveryAreaHasItsOwnSection(t *testing.T) {
+	files, err := modelFiles(scenariosDir)
+	require.NoError(t, err)
+	index, err := os.ReadFile(filepath.Join(scenariosDir, "README.md"))
+	require.NoError(t, err)
+
+	for area, inArea := range filesByArea(files) {
+		t.Run(area, func(t *testing.T) {
+			assert.Empty(t, missingFromIndex(section(string(index), areaHeading(area)), inArea))
+		})
+	}
+}
+
+func TestScenarios_EveryScenarioNamesItsSources(t *testing.T) {
+	for file, content := range scenarioContents(t) {
+		t.Run(file, func(t *testing.T) {
+			assert.Regexp(t, `(?m)^# Sources: \S`, content)
+		})
+	}
+}
+
+func TestScenarios_EveryAssumptionHasAComment(t *testing.T) {
+	for file, content := range scenarioContents(t) {
+		t.Run(file, func(t *testing.T) {
+			assert.Empty(t, uncommentedAssumptions(content))
+		})
+	}
+}
+
+func TestSection_ReturnsTheLinesUpToTheNextHeading(t *testing.T) {
+	index := "# Title\n### Team\na\nb\n### Cloud\nc\n## Formulas\nd\n"
+
+	assert.Equal(t, "a\nb\n", section(index, "### Team"))
+	assert.Equal(t, "c\n", section(index, "### Cloud"))
+	assert.Empty(t, section(index, "### Risk"))
+}
+
+func TestFilesByArea_GroupsScenariosAndSkipsTheFormulas(t *testing.T) {
+	groups := filesByArea([]string{"formulas.ubc", "team/a.ubc", "cloud/b.ubc", "team/c.ubc"})
+
+	assert.Equal(t, map[string][]string{"team": {"team/a.ubc", "team/c.ubc"}, "cloud": {"cloud/b.ubc"}}, groups)
+}
+
+func TestAreaHeading_CapitalisesTheArea(t *testing.T) {
+	assert.Equal(t, "### Reliability", areaHeading("reliability"))
+}
+
+func TestUncommentedAssumptions_ListsAssignmentsWithoutAComment(t *testing.T) {
+	model := "# Question: q?\nx = 1\n\n# Assumptions\na = 1 to 2   # why\nb = 3 to 4\n# a note\nc = 5\n# Calculation\nd = a + b\n"
+
+	assert.Equal(t, []string{"b = 3 to 4", "c = 5"}, uncommentedAssumptions(model))
+}
+
 func TestScenarioArgs_RunsTheSharedFormulasFirst(t *testing.T) {
 	args := scenarioArgs("root", "team/a.ubc")
 
@@ -158,6 +218,83 @@ func brokenLinks(index, root string) []string {
 		}
 	}
 	return broken
+}
+
+func scenarioContents(t *testing.T) map[string]string {
+	t.Helper()
+	files, err := modelFiles(scenariosDir)
+	require.NoError(t, err)
+	contents := map[string]string{}
+	for _, file := range scenarioFiles(files) {
+		content, err := os.ReadFile(filepath.Join(scenariosDir, file))
+		require.NoError(t, err)
+		contents[file] = string(content)
+	}
+	require.NotEmpty(t, contents)
+	return contents
+}
+
+func section(index, heading string) string {
+	var lines strings.Builder
+	inside := false
+	for line := range strings.Lines(index) {
+		if isHeading(line) {
+			inside = strings.TrimSpace(line) == heading
+			continue
+		}
+		if inside {
+			lines.WriteString(line)
+		}
+	}
+	return lines.String()
+}
+
+func isHeading(line string) bool {
+	return strings.HasPrefix(line, "## ") || strings.HasPrefix(line, "### ")
+}
+
+func scenarioFiles(files []string) []string {
+	var scenarios []string
+	for _, file := range files {
+		if strings.Contains(file, "/") {
+			scenarios = append(scenarios, file)
+		}
+	}
+	return scenarios
+}
+
+func filesByArea(files []string) map[string][]string {
+	groups := map[string][]string{}
+	for _, file := range scenarioFiles(files) {
+		area, _, _ := strings.Cut(file, "/")
+		groups[area] = append(groups[area], file)
+	}
+	return groups
+}
+
+func areaHeading(area string) string {
+	return "### " + strings.ToUpper(area[:1]) + area[1:]
+}
+
+func uncommentedAssumptions(model string) []string {
+	var missing []string
+	inside := false
+	for line := range strings.Lines(model) {
+		line = strings.TrimSpace(line)
+		switch line {
+		case "# Assumptions":
+			inside = true
+		case "# Calculation":
+			inside = false
+		}
+		if strings.HasPrefix(line, "#") {
+			continue
+		}
+		if inside && strings.Contains(line, "=") && !strings.Contains(line, "#") {
+			missing = append(missing, line)
+		}
+	}
+	return missing
 }
 
 func writeFile(t *testing.T, root, name string) {

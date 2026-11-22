@@ -13,14 +13,18 @@
 # week, durations in weeks. CD3 (Reinertsen; Joshua Arnold) does first the
 # work that loses the most value per week the team spends on it, so a small
 # feature with a modest cost of delay can beat a big valuable one.
+#
+# Sources: Don Reinertsen, The Principles of Product Development Flow (2009),
+# and Joshua Arnold, Black Swan Farming (blackswanfarming.com), for CD3; the
+# ranges are typical experience.
 
 # Assumptions
-cod_search = 5k to 15k            # better search: weekly value lost while it is missing
-weeks_search = 4 to 8             # weeks the team needs to build it
-cod_export = 2k to 6k             # export to spreadsheets: asked for by many customers
-weeks_export = 1 to 3
-cod_billing = 8k to 30k           # usage-based billing: big value, big job
-weeks_billing = 8 to 20
+cod_search = 5k to 15k            # better search: weekly value lost while it is missing; typical experience
+weeks_search = 4 to 8             # weeks the team needs to build it; your team's estimate
+cod_export = 2k to 6k             # export to spreadsheets, asked for by many customers; typical experience
+weeks_export = 1 to 3             # weeks to build the export; your team's estimate
+cod_billing = 8k to 30k           # usage-based billing: big value, big job; typical experience
+weeks_billing = 8 to 20           # weeks to build the billing; your team's estimate
 
 # Calculation
 cd3_search = cd3(cod_search, weeks_search)        # value lost per week of work, search

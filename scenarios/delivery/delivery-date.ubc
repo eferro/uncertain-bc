@@ -13,11 +13,14 @@
 #
 # Every "a to b" is a 90% confidence interval. A list "[...]" is observed data:
 # every sample picks one of its values at random.
+#
+# Sources: your own throughput history; the example numbers and the backlog
+# range are typical experience, so replace them with your own data.
 
 # Assumptions
-backlog = 40 to 60                # items left, splitting and new findings included
-throughput = [3, 5, 2, 6, 4, 4, 7, 3, 5, 1, 4, 6]   # items finished each of the last 12 weeks; --data replaces it
-deadline = 12                     # weeks until the date we were asked for
+backlog = 40 to 60                # items left, splitting and new findings included; count them in your tracker
+throughput = [3, 5, 2, 6, 4, 4, 7, 3, 5, 1, 4, 6]   # example items done each week; --data loads your tracker's history
+deadline = 12                     # weeks until the date we were asked for; your stakeholders' date
 
 # Calculation
 horizon = mean(backlog) / mean(throughput)                                 # rough number of weeks ahead

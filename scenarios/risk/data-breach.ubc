@@ -11,18 +11,22 @@
 #
 # Every "a to b" is a 90% confidence interval. Amounts are in euros. The
 # cost per record (detection, notification, response and lost business)
-# follows reports like IBM's Cost of a Data Breach, around 150-200 dollars
-# in recent years, but it falls for very large breaches, so choose a range
+# follows reports like IBM's Cost of a Data Breach, whose yearly report gives
+# the current figures; it falls for very large breaches, so choose a range
 # for the size you are modelling. Under the GDPR a fine can reach 4% of
 # the yearly worldwide turnover or 20M euros, whichever is higher; the
 # fines actually imposed are usually a small share of that.
+#
+# Sources: IBM, Cost of a Data Breach Report (annual, with Ponemon
+# Institute), for the cost per record; GDPR, Article 83, for the fine cap;
+# Douglas Hubbard, How to Measure Anything (2007), for the annual loss.
 
 # Assumptions
-records = 10k to 200k             # records exposed: customers, users and employees
-cost_per_record = 50 to 200       # detection, notification, response and lost business per record
-turnover = 20M to 100M            # the company's yearly worldwide turnover
-fine_share = 0.1% to 2%           # the fine as a share of the turnover; regulators rarely go near the 4% cap
-breach_probability = 5% to 20%    # chance of a breach in a year
+records = 10k to 200k             # records exposed: customers, users and employees; count your own data stores
+cost_per_record = 50 to 200       # cost per record; check the yearly IBM Cost of a Data Breach Report
+turnover = 20M to 100M            # the company's yearly worldwide turnover; your annual accounts
+fine_share = 0.1% to 2%           # fine as a share of turnover; GDPR Art. 83 caps it at 4%, typical fines are far lower
+breach_probability = 5% to 20%    # chance of a breach in a year; calibrated expert judgement (Hubbard)
 
 # Calculation
 fine = turnover * fine_share                                # what the regulator charges

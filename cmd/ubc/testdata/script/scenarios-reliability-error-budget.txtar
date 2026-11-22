@@ -2,10 +2,10 @@ exec ubc --scenario reliability/error-budget
 stdout '^allowed_minutes = 43\.2\n'
 stdout '^expected_minutes = ≈ 29 '
 stdout '^budget_used = ≈ 0\.67 '
-stdout '^L33: 0\.25\n\z'
+stdout '^L38: 0\.25\n\z'
 ! stderr .
 exec ubc --set 'slo = 99.5%' --scenario reliability/error-budget
-stdout '^L33: <0\.01\n\z'
+stdout '^L38: <0\.01\n\z'
 exec ubc --sens expected_minutes --scenario reliability/error-budget
 stdout '^sensitivity of expected_minutes \(rank correlation\):\n'
 stdout '^  minutes_per_incident +\+0\.\d\d '

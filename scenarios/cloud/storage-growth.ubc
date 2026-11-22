@@ -12,11 +12,14 @@
 # Every "a to b" is a 90% confidence interval. Amounts are in dollars.
 # Growth compounds: 5% a month is not 120% in two years but 223%, so a
 # small change in the monthly rate moves the result a lot.
+#
+# Sources: public price lists of the cloud providers, for storage prices; the
+# data volume and growth come from your own metrics.
 
 # Assumptions
-data_tb = 20 to 50                # terabytes stored today
-growth = 3% to 8%                 # how much the data grows every month
-price_per_tb = 20 to 25           # dollars per terabyte a month, from the storage class we use
+data_tb = 20 to 50                # terabytes stored today; from your storage metrics
+growth = 3% to 8%                 # how much the data grows every month; typical experience, check your history
+price_per_tb = 20 to 25           # dollars per terabyte a month for your storage class; check the provider's price list
 months = 24                       # horizon
 
 # Calculation

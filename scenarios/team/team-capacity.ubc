@@ -11,15 +11,18 @@
 #
 # Every "a to b" is a 90% confidence interval. Days are working days per
 # person in one quarter.
+#
+# Sources: typical experience in software teams; there is no published
+# benchmark for these ranges, so replace them with your own numbers.
 
 # Assumptions
-people = 6                        # engineers in the team
-working_days = 63                 # weekdays in a quarter (65) minus a couple of public holidays
-holidays = 4 to 9                 # vacation days per person in the quarter; 22-30 a year in much of Europe
-sick_days = 1 to 4                # sick leave per person in the quarter
-on_call_days = 2 to 8             # days per person lost to the on-call or support rotation
-focus = 0.5 to 0.8                # share of the remaining time that goes to planned work; 0.5-0.8 is common
-planned = 180                     # person-days of work the roadmap needs this quarter
+people = 6                        # engineers in the team; your own team
+working_days = 63                 # weekdays in a quarter (65) minus public holidays; your local calendar
+holidays = 4 to 9                 # vacation days per person in the quarter; your contracts (22-30 a year in Europe)
+sick_days = 1 to 4                # sick leave per person in the quarter; your HR data or typical experience
+on_call_days = 2 to 8             # days per person lost to on-call or support; your rotation schedule
+focus = 0.5 to 0.8                # share of remaining time for planned work; typical experience, check your tracker
+planned = 180                     # person-days of work the roadmap needs this quarter; your roadmap estimate
 
 # Calculation
 available_days = working_days - holidays - sick_days - on_call_days   # days each person is at work and not on call

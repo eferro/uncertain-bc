@@ -12,12 +12,16 @@
 # Every "a to b" is a 90% confidence interval. Amounts are in euros, periods
 # in months. SaaS benchmarks: LTV at least 3 times CAC, payback under 12
 # months.
+#
+# Sources: David Skok, "SaaS Metrics 2.0", For Entrepreneurs
+# (forentrepreneurs.com), for LTV at least 3 times CAC and payback within 12
+# months as rules of thumb; the ranges are typical experience.
 
 # Assumptions
-arpa = 80 to 200                  # monthly revenue per account
-margin = 70% to 85%               # gross margin: revenue left after hosting and support
-churn = 1% to 4%                  # share of customers who cancel each month
-cac = 500 to 2k                   # sales and marketing spent per new customer
+arpa = 80 to 200                  # monthly revenue per account; read it from your billing
+margin = 70% to 85%               # gross margin: revenue left after hosting and support; typical for SaaS
+churn = 1% to 4%                  # share of customers who cancel each month; read it from your billing
+cac = 500 to 2k                   # sales and marketing spend divided by new customers; from your own books
 
 # Calculation
 lifetime_value = ltv(arpa, margin, churn)      # margin over the expected lifetime (1 / churn months)

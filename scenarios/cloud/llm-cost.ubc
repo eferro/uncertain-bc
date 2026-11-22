@@ -13,14 +13,17 @@
 # currency API providers bill in. Input tokens are everything sent to the
 # model (instructions, retrieved context, conversation history), which is
 # why they usually outnumber the output by several times.
+#
+# Sources: public price lists of the LLM providers (OpenAI, Anthropic, ...),
+# for the per-token prices; the usage ranges are typical experience.
 
 # Assumptions
-users = 2k to 10k                 # monthly active users of the feature
-requests_per_user = 20 to 100     # requests each user makes a month
-input_tokens = 1k to 4k           # tokens sent with each request, context included
-output_tokens = 200 to 800        # tokens the model answers with
-input_price = 1 to 3              # dollars per million input tokens, from the provider's price list
-output_price = 5 to 15            # dollars per million output tokens, usually 3-5 times the input price
+users = 2k to 10k                 # monthly active users of the feature; from your product analytics
+requests_per_user = 20 to 100     # requests each user makes a month; typical experience, check your analytics
+input_tokens = 1k to 4k           # tokens sent per request, context included; typical experience, measure yours
+output_tokens = 200 to 800        # tokens the model answers with; typical experience, measure your answers
+input_price = 1 to 3              # dollars per million input tokens; check your provider's public price list
+output_price = 5 to 15            # dollars per million output tokens, several times input; check the price list
 
 # Calculation
 requests = users * requests_per_user                                               # requests a month

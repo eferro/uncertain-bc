@@ -14,14 +14,18 @@
 # confidence: a shaky guess is a wide range, so there is no separate factor,
 # and the answer says how sure the ranking is instead of one false-precise
 # score.
+#
+# Sources: Sean McBride, "RICE: Simple prioritization for product managers",
+# Intercom blog (2016), for the RICE score and its impact scale; the ranges
+# are typical experience.
 
 # Assumptions
-reach_onboarding = 1k to 3k       # new users a quarter who go through onboarding
-impact_onboarding = 0.5 to 2      # RICE impact scale: 0.25 minimal, 1 medium, 3 massive
-effort_onboarding = 2 to 5        # person-months
-reach_integrations = 300 to 1.5k  # customers a quarter who would use the integrations
-impact_integrations = 1 to 3      # they unblock real work, so the impact is higher
-effort_integrations = 3 to 8      # person-months; third-party APIs are hard to estimate
+reach_onboarding = 1k to 3k       # new users a quarter who go through onboarding; read it from your analytics
+impact_onboarding = 0.5 to 2      # RICE impact scale (McBride): 0.25 minimal, 1 medium, 3 massive
+effort_onboarding = 2 to 5        # person-months; your team's estimate
+reach_integrations = 300 to 1.5k  # customers a quarter who would use the integrations; ask sales
+impact_integrations = 1 to 3      # RICE impact scale; they unblock real work, so typical experience puts it higher
+effort_integrations = 3 to 8      # person-months, your team's estimate; third-party APIs are hard to estimate
 
 # Calculation
 onboarding = reach_onboarding * impact_onboarding / effort_onboarding          # score of the onboarding revamp

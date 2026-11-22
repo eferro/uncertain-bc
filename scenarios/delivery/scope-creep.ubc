@@ -9,12 +9,16 @@
 #   ubc --sens weeks --scenario delivery/scope-creep
 #
 # Every "a to b" is a 90% confidence interval.
+#
+# Sources: Capers Jones, Applied Software Measurement, for requirements creep
+# of roughly 1-2% a month on software projects; the other ranges are typical
+# experience.
 
 # Assumptions
-initial_scope = 80 to 120         # items in the plan when we commit to the date
-growth = 10% to 60%               # scope added before the end; requirements found while building, often 25-50%
-throughput = 8 to 12              # items finished a week
-deadline = 12                     # weeks until the committed date
+initial_scope = 80 to 120         # items in the plan when we commit to the date; count them in your tracker
+growth = 10% to 60%               # scope added before the end; typical experience, Capers Jones reports ~1-2% a month
+throughput = 8 to 12              # items finished a week; take it from your tracker
+deadline = 12                     # weeks until the committed date; your plan
 
 # Calculation
 scope = initial_scope * (1 + growth)       # items we will really build

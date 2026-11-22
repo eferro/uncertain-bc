@@ -11,14 +11,18 @@
 # Every "a to b" is a 90% confidence interval. Amounts are in euros over the
 # three years. Only the money is compared: building also takes the team away
 # from the product for the months it lasts, which is not priced here.
+#
+# Sources: the SaaS vendor's public price list for the licence; loaded cost is
+# salary plus 25-40% overheads (rule of thumb); the other ranges are typical
+# experience.
 
 # Assumptions
-years = 3                         # horizon of the comparison
-seats = 100 to 250                # people who need the tool
-licence = 30 to 60                # SaaS price per seat a month
-integration = 10k to 30k          # connecting the SaaS to our systems and single sign-on
-build_cost = 120k to 300k         # building our own: engineers × months × loaded cost
-maintenance = 15% to 30%          # share of the build cost spent every year on fixes, upgrades and security
+years = 3                         # horizon of the comparison; a common planning choice
+seats = 100 to 250                # people who need the tool; count them in your company directory
+licence = 30 to 60                # SaaS price per seat a month; check the vendor's public price list
+integration = 10k to 30k          # connecting the SaaS to our systems and single sign-on; typical experience
+build_cost = 120k to 300k         # engineers × months × loaded cost (salary plus 25-40%, rule of thumb)
+maintenance = 15% to 30%          # yearly share of the build cost for fixes, upgrades, security; rule of thumb
 
 # Calculation
 buy = integration + seats * licence * 12 * years               # licences for every seat, every month

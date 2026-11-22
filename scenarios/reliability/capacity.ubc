@@ -13,14 +13,18 @@
 # the target utilisation leaves headroom for spikes inside the peak hour,
 # and one extra node (N+1) keeps the peak served while a node fails or is
 # being deployed.
+#
+# Sources: Betsy Beyer et al., Site Reliability Engineering (Google, 2016,
+# sre.google/books), for N+1 provisioning; the other ranges are typical
+# experience.
 
 # Assumptions
-peak_rps = 3k to 6k               # requests per second at this year's busiest hour
-growth = 20% to 80%               # traffic growth until next year's peak
-rps_per_node = 400 to 700         # what one node sustains, from a load test
-target_utilisation = 60% to 75%   # the share of a node's capacity we plan to use
-spare_nodes = 1                   # N+1
-current_nodes = 20                # nodes running today
+peak_rps = 3k to 6k               # requests per second at this year's busiest hour; from your monitoring
+growth = 20% to 80%               # traffic growth until next year's peak; typical experience, see your history
+rps_per_node = 400 to 700         # what one node sustains; from your own load test
+target_utilisation = 60% to 75%   # share of a node's capacity we plan to use; rule of thumb for headroom
+spare_nodes = 1                   # N+1, as in the Site Reliability Engineering book
+current_nodes = 20                # nodes running today; count them in your cluster
 
 # Calculation
 next_peak = peak_rps * (1 + growth)                                           # requests per second to serve next year

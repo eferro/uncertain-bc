@@ -12,12 +12,16 @@
 # Every "a to b" is a 90% confidence interval. Amounts are in dollars. An
 # environment lives from the pull request's first push until it is merged
 # or closed, nights and weekends included unless something stops it.
+#
+# Sources: John D. C. Little, "A Proof for the Queuing Formula L = λW" (1961),
+# for Little's law; the cost per hour comes from your provider's public price
+# list; the other ranges are typical experience.
 
 # Assumptions
-prs_per_day = 10 to 40            # pull requests opened on a working day
-hours_alive = 4 to 48             # hours an environment stays up
-cost_per_hour = 0.5 to 2          # one environment: the application, a database and a preview URL
-working_days = 21                 # working days in a month
+prs_per_day = 10 to 40            # pull requests opened on a working day; look at your repository
+hours_alive = 4 to 48             # hours an environment stays up; typical experience
+cost_per_hour = 0.5 to 2          # one environment (app, database, preview URL); check your provider's price list
+working_days = 21                 # working days in a month; rule of thumb
 
 # Calculation
 environment_hours = prs_per_day * working_days * hours_alive     # hours of environments a month

@@ -10,14 +10,18 @@
 #   ubc --sens yearly_cost --scenario team/meeting-cost
 #
 # Every "a to b" is a 90% confidence interval. Amounts are in euros.
+#
+# Sources: Gloria Mark et al., "The Cost of Interrupted Work: More Speed and
+# Stress" (CHI 2008), for the time it takes to resume work after an
+# interruption; the other ranges are typical experience and rules of thumb.
 
 # Assumptions
-attendees = 8                     # people invited who attend
-minutes = 45 to 75                # how long it really lasts, overruns included
-refocus_minutes = 10 to 25        # time lost around it to switch context, per person
-meetings_per_year = 46            # weekly, minus holidays
-hourly_salary = 30 to 60          # gross salary per hour (a yearly salary divided by ~1700 hours)
-overhead = 1.25 to 1.4            # taxes, benefits and equipment on top of the salary
+attendees = 8                     # people invited who attend; your calendar
+minutes = 45 to 75                # how long it really lasts, overruns included; your calendar
+refocus_minutes = 10 to 25        # time lost around it to switch context, per person; see Gloria Mark et al. (CHI 2008)
+meetings_per_year = 46            # weekly, minus holidays; your calendar
+hourly_salary = 30 to 60          # gross salary per hour (yearly salary / ~1700 hours, rule of thumb); your payroll
+overhead = 1.25 to 1.4            # taxes, benefits and equipment on top of salary; rule of thumb 25-40%
 
 # Calculation
 hour_cost = loaded_cost(hourly_salary, overhead)                # what an hour of a person costs the company

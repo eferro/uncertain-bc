@@ -12,14 +12,19 @@
 # Site Reliability Engineering book) is the downtime the SLO allows: 1 - SLO
 # of the period. An incident that hurts only some users spends only that
 # share of its minutes, as a request-based SLO counts it.
+#
+# Sources: Betsy Beyer et al., Site Reliability Engineering (Google, 2016,
+# sre.google/books), for SLOs and error budgets; Nicole Forsgren, Jez Humble
+# and Gene Kim, Accelerate (2018), and the DORA State of DevOps reports
+# (dora.dev), for time to restore; the other ranges are typical experience.
 
 # Assumptions
-slo = 99.9%                       # the availability objective
+slo = 99.9%                       # the availability objective; pick yours, as in the SRE book
 minutes_per_month = 43200         # 30 days, the SLO window
-incidents_per_month = 1 to 4      # incidents that break the SLO's indicator
-minutes_per_incident = 10 to 60   # from the start of the impact until it is mitigated
-affected_share = 20% to 80%       # share of the requests that fail during an incident
-planned_minutes = 5 to 15         # maintenance windows counted against the SLO
+incidents_per_month = 1 to 4      # incidents that break the SLO's indicator; typical experience, count your postmortems
+minutes_per_incident = 10 to 60   # impact start to mitigation; DORA: elite teams restore in under an hour
+affected_share = 20% to 80%       # share of the requests that fail during an incident; typical experience
+planned_minutes = 5 to 15         # maintenance windows counted against the SLO; from your own calendar
 
 # Calculation
 allowed_minutes = (1 - slo) * minutes_per_month                                               # the error budget

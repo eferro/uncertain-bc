@@ -12,14 +12,18 @@
 # Every "a to b" is a 90% confidence interval. The wait for a rerun counts
 # whole: a red build blocks the merge, so the person who pushed has to come
 # back to it. Multiply by the cost of an hour to get euros.
+#
+# Sources: John Micco, "Flaky Tests at Google and How We Mitigate Them",
+# Google Testing Blog (2016), for how often runs report a flaky result; the
+# other ranges are typical experience.
 
 # Assumptions
-builds_per_day = 30 to 80         # pipeline runs a day across the team
-flaky_rate = 3% to 10%            # share of runs that fail because of a flaky test; look at the reruns in your CI
-retries = 1 to 2                  # reruns until it goes green
-pipeline_minutes = 10 to 25       # how long a run takes
-check_minutes = 5 to 20           # time spent making sure the failure is flaky, not real
-days_per_year = 220               # working days
+builds_per_day = 30 to 80         # pipeline runs a day across the team; look at your CI
+flaky_rate = 3% to 10%            # runs failing on a flaky test; Micco (2016): about 1.5% at Google; see your CI reruns
+retries = 1 to 2                  # reruns until it goes green; typical experience
+pipeline_minutes = 10 to 25       # how long a run takes; look at your CI
+check_minutes = 5 to 20           # time spent making sure the failure is flaky, not real; typical experience
+days_per_year = 220               # working days; rule of thumb
 
 # Calculation
 flaky_runs = builds_per_day * flaky_rate * days_per_year                       # runs a year that fail for no reason

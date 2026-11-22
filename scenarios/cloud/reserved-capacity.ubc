@@ -12,11 +12,14 @@
 # Every "a to b" is a 90% confidence interval. Amounts are in dollars a
 # month, at on-demand prices. The commitment is paid whether it is used or
 # not, at a discount; usage above it is paid on demand.
+#
+# Sources: public price lists of the cloud providers (AWS, Google Cloud,
+# Azure), for commitment discounts; the usage range comes from your own bill.
 
 # Assumptions
-usage = 30k to 80k                # average monthly compute over the year, at on-demand prices
-commitment = 50k                  # the monthly usage we commit to, at on-demand prices
-discount = 20% to 35%             # the discount for committing for a year, from the provider's price list
+usage = 30k to 80k                # average monthly compute over the year, at on-demand prices; from your bill
+commitment = 50k                  # the monthly usage we commit to, at on-demand prices; the option being weighed
+discount = 20% to 35%             # discount for committing for a year; check your provider's public price list
 
 # Calculation
 on_demand = usage                                                     # paying on demand for everything

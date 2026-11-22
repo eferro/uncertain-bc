@@ -12,11 +12,14 @@
 # Every "a to b" is a 90% confidence interval. Amounts are in euros a year.
 # The change pays off while the share lost stays under increase / (1 +
 # increase): about 13% for a 15% increase.
+#
+# Sources: typical experience in software products; there is no published
+# benchmark for these ranges, so replace them with your own numbers.
 
 # Assumptions
-customers = 800 to 1.2k           # paying customers today
-price = 50                        # monthly price today
-increase = 15%                    # the proposed increase
+customers = 800 to 1.2k           # paying customers today; read it from your billing
+price = 50                        # monthly price today; from your price list
+increase = 15%                    # the proposed increase; your decision
 lost = 3% to 12%                  # share of customers who leave because of it; ask the ones who complained last time
 
 # Calculation

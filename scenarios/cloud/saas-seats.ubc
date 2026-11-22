@@ -12,12 +12,15 @@
 # Every "a to b" is a 90% confidence interval. Amounts are in dollars. Seats
 # are bought for everyone, and some are never given back: people who left,
 # annual true-ups, tools bought for a team that moved on.
+#
+# Sources: public price lists of the SaaS vendors, for per-seat prices; the
+# growth and unused seats are typical experience.
 
 # Assumptions
-team = 40                         # people today
-growth = 1% to 4%                 # how much the team grows every month
-per_seat = 150 to 300             # monthly SaaS tools per person: chat, docs, design, IDE, security
-unused = 10% to 25%               # seats paid for on top of the people who use them
+team = 40                         # people today; count them
+growth = 1% to 4%                 # how much the team grows every month; from your hiring plan
+per_seat = 150 to 300             # monthly SaaS tools per person (chat, docs, design, IDE); your vendors' price lists
+unused = 10% to 25%               # seats paid for on top of the people using them; typical experience, audit yours
 months = 24                       # horizon
 
 # Calculation

@@ -12,15 +12,19 @@
 # Every "a to b" is a 90% confidence interval. Amounts are in euros. The
 # profiles come from the Kanban classes of service: the shape of the cost over
 # time matters as much as its size.
+#
+# Sources: Joshua Arnold, Black Swan Farming (blackswanfarming.com), and Don
+# Reinertsen, The Principles of Product Development Flow (2009), for the
+# urgency profiles; the ranges are typical experience.
 
 # Assumptions
-delay_weeks = 2 to 8              # how late the work ends up shipping
-standard_weekly = 3k to 8k        # standard: the same value lost every week of delay
-expedite_weekly = 20k to 60k      # expedite: a large loss every week (an outage, a key customer blocked)
-slack_weeks = 6                   # fixed date: weeks until the date (a regulation, a trade fair)
-missed_date = 50k to 200k         # fixed date: lost all at once when the date is missed
-intangible_weekly = 200 to 1k     # intangible: little lost today (tech debt, an old platform)...
-intangible_growth = 10% to 30%    # ...but it grows every week as the problem gets closer
+delay_weeks = 2 to 8              # how late the work ends up shipping; look at your past slips
+standard_weekly = 3k to 8k        # standard: the same value lost every week of delay; typical experience
+expedite_weekly = 20k to 60k      # expedite: a large weekly loss (an outage, a blocked key customer); typical experience
+slack_weeks = 6                   # fixed date: weeks until the date (a regulation, a trade fair); from your calendar
+missed_date = 50k to 200k         # fixed date: lost all at once when the date is missed; typical experience
+intangible_weekly = 200 to 1k     # intangible: little lost today (tech debt, an old platform); typical experience...
+intangible_growth = 10% to 30%    # ...but it grows every week as the problem gets closer; typical experience
 
 # Calculation
 standard = delay_cost(standard_weekly, delay_weeks)              # linear in the delay

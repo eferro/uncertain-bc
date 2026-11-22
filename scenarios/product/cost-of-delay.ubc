@@ -11,11 +11,14 @@
 # Every "a to b" is a 90% confidence interval. Amounts are in euros. Cost of
 # delay (Don Reinertsen): the value a feature brings every week it is in
 # users' hands is lost for every week it is not.
+#
+# Sources: Don Reinertsen, The Principles of Product Development Flow (2009),
+# for cost of delay; the ranges are typical experience.
 
 # Assumptions
 customers = 200 to 600            # customers who would use the feature; ask sales or look at the requests
-value_per_customer = 20 to 60     # extra revenue or savings a week for each of them
-delay_weeks = 4 to 12             # how much later than planned it ships
+value_per_customer = 20 to 60     # extra revenue or savings a week for each of them; typical experience
+delay_weeks = 4 to 12             # how much later than planned it ships; look at your past slips
 
 # Calculation
 weekly_value = customers * value_per_customer      # the cost of delay: value lost every week

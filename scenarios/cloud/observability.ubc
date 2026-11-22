@@ -12,13 +12,16 @@
 # Every "a to b" is a 90% confidence interval. Amounts are in dollars.
 # Vendors charge once to ingest a gigabyte and again to keep it searchable
 # for the retention period; metrics and traces are left out.
+#
+# Sources: public price lists of the observability vendors (Datadog, ...), for
+# ingest and retention prices; the log volumes are typical experience.
 
 # Assumptions
-services = 20 to 60               # services that ship logs
-gb_per_service = 0.5 to 3         # gigabytes of logs a service writes a day
-ingest_price = 0.3 to 1.5         # dollars per gigabyte ingested, from the vendor's price list
-retention_days = 15 to 30         # days the logs stay searchable
-storage_price = 0.03 to 0.1       # dollars per gigabyte kept searchable for a month
+services = 20 to 60               # services that ship logs; count them
+gb_per_service = 0.5 to 3         # gigabytes of logs a service writes a day; typical experience, check your log volumes
+ingest_price = 0.3 to 1.5         # dollars per gigabyte ingested; check your vendor's public price list
+retention_days = 15 to 30         # days the logs stay searchable; from your retention settings
+storage_price = 0.03 to 0.1       # dollars per gigabyte kept searchable a month; check your vendor's public price list
 days = 30                         # days in a month
 
 # Calculation

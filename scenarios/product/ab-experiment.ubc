@@ -12,13 +12,17 @@
 # Every "a to b" is a 90% confidence interval. Amounts are in euros. Large
 # experimentation programs report that only a minority of experiments win, so
 # the expected gain is the uplift times the chance of winning.
+#
+# Sources: Ron Kohavi, Diane Tang and Ya Xu, Trustworthy Online Controlled
+# Experiments (2020), for the low share of experiments that win; the other
+# ranges are typical experience.
 
 # Assumptions
-monthly_revenue = 200k to 400k    # monthly revenue through the flow the experiment changes
-uplift = 1% to 3%                 # revenue uplift if the variant wins
-win_chance = 15% to 40%           # chance the variant really wins
-months = 12                       # how long the gain lasts before the next redesign
-cost = 10k to 30k                 # design, engineering, analysis and the weeks of traffic it takes
+monthly_revenue = 200k to 400k    # monthly revenue through the flow the experiment changes; read it from your analytics
+uplift = 1% to 3%                 # revenue uplift if the variant wins; typical experience for a single change
+win_chance = 15% to 40%           # chance the variant really wins; only a minority do (Kohavi, Tang and Xu)
+months = 12                       # how long the gain lasts before the next redesign; typical experience
+cost = 10k to 30k                 # design, engineering, analysis and weeks of traffic; typical experience
 
 # Calculation
 gain = monthly_revenue * uplift * months * win_chance   # expected extra revenue

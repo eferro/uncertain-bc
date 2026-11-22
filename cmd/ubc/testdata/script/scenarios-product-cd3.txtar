@@ -2,10 +2,10 @@ exec ubc --scenario product/cd3
 stdout '^cd3_search = ≈ 1520 '
 stdout '^cd3_export = ≈ 2010 '
 stdout '^cd3_billing = ≈ 1200 '
-stdout '^L34: 0\.58\n\z'
+stdout '^L38: 0\.58\n\z'
 ! stderr .
 exec ubc --set 'weeks_search = 2 to 3' --scenario product/cd3
-stdout '^L34: 0\.16\n\z'
+stdout '^L38: 0\.16\n\z'
 exec ubc --sens cd3_export --scenario product/cd3
 stdout '^sensitivity of cd3_export \(rank correlation\):\n'
 stdout '^  weeks_export +-0\.\d\d '

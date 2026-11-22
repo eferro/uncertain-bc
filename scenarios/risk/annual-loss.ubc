@@ -15,12 +15,15 @@
 # year it does it costs the whole impact. Keep the probability well below
 # 1; for something that happens several times a year, use the expected
 # count instead, as reliability/incident-cost does.
+#
+# Sources: Douglas Hubbard, How to Measure Anything (2007), for 90%
+# confidence intervals and annual loss expectancy; the ranges are examples.
 
 # Assumptions
-probability = 5% to 25%           # chance of the incident in a year: your history, industry reports or expert judgement
-impact = 100k to 1M               # what one incident costs: recovery, lost business, legal costs and customers
-residual = 20% to 50%             # share of the probability left once the mitigation is in place
-mitigation_cost = 20k to 50k      # what the mitigation costs a year: licences, people's time and upkeep
+probability = 5% to 25%           # chance of the incident in a year; your history or calibrated judgement (Hubbard)
+impact = 100k to 1M               # what one incident costs: recovery, lost business, legal; your history
+residual = 20% to 50%             # share of the probability left once mitigated; calibrated expert judgement
+mitigation_cost = 20k to 50k      # what the mitigation costs a year: licences, time, upkeep; vendor quotes
 
 # Calculation
 loss_before = annual_loss(probability, impact)              # expected loss a year without the mitigation

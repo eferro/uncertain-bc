@@ -11,16 +11,20 @@
 # Every "a to b" is a 90% confidence interval. Amounts are in euros.
 # Migrations overrun mostly through the work nobody listed, so it gets its
 # own assumption, as in the tutorial's project estimate.
+#
+# Sources: typical experience in software migrations; there is no published
+# benchmark for these ranges, so replace them with your own numbers. The
+# overhead on salaries is a rule of thumb.
 
 # Assumptions
 services = 15 to 30               # services or components to migrate; count them
-weeks_per_service = 1 to 4        # engineer-weeks each; the first few take longer than the rest
-forgotten = 20% to 60%            # unlisted work on top: integrations, data, tooling, docs
-weekly_salary = 1k to 1.8k        # gross salary of an engineer-week
-overhead = 1.25 to 1.4            # taxes, benefits and equipment on top of the salary
-parallel_months = 2 to 6          # months running the old and the new side by side
-parallel_monthly_cost = 5k to 20k # extra infrastructure and licences a month while both run
-budget = 150k                     # what was approved
+weeks_per_service = 1 to 4        # engineer-weeks each, the first few longer; typical experience
+forgotten = 20% to 60%            # unlisted work on top (integrations, data, tooling, docs); typical experience
+weekly_salary = 1k to 1.8k        # gross salary of an engineer-week; use your own payroll
+overhead = 1.25 to 1.4            # taxes, benefits and equipment on top of the salary; rule of thumb: 25-40%
+parallel_months = 2 to 6          # months running old and new side by side; typical experience
+parallel_monthly_cost = 5k to 20k # extra infrastructure and licences a month; look at your current bill
+budget = 150k                     # what was approved; your own number
 
 # Calculation
 engineer_weeks = services * weeks_per_service * (1 + forgotten)          # the work, forgotten part included

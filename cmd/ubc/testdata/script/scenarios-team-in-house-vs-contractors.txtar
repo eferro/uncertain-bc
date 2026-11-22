@@ -2,10 +2,10 @@ exec ubc --scenario team/in-house-vs-contractors
 stdout '^in_house = ≈ 328k '
 stdout '^contractors = ≈ 361k '
 stdout '^outsourcing = ≈ 476k '
-stdout '^L36: 0\.66\n\z'
+stdout '^L40: 0\.66\n\z'
 ! stderr .
 exec ubc --set 'day_rate = 300 to 500' --scenario team/in-house-vs-contractors
-stdout '^L36: 0\.17\n\z'
+stdout '^L40: 0\.17\n\z'
 exec ubc --sens in_house --scenario team/in-house-vs-contractors
 stdout '^sensitivity of in_house \(rank correlation\):\n'
 stdout '^  salary +\+0\.\d\d '

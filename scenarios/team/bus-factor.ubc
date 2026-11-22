@@ -10,15 +10,18 @@
 #   ubc --sens yearly_risk --scenario team/bus-factor
 #
 # Every "a to b" is a 90% confidence interval. Amounts are in euros.
+#
+# Sources: Douglas Hubbard, How to Measure Anything (2007), for the annual
+# loss expectancy style of the risk; the ranges are typical experience.
 
 # Assumptions
-leave_rate = 0.08 to 0.2          # chance the person leaves within a year; voluntary attrition in tech is often 10-15%
-recovery_months = 2 to 6          # until someone else masters the system: reading code, asking around, breaking things
-people_recovering = 1 to 2        # engineers working on it during that time
-value_per_month = 6k to 15k       # value one engineer delivers a month; at least their loaded cost
-incident_chance = 0.1 to 0.5      # chance of an outage or a stuck delivery while nobody knows the system
-incident_cost = 5k to 100k        # what such an incident costs
-cross_training = 5k               # two weeks of one engineer spreading the knowledge
+leave_rate = 0.08 to 0.2          # chance they leave within a year; typical attrition in tech, check your HR data
+recovery_months = 2 to 6          # until someone else masters the system; typical experience
+people_recovering = 1 to 2        # engineers working on it during that time; typical experience
+value_per_month = 6k to 15k       # value one engineer delivers a month; at least their loaded cost (rule of thumb)
+incident_chance = 0.1 to 0.5      # chance of an outage or stuck delivery meanwhile; your incident history
+incident_cost = 5k to 100k        # what such an incident costs; your incident history or typical experience
+cross_training = 5k               # two weeks of one engineer spreading the knowledge; loaded cost rule of thumb
 
 # Calculation
 recovery = recovery_months * people_recovering * value_per_month   # work spent learning the system again

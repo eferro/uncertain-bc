@@ -9,16 +9,21 @@
 #   ubc --sens total --scenario team/replace-a-person
 #
 # Every "a to b" is a 90% confidence interval. Amounts are in euros.
+#
+# Sources: SHRM (Society for Human Resource Management) Talent Acquisition
+# Benchmarking for cost per hire and time to fill; rules of thumb for agency
+# fees (15-25% of the first-year salary) and the loaded cost; the rest is
+# typical experience.
 
 # Assumptions
-candidates = 6 to 15              # interviewed until an offer is accepted; typical funnels need 5-15
-hours_per_candidate = 3 to 8      # interviewer hours per candidate, all rounds and debriefs included
-interviewer_cost = 50 to 90       # loaded cost of an engineer's hour (salary plus ~30% overheads)
-hiring_fees = 3k to 20k           # job ads at the low end, an agency (15-25% of salary) at the high end
-vacancy_months = 2 to 5           # notice period plus the hiring process, until the new hire starts
-value_per_month = 6k to 15k       # value one engineer delivers a month; at least their loaded cost
-ramp_up_months = 3 to 6           # until the new hire is fully productive
-ramp_up_gap = 0.3 to 0.6          # average share of a full month's value missing while ramping up
+candidates = 6 to 15              # interviewed until an offer is accepted; typical experience, check your funnel
+hours_per_candidate = 3 to 8      # interviewer hours per candidate, rounds and debriefs; typical experience
+interviewer_cost = 50 to 90       # loaded cost of an engineer's hour; rule of thumb: salary plus 25-40% overheads
+hiring_fees = 3k to 20k           # job ads at the low end, an agency at the high end; rule of thumb 15-25% of salary
+vacancy_months = 2 to 5           # notice period plus hiring, until the new hire starts; your hiring data
+value_per_month = 6k to 15k       # value one engineer delivers a month; at least their loaded cost (rule of thumb)
+ramp_up_months = 3 to 6           # until the new hire is fully productive; typical experience
+ramp_up_gap = 0.3 to 0.6          # average share of a month's value missing while ramping up; typical experience
 
 # Calculation
 interviewing = candidates * hours_per_candidate * interviewer_cost   # team time spent interviewing

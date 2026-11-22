@@ -12,12 +12,16 @@
 # Every "a to b" is a 90% confidence interval. Amounts are in dollars a
 # month. SaaS companies usually aim for a gross margin of 75-80%, and
 # infrastructure is most of the cost of serving a customer.
+#
+# Sources: typical experience in SaaS companies; there is no published
+# benchmark for these ranges, so replace them with your own bill and customer
+# count.
 
 # Assumptions
-customers = 500 to 1.5k           # paying customers
-platform = 20k to 50k             # the shared bill: clusters, databases, networking, tooling
-per_customer = 15 to 60           # what each customer adds: storage, emails, API calls, support tooling
-price = 300                       # what a customer pays a month
+customers = 500 to 1.5k           # paying customers; from your billing system
+platform = 20k to 50k             # the shared bill (clusters, databases, networking, tooling); look at your cloud bill
+per_customer = 15 to 60           # what each customer adds (storage, emails, API calls); typical experience
+price = 300                       # what a customer pays a month; your own price list
 
 # Calculation
 cost_per_customer = platform / customers + per_customer        # a share of the platform plus what the customer adds

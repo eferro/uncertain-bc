@@ -12,14 +12,18 @@
 # Every "a to b" is a 90% confidence interval. Everything is in hours of the
 # same people, so the cost of an hour cancels out. Like the xkcd table, it
 # looks five years ahead; unlike it, it counts keeping the automation working.
+#
+# Sources: Randall Munroe, xkcd 1205 "Is It Worth the Time?", for the
+# automation table and its five-year horizon; the ranges are typical
+# experience.
 
 # Assumptions
-minutes_saved = 2 to 10           # minutes the task takes by hand each time
-runs_per_week = 2 to 8            # times a week someone does it
-weeks_per_year = 44               # working weeks, minus holidays
-years = 5                         # horizon, as in the xkcd table
-build_hours = 16 to 60            # hours to write and test the automation
-maintenance_hours = 4 to 16       # hours a year keeping it working as things around it change
+minutes_saved = 2 to 10           # minutes the task takes by hand each time; time it yourself
+runs_per_week = 2 to 8            # times a week someone does it; count them in your logs or tracker
+weeks_per_year = 44               # working weeks, minus holidays; rule of thumb
+years = 5                         # horizon, as in the xkcd 1205 table
+build_hours = 16 to 60            # hours to write and test the automation; typical experience
+maintenance_hours = 4 to 16       # hours a year keeping it working as things around it change; typical experience
 
 # Calculation
 hours_saved = minutes_saved * runs_per_week * weeks_per_year * years / 60   # time no longer spent by hand

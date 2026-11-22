@@ -9,10 +9,13 @@
 #   ubc --sens yearly_cost --scenario team/attrition-cost
 #
 # Every "a to b" is a 90% confidence interval. Amounts are in euros.
+#
+# Sources: typical experience in software teams; there is no published
+# benchmark for these ranges, so replace them with your own HR numbers.
 
 # Assumptions
-people = 40                       # engineers in the organisation
-leave_rate = 0.08 to 0.2          # share who leave in a year; voluntary attrition in tech is often 10-15%
+people = 40                       # engineers in the organisation; your own headcount
+leave_rate = 0.08 to 0.2          # share who leave in a year; typical experience in tech, check your HR data
 replacement_cost = 40k to 100k    # average cost of replacing one; replace-a-person.ubc gives about 38k to 100k
 
 # Calculation

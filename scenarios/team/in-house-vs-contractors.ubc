@@ -12,17 +12,21 @@
 # Every "a to b" is a 90% confidence interval. Amounts are in euros for one
 # year. Only the money is compared: knowledge that stays in the company when
 # you hire is not priced here.
+#
+# Sources: rules of thumb for the loaded cost (salary plus 25-40%) and
+# typical experience for the rest; there is no published benchmark for these
+# rates, so replace them with quotes from your own market.
 
 # Assumptions
-engineers = 3                     # people the work needs for a year
-billable_days = 210               # days a year a contractor or an agency engineer bills
-salary = 50k to 80k               # yearly gross salary of an engineer you hire
-overhead = 1.25 to 1.4            # taxes, benefits and equipment on top of the salary
-hiring = 15k to 40k               # per hire: the hiring process and ramp-up (see hiring-cost and onboarding)
-day_rate = 400 to 700             # a freelance contractor's day rate
-contractor_ramp_up = 5k to 15k    # per contractor: work lost while they learn the codebase
-agency_rate = 450 to 900          # an agency's day rate per engineer, their management included
-coordination = 0.1 to 0.3         # extra share of the agency's bill spent on your side: specs, reviews, handoffs
+engineers = 3                     # people the work needs for a year; your own plan
+billable_days = 210               # days a year a contractor or an agency engineer bills; typical experience
+salary = 50k to 80k               # yearly gross salary of an engineer you hire; your payroll or local salary surveys
+overhead = 1.25 to 1.4            # taxes, benefits and equipment on top of salary; rule of thumb 25-40%
+hiring = 15k to 40k               # per hire: hiring and ramp-up; typical experience (see hiring-cost and onboarding)
+day_rate = 400 to 700             # a freelance contractor's day rate; quotes from your market
+contractor_ramp_up = 5k to 15k    # per contractor: work lost while they learn the codebase; typical experience
+agency_rate = 450 to 900          # an agency's day rate per engineer, management included; agency quotes
+coordination = 0.1 to 0.3         # extra share of the bill spent on your side: specs, reviews; typical experience
 
 # Calculation
 in_house = engineers * (loaded_cost(salary, overhead) + hiring)                 # salaries plus hiring

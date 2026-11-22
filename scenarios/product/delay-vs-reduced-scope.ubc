@@ -11,13 +11,16 @@
 #
 # Every "a to b" is a 90% confidence interval. Amounts are in euros. Both
 # options are measured by the value lost against shipping everything today.
+#
+# Sources: Don Reinertsen, The Principles of Product Development Flow (2009),
+# for cost of delay and batch size; the ranges are typical experience.
 
 # Assumptions
-weekly_value = 10k to 30k         # cost of delay of the whole feature: what it brings a week once live
-delay_weeks = 4 to 10             # extra weeks to finish the whole scope before launching
-reduced_share = 50% to 80%        # share of that value the reduced scope already delivers
-rest_weeks = 6 to 16              # weeks after the reduced launch until the rest ships; two releases take longer
-two_releases = 5k to 20k          # cost of shipping in two steps: release work, rework, support
+weekly_value = 10k to 30k         # whole feature's cost of delay: what it brings a week once live; typical experience
+delay_weeks = 4 to 10             # extra weeks to finish the whole scope before launching; your team's estimate
+reduced_share = 50% to 80%        # share of that value the reduced scope already delivers; typical experience
+rest_weeks = 6 to 16              # weeks after the reduced launch until the rest ships; your team's estimate
+two_releases = 5k to 20k          # cost of shipping in two steps (release work, rework, support); typical experience
 
 # Calculation
 delay = delay_cost(weekly_value, delay_weeks)                                         # nothing ships until it is complete

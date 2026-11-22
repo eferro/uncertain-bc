@@ -12,16 +12,20 @@
 # Every "a to b" is a 90% confidence interval. Amounts are in euros. A fix
 # rarely gives back every lost hour, so only the recovered share counts
 # towards paying for it.
+#
+# Sources: Martin Fowler, "Technical Debt" bliki
+# (martinfowler.com/bliki/TechnicalDebt.html), for the interest metaphor; the
+# ranges are typical experience and rules of thumb.
 
 # Assumptions
-people = 5 to 12                  # engineers who work on the affected code
-hours_lost = 1 to 4               # hours each loses a week to it: workarounds, slow changes, its bugs
-weeks_per_year = 44               # working weeks, minus holidays
-hourly_salary = 30 to 60          # gross salary per hour (a yearly salary divided by ~1700 hours)
-overhead = 1.25 to 1.4            # taxes, benefits and equipment on top of the salary
+people = 5 to 12                  # engineers who work on the affected code; count them
+hours_lost = 1 to 4               # hours each loses a week to workarounds, slow changes, bugs; typical experience
+weeks_per_year = 44               # working weeks, minus holidays; rule of thumb
+hourly_salary = 30 to 60          # gross salary per hour (yearly salary / ~1700 hours); use your own payroll
+overhead = 1.25 to 1.4            # taxes, benefits and equipment on top of the salary; rule of thumb: 25-40%
 fix_weeks = 4 to 16               # engineer-weeks to fix it; ask the people who know the code
-hours_per_week = 40               # working hours in an engineer-week
-recovered = 60% to 90%            # share of the lost hours the fix gives back
+hours_per_week = 40               # working hours in an engineer-week; a usual full-time week
+recovered = 60% to 90%            # share of the lost hours the fix gives back; typical experience
 
 # Calculation
 hour_cost = loaded_cost(hourly_salary, overhead)                 # what an hour of a person costs the company

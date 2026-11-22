@@ -13,11 +13,15 @@
 # item that waits loses its cost of delay for as long as it waits, so the
 # queue costs the number of items in it times their weekly cost of delay
 # (Reinertsen: queues are the biggest hidden cost in product development).
+#
+# Sources: Don Reinertsen, The Principles of Product Development Flow (2009),
+# for the cost of queues, and John D. C. Little, "A Proof for the Queuing
+# Formula L = λW" (1961), for Little's law; the ranges are typical experience.
 
 # Assumptions
 queued = 10 to 30                 # items waiting, not being worked on; count them on the board
-cod_per_item = 500 to 3k          # average weekly cost of delay of one of them
-throughput = 4 to 7               # items the team finishes a week
+cod_per_item = 500 to 3k          # average weekly cost of delay of one of them; typical experience
+throughput = 4 to 7               # items the team finishes a week; read it from your tracker
 
 # Calculation
 wait = lead_time(queued, throughput)               # weeks an item spends in the queues (Little's law)

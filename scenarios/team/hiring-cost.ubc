@@ -11,17 +11,21 @@
 #
 # Every "a to b" is a 90% confidence interval. Times are in weeks, amounts in
 # euros.
+#
+# Sources: SHRM (Society for Human Resource Management) Talent Acquisition
+# Benchmarking publishes time to fill and cost per hire; the ranges here are
+# typical experience, so check them against your own hiring data.
 
 # Assumptions
-sourcing_weeks = 2 to 6           # from opening the position until enough good candidates apply
-interview_weeks = 2 to 5          # interview rounds, scheduling, debriefs and the offer
-notice_weeks = 2 to 12            # the new hire's notice period: 2 weeks in the US, up to 3 months in much of Europe
-cvs_screened = 20 to 80           # applications read before the shortlist
-minutes_per_cv = 5 to 15          # time to read one application and decide
-candidates = 6 to 15              # interviewed until an offer is accepted; typical funnels need 5-15
-hours_per_candidate = 3 to 8      # interviewer hours per candidate, all rounds and debriefs included
-coordination_hours = 15 to 40     # recruiter and manager time: the job ad, scheduling, the offer
-hour_cost = 50 to 90              # loaded cost of an hour (salary plus ~30% overheads)
+sourcing_weeks = 2 to 6           # from opening the position until enough good candidates apply; your hiring data
+interview_weeks = 2 to 5          # interview rounds, scheduling, debriefs and the offer; your hiring data
+notice_weeks = 2 to 12            # the new hire's notice period; typical: 2 weeks in the US, up to 3 months in Europe
+cvs_screened = 20 to 80           # applications read before the shortlist; your applicant tracker
+minutes_per_cv = 5 to 15          # time to read one application and decide; typical experience
+candidates = 6 to 15              # interviewed until an offer is accepted; typical experience, check your funnel
+hours_per_candidate = 3 to 8      # interviewer hours per candidate, rounds and debriefs; typical experience
+coordination_hours = 15 to 40     # recruiter and manager time: ad, scheduling, offer; typical experience
+hour_cost = 50 to 90              # loaded cost of an hour; rule of thumb: salary plus 25-40% overheads
 
 # Calculation
 time_to_fill = sourcing_weeks + interview_weeks + notice_weeks          # weeks until the new hire starts

@@ -62,3 +62,4 @@ Template: Status, Effective date, Deciders, then Context, Decision, Consequences
 | [0052](0052-keep-enough-digits-for-narrow-intervals.md) | Keep enough digits to tell the ends of a narrow interval apart (amends 0006) | Accepted | 2026-11-22 |
 | [0053](0053-label-results-with-their-expression.md) | Label results with their variable name or short expression (amends 0025) | Accepted | 2026-11-22 |
 | [0054](0054-scenarios-built-into-the-binary.md) | Scenarios built into the binary, with `--scenarios`, `--scenario` and `--scenario-source` (amends 0042, 0043) | Accepted | 2026-11-22 |
+| [0055](0055-catalogue-index-by-area-and-sources.md) | Catalogue index by area, a currency note and sources for every assumption (amends 0042) | Accepted | 2026-11-22 |

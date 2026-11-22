@@ -11,12 +11,16 @@
 #
 # Every "a to b" is a 90% confidence interval. Work is in person-months,
 # amounts in euros.
+#
+# Sources: Frederick Brooks, The Mythical Man-Month (1975), for the time the
+# team loses bringing a new person up to speed; the ranges are typical
+# experience.
 
 # Assumptions
-ramp_up_months = 3 to 9           # until the new hire is fully productive; longer in big or legacy codebases
-ramp_up_gap = 0.3 to 0.6          # average share of a full month's work the new hire misses while ramping up
-team_help = 0.15 to 0.5           # share of one teammate's time spent helping: pairing, reviews, questions
-value_per_month = 6k to 15k       # value one engineer delivers a month; at least their loaded cost
+ramp_up_months = 3 to 9           # until fully productive; typical experience, longer in big or legacy codebases
+ramp_up_gap = 0.3 to 0.6          # average share of a month's work the new hire misses meanwhile; typical experience
+team_help = 0.15 to 0.5           # share of a teammate's time spent helping; typical experience, see Brooks (1975)
+value_per_month = 6k to 15k       # value one engineer delivers a month; at least their loaded cost (rule of thumb)
 
 # Calculation
 new_hire_loss = ramp_up_months * ramp_up_gap    # person-months the new hire does not deliver yet

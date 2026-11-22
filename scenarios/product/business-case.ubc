@@ -11,15 +11,20 @@
 #
 # Every "a to b" is a 90% confidence interval. Amounts are in euros. Each
 # factor is a funnel step: being honest about each one beats one big guess.
+#
+# Sources: Douglas Hubbard, How to Measure Anything (2007), for breaking the
+# estimate into factors; loaded cost is salary plus 25-40% overheads (rule of
+# thumb); the other ranges are typical experience, so replace them with your
+# own numbers.
 
 # Assumptions
-reach = 20k to 60k                # users who see the feature in a year
-adoption = 10% to 30%             # share of them who try it
-conversion = 3% to 10%            # share of those who pay more because of it (upgrade, add-on)
-arpu = 150 to 400                 # extra yearly revenue from each paying user
-build = 50k to 120k               # building it: engineers × weeks × loaded cost
-run = 10k to 30k                  # hosting, support and maintenance a year
-years = 2                         # horizon of the business case
+reach = 20k to 60k                # users who see the feature in a year; read it from your analytics
+adoption = 10% to 30%             # share of them who try it; typical experience for a new feature
+conversion = 3% to 10%            # share of those who pay more because of it (upgrade, add-on); typical experience
+arpu = 150 to 400                 # extra yearly revenue from each paying user; from your price list
+build = 50k to 120k               # engineers × weeks × loaded cost (salary plus 25-40%, rule of thumb)
+run = 10k to 30k                  # hosting, support and maintenance a year; typical experience
+years = 2                         # horizon of the business case; a common planning choice
 
 # Calculation
 yearly_revenue = reach * adoption * conversion * arpu    # the funnel, step by step

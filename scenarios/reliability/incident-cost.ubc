@@ -13,15 +13,20 @@
 # cost of an hour of downtime is what the business loses while the service
 # is down (sales, SLA credits, support load), not the whole revenue: most
 # users retry later.
+#
+# Sources: Nicole Forsgren, Jez Humble and Gene Kim, Accelerate (2018), and
+# the DORA State of DevOps reports (dora.dev), for time to restore; Douglas
+# Hubbard, How to Measure Anything (2007), for the annual loss expectancy
+# style; the other ranges are typical experience.
 
 # Assumptions
 incidents_per_year = 6 to 20      # incidents that hurt users; count last year's postmortems
-mttr_hours = 1 to 6               # mean time to restore: from the first alert to users served again
-downtime_cost = 5k to 40k         # what an hour of downtime loses
-responders = 3 to 8               # people pulled into each incident
-followup_hours = 8 to 30          # person-hours after each one: postmortem and its actions
-hourly_salary = 30 to 60          # gross salary per hour (a yearly salary divided by ~1700 hours)
-overhead = 1.25 to 1.4            # taxes, benefits and equipment on top of the salary
+mttr_hours = 1 to 6               # time to restore, alert to users served; DORA: elite teams restore in under an hour
+downtime_cost = 5k to 40k         # what an hour of downtime loses; estimate from your own sales and SLA data
+responders = 3 to 8               # people pulled into each incident; typical experience
+followup_hours = 8 to 30          # person-hours after each one (postmortem, actions); typical experience
+hourly_salary = 30 to 60          # gross salary per hour (yearly salary / ~1700 hours); use your own payroll
+overhead = 1.25 to 1.4            # taxes, benefits and equipment on top of the salary; rule of thumb: 25-40%
 
 # Calculation
 hour_cost = loaded_cost(hourly_salary, overhead)                          # what an hour of a person costs the company

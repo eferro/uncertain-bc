@@ -9,14 +9,18 @@
 #   ubc --sens lost_share --scenario delivery/context-switching
 #
 # Every "a to b" is a 90% confidence interval. Amounts are in euros.
+#
+# Sources: Gloria Mark et al., "The Cost of Interrupted Work: More Speed and
+# Stress" (CHI 2008), for the time to resume work after an interruption;
+# the other ranges are typical experience and rules of thumb.
 
 # Assumptions
-people = 6                        # engineers in the team
-interruptions = 3 to 10           # interruptions per person a day: messages, questions, unplanned meetings
-minutes_lost = 10 to 25           # to get back into the task; studies of office work report around 20
-hours_per_day = 8                 # working hours in a day
-salary = 50k to 80k               # gross yearly salary
-overhead = 1.25 to 1.4            # taxes, benefits and equipment on top of the salary
+people = 6                        # engineers in the team; your own team
+interruptions = 3 to 10           # interruptions per person a day: messages, questions, meetings; typical experience
+minutes_lost = 10 to 25           # to get back into the task; Gloria Mark et al. (CHI 2008), commonly quoted as ~23
+hours_per_day = 8                 # working hours in a day; your contracts
+salary = 50k to 80k               # gross yearly salary; your payroll or local salary surveys
+overhead = 1.25 to 1.4            # taxes, benefits and equipment on top of salary; rule of thumb 25-40%
 
 # Calculation
 lost_hours = interruptions * minutes_lost / 60               # hours a person loses a day

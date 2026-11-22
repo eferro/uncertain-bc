@@ -12,12 +12,15 @@
 # Every "a to b" is a 90% confidence interval. Little's law holds for averages
 # in a stable system: limiting work in progress does not make the team finish
 # more items a week, it makes each item wait less.
+#
+# Sources: John D. C. Little, "A Proof for the Queuing Formula L = λW"
+# (1961), for Little's law; the ranges are examples, take them from your board.
 
 # Assumptions
-wip = 15 to 30                    # items started and not finished; count the cards in progress on the board
-throughput = 4 to 7               # items finished a week; take it from the last weeks
-wip_limit = 8                     # the limit the team would agree on
-target = 2                        # weeks the business would like an item to take
+wip = 15 to 30                    # items started and not finished; count the cards in progress on your board
+throughput = 4 to 7               # items finished a week; take it from the last weeks in your tracker
+wip_limit = 8                     # the limit the team would agree on; your team's choice
+target = 2                        # weeks the business would like an item to take; ask your stakeholders
 
 # Calculation
 lead = lead_time(wip, throughput)                 # weeks an item takes today
