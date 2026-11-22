@@ -1,0 +1,84 @@
+# Reusable formulas for the scenarios: ubc user functions that any model can
+# call. Defining them prints nothing; run this file before your own model,
+# in the same command, so the functions flow into it:
+#
+#   ubc scenarios/formulas.ubc scenarios/<area>/<name>.ubc
+#   ubc scenarios/formulas.ubc my-model.ubc
+#
+# Every argument can be a plain number or an uncertain one ("a to b"). Keep
+# the time units consistent: a monthly rate with a number of months, a weekly
+# cost of delay with a duration in weeks.
+
+# People
+
+# Loaded cost of a person: what the company pays, not just the salary.
+# Taxes, benefits, equipment and office usually add 25-40% on top of the
+# salary, so overhead is a factor around 1.25 to 1.4.
+loaded_cost(salary, overhead) = salary * overhead
+
+# Real capacity of a team in person-days: the time left for planned work
+# once meetings, support, interruptions and holidays are taken out. The focus
+# factor (the share of the time that goes to planned work) is commonly
+# 0.5 to 0.8 in Scrum teams.
+real_capacity(people, days, focus) = people * days * focus
+
+# Flow
+
+# Little's law (John Little, 1961): in a stable system, the average lead time
+# is the work in progress divided by the throughput. With 20 items in
+# progress and 4 finished a week, an item takes 5 weeks.
+lead_time(wip, throughput) = wip / throughput
+
+# Cost of delay (Don Reinertsen, The Principles of Product Development Flow):
+# the value lost for every period a feature is not in users' hands, times the
+# periods it is delayed.
+delay_cost(cost_of_delay, periods) = cost_of_delay * periods
+
+# CD3, cost of delay divided by duration (Reinertsen; Joshua Arnold): do
+# first the work with the highest value lost per unit of time spent on it.
+cd3(cost_of_delay, duration) = cost_of_delay / duration
+
+# Product
+
+# Customer lifetime value: the margin a customer brings each period, over
+# the expected lifetime. With a constant churn rate per period, a customer
+# stays 1 / churn periods on average (a 2% monthly churn means 50 months).
+ltv(revenue_per_period, gross_margin, churn) = revenue_per_period * gross_margin / churn
+
+# CAC payback: the periods it takes for a customer's margin to pay back what
+# it cost to acquire them. Under 12 months is the usual SaaS benchmark.
+cac_payback(cac, revenue_per_period, gross_margin) = cac / (revenue_per_period * gross_margin)
+
+# Risk
+
+# Annual loss expectancy (quantitative risk analysis, as in NIST SP 800-30):
+# how often an incident is expected in a year times what one incident costs.
+# A probability of 0.1 a year of a 200k incident is a 20k expected loss.
+annual_loss(probability, impact) = probability * impact
+
+# Availability of two services a request needs both of (in series): both
+# must be up, so the availabilities multiply. Chain calls for more services:
+# availability_series(a, availability_series(b, c)).
+availability_series(a, b) = a * b
+
+# Availability of two redundant services where either one is enough (in
+# parallel): it is down only when both are down at once, assuming they fail
+# independently.
+availability_parallel(a, b) = 1 - (1 - a) * (1 - b)
+
+# Money over time
+
+# Compound growth: a value that grows by rate every period, for a number of
+# periods (a 10% yearly growth for 2 years multiplies by 1.21).
+compound(value, rate, periods) = value * (1 + rate) ^ periods
+
+# Present value: what an amount received some periods from now is worth
+# today, discounted at rate per period (the cost of capital, often 8-12% a
+# year).
+present_value(amount, rate, periods) = amount / (1 + rate) ^ periods
+
+# Net present value of an investment paid today that returns the same cash
+# every period, for a number of periods, discounted at rate per period (the
+# present value of an annuity minus the investment). Positive means it pays
+# off. The rate must not be 0.
+npv(investment, cash_per_period, rate, periods) = cash_per_period * (1 - (1 + rate) ^ -periods) / rate - investment

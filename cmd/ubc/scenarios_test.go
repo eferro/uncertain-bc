@@ -13,7 +13,10 @@ import (
 	"github.com/eferro/uncertain-bc/internal/adapters/cli"
 )
 
-const scenariosDir = "../../scenarios"
+const (
+	scenariosDir = "../../scenarios"
+	formulasFile = "formulas.ubc"
+)
 
 func TestScenarios_EveryFileEvaluates(t *testing.T) {
 	files, err := modelFiles(scenariosDir)
@@ -24,7 +27,7 @@ func TestScenarios_EveryFileEvaluates(t *testing.T) {
 			var stdout, stderr bytes.Buffer
 			var app cli.App
 
-			code := app.Run([]string{filepath.Join(scenariosDir, file)}, strings.NewReader(""), &stdout, &stderr)
+			code := app.Run(scenarioArgs(scenariosDir, file), strings.NewReader(""), &stdout, &stderr)
 
 			assert.Equal(t, 0, code, stderr.String())
 			assert.Empty(t, stderr.String())
@@ -39,6 +42,18 @@ func TestScenarios_TheIndexListsEveryFile(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.Empty(t, missingFromIndex(string(index), files))
+}
+
+func TestScenarioArgs_RunsTheSharedFormulasFirst(t *testing.T) {
+	args := scenarioArgs("root", "team/a.ubc")
+
+	assert.Equal(t, []string{filepath.Join("root", "formulas.ubc"), filepath.Join("root", "team", "a.ubc")}, args)
+}
+
+func TestScenarioArgs_RunsTheSharedFormulasAlone(t *testing.T) {
+	args := scenarioArgs("root", "formulas.ubc")
+
+	assert.Equal(t, []string{filepath.Join("root", "formulas.ubc")}, args)
 }
 
 func TestScenarioFiles_FindsUbcFilesInEveryArea(t *testing.T) {
@@ -68,6 +83,15 @@ func TestMissingFromIndex_ListsFilesWithoutALink(t *testing.T) {
 	missing := missingFromIndex(index, []string{"team/a.ubc", "team/b.ubc", "team/c.ubc"})
 
 	assert.Equal(t, []string{"team/b.ubc", "team/c.ubc"}, missing)
+}
+
+func scenarioArgs(root, file string) []string {
+	formulas := filepath.Join(root, formulasFile)
+	path := filepath.Join(root, file)
+	if path == formulas {
+		return []string{formulas}
+	}
+	return []string{formulas, path}
 }
 
 func missingFromIndex(index string, files []string) []string {

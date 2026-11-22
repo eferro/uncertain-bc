@@ -15,6 +15,18 @@ Every scenario is checked by the test suite: it must evaluate without errors and
 | Area | Scenario | Question it answers |
 |------|----------|---------------------|
 | team | [replace-a-person](team/replace-a-person.ubc) | How much does it cost to replace an engineer who leaves, and how likely is it to exceed 50k euros? |
+| all | [formulas](formulas.ubc) | Reusable formulas shared by every scenario: loaded cost, real capacity, Little's law, cost of delay and CD3, LTV and CAC payback, annual loss expectancy, availability in series and in parallel, compound growth, present value and NPV. |
+
+## Reusable formulas
+
+[`formulas.ubc`](formulas.ubc) defines formulas that come up again and again as `ubc` user functions, each with a comment explaining it and where it comes from. Run it before a model, in the same command: files run in one session, so the functions flow from one file to the next.
+
+```console
+$ ubc scenarios/formulas.ubc scenarios/<area>/<name>.ubc
+$ ubc scenarios/formulas.ubc my-model.ubc
+```
+
+Inside the model, call them with plain or uncertain arguments, for example `lead_time(15 to 30, 3 to 6)` or `npv(50k, 2k to 4k, 0.01, 36)`. The test suite runs every scenario after `formulas.ubc`, so a scenario may use them; when it does, its "Run it" lines show the two-file command.
 
 ## Template
 
