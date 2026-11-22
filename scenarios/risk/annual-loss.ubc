@@ -25,7 +25,8 @@ mitigation_cost = 20k to 50k      # what the mitigation costs a year: licences, 
 # Calculation
 loss_before = annual_loss(probability, impact)              # expected loss a year without the mitigation
 loss_after = annual_loss(probability * residual, impact)    # expected loss a year with it
-net_benefit = loss_before - loss_after - mitigation_cost    # what it saves a year minus what it costs; positive when it pays off
+avoided_loss = loss_before - loss_after                     # what the mitigation saves a year
+net_benefit = avoided_loss - mitigation_cost                # positive when it pays off
 
 # Result
 loss_before

@@ -1,11 +1,11 @@
 exec ubc scenarios/formulas.ubc scenarios/risk/annual-loss.ubc
-stdout '^L31: ≈ 34\.9k '
-stdout '^L32: ≈ 11\.1k '
-stdout '^L33: ≈ -8250 '
-stdout '^L34: 0\.36\n\z'
+stdout '^L32: ≈ 34\.9k '
+stdout '^L33: ≈ 11\.1k '
+stdout '^L34: ≈ -8250 '
+stdout '^L35: 0\.36\n\z'
 ! stderr .
 exec ubc --set 'mitigation_cost = 5k to 15k' scenarios/formulas.ubc scenarios/risk/annual-loss.ubc
-stdout '^L34: 0\.86\n\z'
+stdout '^L35: 0\.86\n\z'
 exec ubc --sens net_benefit scenarios/formulas.ubc scenarios/risk/annual-loss.ubc
 stdout '^sensitivity of net_benefit \(rank correlation\):\n'
 stdout '^  impact +\+0\.\d\d '
