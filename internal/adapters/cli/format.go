@@ -137,7 +137,7 @@ func quantileList(v domain.SampleSet, quantiles []float64) string {
 // the wider of the two (ADR 0040).
 func intervals(v domain.SampleSet, st style) string {
 	ends := intervalEnds(st.interval)
-	lo, hi := roundSignificant(v.Quantile(ends[0]/100), 3), roundSignificant(v.Quantile(ends[1]/100), 3)
+	lo, hi := roundForSummary(v.Quantile(ends[0]/100)), roundForSummary(v.Quantile(ends[1]/100))
 	inner := interval(st.interval, suffixed(lo), suffixed(hi), st)
 	if st.interval >= tailInterval {
 		return inner
@@ -158,7 +158,7 @@ func interval(width float64, lo, hi string, st style) string {
 // interval always contains the true tails and the inner interval (ADR 0051).
 func tailEnds(p1, p99, innerLo, innerHi float64) (float64, float64) {
 	if p1 == p99 {
-		return roundSignificant(p1, 3), roundSignificant(p99, 3)
+		return roundForSummary(p1), roundForSummary(p99)
 	}
 	spread := magnitude(p99-p1) - 1
 	lo := roundOutwards(p1, min(spread, magnitude(p1)-1), -1)
@@ -203,7 +203,16 @@ var suffixes = []struct {
 // significant keeps three significant figures, because Monte Carlo noise makes
 // further digits meaningless (ADR 0006), and uses suffixes from 10k up (SPEC §6).
 func significant(x float64) string {
-	return suffixed(roundSignificant(x, 3))
+	return suffixed(roundForSummary(x))
+}
+
+// summaryFigures is the precision of every summary number but the 98% ends;
+// the 98% clamp relies on rounding the inner ends exactly as they are printed
+// (ADR 0006, ADR 0051).
+const summaryFigures = 3
+
+func roundForSummary(x float64) float64 {
+	return roundSignificant(x, summaryFigures)
 }
 
 func suffixed(rounded float64) string {
