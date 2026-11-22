@@ -14,6 +14,7 @@ ubc --set NAME=EXPR FILE    # run a model with NAME overridden (scenarios)
 ubc --data NAME=PATH FILE   # run a model with NAME bound to observed data
 ubc --assert EXPR FILE      # run a model and fail with exit 4 unless EXPR holds (CI checks)
 ubc --samples-out F.csv FILE # run a model and write every variable's samples to a file
+ubc --sens EXPR FILE        # run a model and rank the variables that drive EXPR's uncertainty
 cmd | ubc                   # read program from stdin (non-TTY), print results
 ```
 
@@ -24,6 +25,7 @@ cmd | ubc                   # read program from stdin (non-TTY), print results
 | `--data NAME=PATH` | Set a variable to the numbers in a file, one per line, resampled like `[...]`; overrides like `--set` (repeatable, ADR 0031) | |
 | `--assert EXPR` | After the program, exit 4 unless EXPR certainly holds (repeatable, ADR 0029) | |
 | `--samples-out FILE` | After the program, write the samples of every variable and `last` to FILE, `.csv` or `.json` (ADR 0032) | |
+| `--sens EXPR` | After the program, list the variables that drive EXPR's uncertainty, strongest first (ADR 0033) | |
 | `-n, --samples N` | Monte Carlo sample count | `5000` |
 | `-s, --seed N` | RNG seed | `1` |
 | `--random` | Use a time-based seed | off |
@@ -47,6 +49,18 @@ Flags go before files (`ubc -e 'x = 2' model.ubc`); anything after the first fil
 `--assert` expressions are evaluated after the whole program (`--set`, `-e`, files or stdin), in order, in the same session; they print nothing and change no variable, not even `last`. Each must be one expression whose value is a condition: a comparison, a probability (`P(...)`) or a plain `0`/`1`. It holds only when that value is exactly 1, so a comparison of uncertain values must hold in every sample (`P(x > 0) > 0.95` states a looser check). Every assertion that does not hold prints `ubc: --assert EXPR failed: ACTUAL` to stderr, where `ACTUAL` is, for a comparison, both sides and the operator (`ubc: --assert fixed > 200 failed: 150 > 200`), uncertain sides as their one-line summary without sparkline and followed by the probability that the comparison held (`≈ 142   90% [100 … 198] < 150 (P = 0.61)`), and for anything else its value (`0.25`). The run goes on to the next assertion and exits with `4` if any failed. An assertion that is not a condition (`ubc: --assert cost: line 1, col 1: an assertion must be a condition or a probability`), or that fails to parse or evaluate, stops the run with exit 1 or 3. If the program itself fails, the assertions are not evaluated. `--assert` without a program (the REPL) is a usage error; with `--watch`, failures are reported after every run.
 
 `--samples-out FILE` writes, after the whole program has run without error and before the assertions are checked, the raw samples of every variable in the order they were first assigned (`--data` and `--set` overrides included), followed by `last` when the program printed an expression and did not assign `last` itself. Row *i* holds sample *i* of every variable, so correlations survive (`x` and `2 * x` stay paired); plain numbers and probabilities repeat their value on every row, so every column has `--samples` rows. The format comes from the extension, which is case-sensitive: `.csv` writes a header row with the names and one row per sample; `.json` writes one object whose keys are the names, in the same order, and whose values are arrays of samples. Numbers are written in their shortest exact form (`2.5`, `1e+21`); non-finite samples are an empty cell in CSV and `null` in JSON. Nothing goes to stdout. Any other extension is a usage error (exit 2: `ubc: --samples-out writes .csv or .json files, got 'out.txt'`), and so is `--samples-out` without a program (the REPL). A program that fails writes no file. A program that leaves no variable and no `last` (`ubc: --samples-out out.csv: nothing to export`) or a file that cannot be written (`ubc: --samples-out out.csv: open out.csv: permission denied`) is an evaluation error (exit 1); when it happens the assertions are not checked. With `--watch` the file is written again after every run that succeeds.
+
+`--sens EXPR` prints, after the whole program has run without error, after `--samples-out` and before the assertions are checked, which variables drive the uncertainty of EXPR (ADR 0033). EXPR is one expression, evaluated like an assertion: it sees the session and binds nothing, not even `last`. Each variable whose value is uncertain is compared with EXPR by Spearman's rank correlation of their samples, pairing sample *i* with sample *i* and skipping pairs where either is not finite; plain numbers, probabilities, variables whose samples do not vary and the variable named exactly EXPR are left out. Variables are listed by the absolute value of the coefficient, strongest first, ties in assignment order, one per line under a header, the names padded to the same width, the coefficient with its sign and two decimals and a bar of `█` (`#` with `--ascii`) whose length is the coefficient's absolute value times 20, rounded:
+
+```
+$ ubc --sens profit model.ubc
+sensitivity of profit (rank correlation):
+  units  +0.98  ████████████████████
+  price  +0.16  ███
+  cost   -0.01
+```
+
+A positive coefficient means EXPR tends to grow with the variable, a negative one that it shrinks. The coefficient measures how strongly they move together, any monotonic relation counting, not how much variance each one explains, and intermediate variables built from EXPR's inputs appear too. EXPR whose value is a plain number (`ubc: --sens 2: needs an uncertain value, got a plain number`) or no other uncertain variable to compare with (`ubc: --sens x: needs other uncertain variables to compare with`) is an evaluation error (exit 1); a broken EXPR is a parse (3) or evaluation (1) error reported as `ubc: --sens EXPR: line 1, col C: message`; then the assertions are not checked. A program that fails prints no ranking. `--sens` with `--json` or `--plain`, or without a program (the REPL, which has `:sens`), is a usage error. With `--watch` the ranking is printed after every run that succeeds.
 
 Exit codes: `0` success, `1` evaluation error, `2` usage error (bad flags), `3` parse error, `4` assertion failed (ADR 0029).
 
@@ -164,6 +178,7 @@ One line per top-level expression. In the REPL, assignments print too, as `name 
 | `:help` | List commands and functions |
 | `:vars` | Show variables with their one-line summary |
 | `:hist EXPR` | Full terminal histogram (≈20 rows, P1–P99, axis labels) |
+| `:sens EXPR` | Rank the variables that drive the uncertainty of EXPR, as `--sens` does (§1); it changes nothing, not even `last` |
 | `:plot EXPR FILE` | Export a 40-bin histogram over P1–P99 as SVG (`.svg`) or PNG (`.png`, ASCII text, ADR 0024), titled with EXPR and its summary |
 | `:samples N` | Change sample count (clears variables, with a warning) |
 | `:seed N` | Reseed the RNG |

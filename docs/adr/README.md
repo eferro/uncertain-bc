@@ -40,3 +40,4 @@ Template: Status, Effective date, Deciders, then Context, Decision, Consequences
 | [0030](0030-tutorial-checked-by-the-test-suite.md) | A tutorial whose examples are checked by the test suite | Accepted | 2026-11-21 |
 | [0031](0031-load-observed-data-with-data.md) | Load observed data from a file with `--data` | Accepted | 2026-11-21 |
 | [0032](0032-export-samples-with-samples-out.md) | Export raw samples with `--samples-out` | Accepted | 2026-11-22 |
+| [0033](0033-sensitivity-by-rank-correlation.md) | Sensitivity analysis by rank correlation, with `:sens` and `--sens` | Accepted | 2026-11-22 |

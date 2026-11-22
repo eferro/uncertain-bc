@@ -23,6 +23,7 @@ var commands = map[string]command{
 	"save":    save,
 	"load":    load,
 	"plot":    plot,
+	"sens":    showSensitivity,
 	"quit":    func(replSession, string) (bool, error) { return true, nil },
 }
 
@@ -31,6 +32,7 @@ const replHelp = `Commands:
   :vars          list variables with their summaries
   :hist EXPR     draw the distribution of EXPR
   :plot EXPR F   write the distribution of EXPR to F (.svg or .png)
+  :sens EXPR     rank the variables that drive the uncertainty of EXPR
   :seed N        restart the random stream with seed N
   :samples N     change the sample count (clears variables)
   :save FILE     write the statements that worked to FILE

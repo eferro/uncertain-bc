@@ -56,6 +56,7 @@ type options struct {
 	completion  string
 	samplesPath string
 	samplesOut  *samplesOut
+	sens        string
 }
 
 type multiString []string
@@ -81,6 +82,7 @@ Flags:
       --assert EXPR   after the program, exit 4 unless EXPR certainly holds (repeatable)
       --samples-out FILE
                       after the program, write every variable's samples to FILE (.csv or .json)
+      --sens EXPR     after the program, rank the variables that drive EXPR's uncertainty
   -n, --samples N     Monte Carlo sample count (default 5000)
   -s, --seed N        random seed (default 1)
       --random        seed from the clock
@@ -150,6 +152,9 @@ func evaluateSources(opts options, settings application.Settings, st style, stdi
 	if code := exportSamples(session, opts.samplesOut, opts.samples, stderr); code != exitOK {
 		return code
 	}
+	if code := printSensitivity(session, opts.sens, st, stdout, stderr); code != exitOK {
+		return code
+	}
 	return checkAssertions(session, opts.asserts, st, stderr)
 }
 
@@ -159,6 +164,7 @@ var flagRules = []struct {
 }{
 	{func(o options) bool { return o.json && o.plain }, "--json and --plain cannot be combined"},
 	{func(o options) bool { return o.hist && (o.json || o.plain) }, "--hist cannot be combined with --json or --plain"},
+	{func(o options) bool { return o.sens != "" && (o.json || o.plain) }, "--sens cannot be combined with --json or --plain"},
 	{func(o options) bool { return o.random && o.seedGiven }, "--seed and --random cannot be combined"},
 	{func(o options) bool { return o.watch && len(o.files) == 0 }, "--watch needs at least one file"},
 }
@@ -205,6 +211,8 @@ func programOnlyFlag(opts options) string {
 		return "--assert"
 	case opts.samplesOut != nil:
 		return "--samples-out"
+	case opts.sens != "":
+		return "--sens"
 	}
 	return ""
 }
@@ -255,6 +263,7 @@ func registerInputFlags(fs *flag.FlagSet, opts *options) {
 	fs.Var(&opts.data, "data", "set NAME to the numbers in FILE, one per line (repeatable)")
 	fs.Var(&opts.asserts, "assert", "exit 4 unless EXPR holds after the program (repeatable)")
 	fs.StringVar(&opts.samplesPath, "samples-out", "", "write every variable's samples to FILE (.csv or .json)")
+	fs.StringVar(&opts.sens, "sens", "", "rank the variables that drive the uncertainty of EXPR")
 	for _, name := range []string{"n", "samples"} {
 		fs.IntVar(&opts.samples, name, opts.samples, "Monte Carlo sample count")
 	}

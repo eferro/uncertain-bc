@@ -1,0 +1,40 @@
+exec ubc --sens profit model.ubc
+cmp stdout want.txt
+! stderr .
+
+exec ubc --ascii --sens 'profit / 2' model.ubc
+stdout '^  profit  \+1\.00  #{20}\n  units   \+0\.98  #{20}\n'
+
+exec ubc --sens 'units' -e 'units = 1 to 10' -e 'double = units * 2' -e 'other = 5 to 6'
+stdout '^  double  \+1\.00  ████████████████████\n'
+
+! exec ubc --sens 2 model.ubc
+! stdout .
+stderr '^ubc: --sens 2: needs an uncertain value, got a plain number\n$'
+
+! exec ubc --sens x -e 'x = 1 to 2' -e 'y = 3'
+stderr '^ubc: --sens x: needs other uncertain variables to compare with\n$'
+
+! exec ubc --sens 'profit +' model.ubc
+stderr '^ubc: --sens profit \+: line 1, col 9: '
+
+! exec ubc --sens nobody model.ubc
+stderr '^ubc: --sens nobody: line 1, col 1: unknown variable ''nobody''\n$'
+
+! exec ubc --sens profit --json model.ubc
+stderr '^ubc: --sens cannot be combined with --json or --plain\n$'
+
+! exec ubc --sens profit -e '10 to 5'
+! stdout .
+stderr '^ubc: line 1, col 4: range start 10 must be below its end 5\n$'
+
+-- model.ubc --
+price = 8 to 12
+units = 100 to 1000
+cost = 500 to 600
+profit = price * units - cost
+-- want.txt --
+sensitivity of profit (rank correlation):
+  units  +0.98  ████████████████████
+  price  +0.16  ███
+  cost   -0.01
