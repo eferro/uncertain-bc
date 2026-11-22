@@ -11,6 +11,7 @@ Issue #19: the Windows CI job ran only the REPL, history, line editor and consol
 
 - Tests for `--data`, `--samples-out`, `:save`, `:load` and `:plot` compared the whole error message, including the operating system's reason (`no such file or directory`). Windows words it differently (`The system cannot find the file specified.`); `ubc` passes the reason through unchanged on every system.
 - The bash completion tests gave bash absolute temporary paths. On Windows these are `C:\…` paths, which the bash shipped with Git for Windows reads as escapes.
+- The tests of `install.sh` ran it under Git for Windows' `sh`, where it correctly refuses to run and points to `install.ps1` (ADR 0026).
 - Git for Windows checks text files out with CRLF line ends by default. The testscript archives, the golden outputs and the tutorial are compared byte for byte with what `ubc` prints, and `ubc` prints LF on every system.
 
 ## Decision
@@ -18,12 +19,13 @@ Issue #19: the Windows CI job ran only the REPL, history, line editor and consol
 - Unit tests build the expected file error from the operating system itself: a helper opens the same missing path, checks that the error is `fs.ErrNotExist` and returns its text. The tests still check every byte `ubc` adds around it, and they check the kind of error instead of its wording.
 - Testscript scenarios check the part of a file error that `ubc` writes and accept any reason after it (`open missing.txt: .+`).
 - The bash completion tests run bash in the temporary directory with relative file names; they still skip when bash is missing.
+- The `install.sh` tests skip on Windows, as they already do when `sh`, `curl` or `tar` is missing.
 - A `.gitattributes` file checks out every text file with LF line ends on every system. It changes nothing on Linux or macOS.
 - The Windows CI job runs `make test`, the whole module, through the Makefile (ADR 0011). Scenarios that need a pseudo-terminal keep skipping there (ADR 0036).
 
 ## Consequences
 
-- Every test except the pseudo-terminal scenario runs on Windows on every push, so a change that breaks `ubc` on Windows shows up in CI.
+- Every test except the pseudo-terminal scenario and the `install.sh` tests runs on Windows on every push, so a change that breaks `ubc` on Windows shows up in CI.
 - SPEC §5 states that a file error ends with the operating system's reason, which differs between systems.
 - Contributors on Windows get LF files whatever their Git settings; editors there handle LF.
 - The coverage, lint and mutation gates still run on Linux only.

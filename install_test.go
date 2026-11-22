@@ -68,6 +68,9 @@ func newFakeGitHub(t *testing.T, version string, corrupt bool) *httptest.Server 
 
 func runInstaller(t *testing.T, server *httptest.Server, env ...string) (string, string, error) {
 	t.Helper()
+	if runtime.GOOS == "windows" {
+		t.Skip("install.sh is for Linux and macOS; Windows uses install.ps1")
+	}
 	for _, tool := range []string{"sh", "curl", "tar"} {
 		if _, err := exec.LookPath(tool); err != nil {
 			t.Skip(tool + " is not installed")
