@@ -42,6 +42,6 @@ jobs:
       - uses: actions/setup-go@d8cbb8045d7f43706b9177cceb36c1f91a6644d5 # v7.1.0
         with:
           go-version-file: go.mod
-      - name: Test the CLI adapter, REPL console included (ADR 0037)
+      - name: Test the REPL and its Windows console (ADR 0037)
         shell: bash
-        run: make test-pkg PKG=./internal/adapters/cli/...
+        run: make test-pkg PKG="-v -run '^Test(Repl|History|LineEditor|EnableVirtualTerminal)_' ./internal/adapters/cli/..."

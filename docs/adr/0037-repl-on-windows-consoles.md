@@ -18,14 +18,14 @@ Issue #12: the raw-mode REPL (line editing and history with `golang.org/x/term`,
 
 - While the raw-mode REPL runs, `ubc` turns on `ENABLE_VIRTUAL_TERMINAL_PROCESSING` for stdout when it is a Windows console, and restores the previous mode on exit (`internal/adapters/cli/console_windows.go`). If stdout is not a console (redirected) or the mode cannot be set, nothing changes. On other systems the function does nothing (`console_other.go`): terminals there always interpret escape sequences.
 - It uses `golang.org/x/sys/windows`, already in the module through `x/term`; it is now a direct dependency. No cgo (ADR 0001).
-- A new CI job on `windows-latest` runs the tests of `internal/adapters/cli` through the Makefile. The Windows-only unit tests open the real console (`CONOUT$`, allocating one if the test process has none) and check that the mode gains exactly the escape-processing flag and gets its old value back on restore, and that a file that is not a console is left alone.
+- A new CI job on `windows-latest` runs the REPL tests of `internal/adapters/cli` (`TestRepl_*`, `TestHistory_*`, `TestLineEditor_*` and the console tests) through the Makefile. The rest of the package is not run there yet: some of its tests compare Unix error texts (`no such file or directory`) or run bash, and fail on Windows for reasons unrelated to the REPL. The Windows-only unit tests open the real console (`CONOUT$`, allocating one if the test process has none) and check that the mode gains exactly the escape-processing flag and gets its old value back on restore, and that a file that is not a console is left alone.
 - The rest of the REPL on Windows (keys, Ctrl-Z, history) is accepted from the reading above and is not run on a real console: no CI runner offers an interactive console that a test could type into, and testscript's `ttyin` is Linux and macOS only (ADR 0036).
 
 ## Consequences
 
 - Line editing on Windows PowerShell 5.1 and `cmd.exe` should no longer print raw escape codes.
 - The REPL on Windows is still not exercised end to end: whether `terminalRepl` calls `enableVirtualTerminal` at all is only visible on a real Windows console, so that surviving mutant is listed in `docs/mutation-testing.md`. A report from a Windows user may still find problems this reading missed.
-- Only the CLI adapter's tests run on Windows; widening the job to the whole module is left for when it is needed.
+- Only the REPL tests run on Windows; making the other tests portable and widening the job to the whole module is separate work.
 
 ## Alternatives considered
 
