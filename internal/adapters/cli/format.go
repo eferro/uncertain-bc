@@ -25,9 +25,13 @@ type style struct {
 	jsonQuantiles []float64
 }
 
+// defaultInterval is the width of the summary interval unless --interval says
+// otherwise: the 90 % that `a to b` also means (ADR 0004, ADR 0006).
+const defaultInterval = 90
+
 var (
-	unicodeStyle = style{approx: "≈", ellipsis: "…", blocks: unicodeBlocks, axis: "┤", bar: "█", interval: 90}
-	asciiStyle   = style{approx: "~", ellipsis: "...", blocks: asciiBlocks, axis: "|", bar: "#", interval: 90}
+	unicodeStyle = style{approx: "≈", ellipsis: "…", blocks: unicodeBlocks, axis: "┤", bar: "█", interval: defaultInterval}
+	asciiStyle   = style{approx: "~", ellipsis: "...", blocks: asciiBlocks, axis: "|", bar: "#", interval: defaultInterval}
 )
 
 func styleFor(opts options) style {
@@ -212,10 +216,10 @@ func parseQuantiles(list string) ([]float64, error) {
 	return quantiles, nil
 }
 
-// parseInterval reads the width of the printed interval, 90 when not given.
+// parseInterval reads the width of the printed interval, the default when not given.
 func parseInterval(width string) (float64, error) {
 	if width == "" {
-		return 90, nil
+		return defaultInterval, nil
 	}
 	w, err := strconv.ParseFloat(width, 64)
 	if err != nil || !(w > 0 && w < 100) {
