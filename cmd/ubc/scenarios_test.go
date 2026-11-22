@@ -87,11 +87,10 @@ func TestMissingFromIndex_ListsFilesWithoutALink(t *testing.T) {
 
 func scenarioArgs(root, file string) []string {
 	formulas := filepath.Join(root, formulasFile)
-	path := filepath.Join(root, file)
-	if path == formulas {
+	if file == formulasFile {
 		return []string{formulas}
 	}
-	return []string{formulas, path}
+	return []string{formulas, filepath.Join(root, file)}
 }
 
 func missingFromIndex(index string, files []string) []string {
