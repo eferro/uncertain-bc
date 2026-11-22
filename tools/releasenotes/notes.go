@@ -21,22 +21,15 @@ type section struct {
 
 func sections(changelog string) []section {
 	var all []section
-	var body []string
 	for _, line := range strings.Split(changelog, "\n") {
 		if match := headingPattern.FindStringSubmatch(line); match != nil {
-			all = closeLast(all, body)
 			all = append(all, section{version: match[1], date: match[2]})
-			body = nil
-		} else if !linkDefinitionPattern.MatchString(line) {
-			body = append(body, line)
+		} else if len(all) > 0 && !linkDefinitionPattern.MatchString(line) {
+			all[len(all)-1].body += line + "\n"
 		}
 	}
-	return closeLast(all, body)
-}
-
-func closeLast(all []section, body []string) []section {
-	if len(all) > 0 {
-		all[len(all)-1].body = strings.TrimSpace(strings.Join(body, "\n"))
+	for i := range all {
+		all[i].body = strings.TrimSpace(all[i].body)
 	}
 	return all
 }
