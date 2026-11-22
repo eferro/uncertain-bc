@@ -1,0 +1,10 @@
+exec ubc scenarios/formulas.ubc scenarios/engineering/migration.ubc
+stdout '^L31: ≈ 57\.2 '
+stdout '^L32: ≈ 144k '
+stdout '^L33: 0\.46\n\z'
+! stderr .
+exec ubc --set 'services = 10 to 15' scenarios/formulas.ubc scenarios/engineering/migration.ubc
+stdout '^L33: 0\.14\n\z'
+exec ubc --sens cost scenarios/formulas.ubc scenarios/engineering/migration.ubc
+stdout '^sensitivity of cost \(rank correlation\):\n'
+stdout '^  weeks_per_service +\+0\.\d\d '

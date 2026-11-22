@@ -39,6 +39,11 @@ Every scenario is checked by the test suite: it must evaluate without errors and
 | product | [price-change](product/price-change.ubc) | If we raise the price, does the extra revenue from the customers who stay make up for the ones we lose, and how likely is revenue to grow? |
 | product | [ab-experiment](product/ab-experiment.ubc) | Is an A/B experiment with a likely 1–3% uplift worth running, knowing most variants do not win, and how likely is it to pay back its cost? |
 | product | [buy-vs-build](product/buy-vs-build.ubc) | Over three years, is a SaaS licence or building and maintaining our own tool cheaper, and how likely is building to be the cheaper option? |
+| engineering | [debt-cost](engineering/debt-cost.ubc) | What does living with a piece of technical debt cost a year (hours lost a week × people × cost per hour) compared with fixing it, and how likely is the fix to pay for itself within a year? |
+| engineering | [automation](engineering/automation.ubc) | Is it worth automating a routine task (the xkcd "Is It Worth the Time?" table, with ranges and maintenance), and how likely is it to save more time than it takes? |
+| engineering | [slow-ci](engineering/slow-ci.ubc) | What does a slow CI pipeline cost a year (minutes waiting × builds a day × people × cost per hour), and how likely is it to cost more than 100k euros? |
+| engineering | [flaky-tests](engineering/flaky-tests.ubc) | How much time do flaky tests waste a year (failed runs × retries × pipeline duration, plus checking each failure), and how likely is it to be more than 300 hours? |
+| engineering | [migration](engineering/migration.ubc) | What will a migration to a new framework, language or cloud cost, forgotten work and running both systems included, and how likely is it to exceed the budget? |
 | all | [formulas](formulas.ubc) | Reusable formulas shared by every scenario: loaded cost, real capacity, Little's law, cost of delay and CD3, LTV and CAC payback, annual loss expectancy, availability in series and in parallel, compound growth, present value and NPV. |
 
 ## Reusable formulas

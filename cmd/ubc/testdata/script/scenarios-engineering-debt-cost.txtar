@@ -1,0 +1,10 @@
+exec ubc scenarios/formulas.ubc scenarios/engineering/debt-cost.ubc
+stdout '^L33: ≈ 38\.1k '
+stdout '^L34: ≈ 18k '
+stdout '^L35: 0\.75\n\z'
+! stderr .
+exec ubc --set 'fix_weeks = 20 to 40' scenarios/formulas.ubc scenarios/engineering/debt-cost.ubc
+stdout '^L35: 0\.07\n\z'
+exec ubc --sens yearly_cost scenarios/formulas.ubc scenarios/engineering/debt-cost.ubc
+stdout '^sensitivity of yearly_cost \(rank correlation\):\n'
+stdout '^  hours_lost +\+0\.\d\d '

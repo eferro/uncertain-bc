@@ -1,0 +1,10 @@
+exec ubc scenarios/engineering/flaky-tests.ubc
+stdout '^L29: ≈ 585 '
+stdout '^L30: ≈ 327 '
+stdout '^L31: 0\.56\n\z'
+! stderr .
+exec ubc --set 'flaky_rate = 0.5% to 2%' scenarios/engineering/flaky-tests.ubc
+stdout '^L31: <0\.01\n\z'
+exec ubc --sens hours_lost scenarios/engineering/flaky-tests.ubc
+stdout '^sensitivity of hours_lost \(rank correlation\):\n'
+stdout '^  flaky_rate +\+0\.\d\d '

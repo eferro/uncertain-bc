@@ -1,0 +1,32 @@
+# Question: is it worth automating a routine task (the "Is It Worth the
+# Time?" table from xkcd 1205, with ranges), and how likely is the time it
+# saves to exceed the time spent building and maintaining it?
+#
+# Run it:
+#   ubc scenarios/engineering/automation.ubc
+# Change an assumption, for example a task done only once or twice a week:
+#   ubc --set 'runs_per_week = 1 to 2' scenarios/engineering/automation.ubc
+# See which assumption matters most:
+#   ubc --sens net_hours scenarios/engineering/automation.ubc
+#
+# Every "a to b" is a 90% confidence interval. Everything is in hours of the
+# same people, so the cost of an hour cancels out. Like the xkcd table, it
+# looks five years ahead; unlike it, it counts keeping the automation working.
+
+# Assumptions
+minutes_saved = 2 to 10           # minutes the task takes by hand each time
+runs_per_week = 2 to 8            # times a week someone does it
+weeks_per_year = 44               # working weeks, minus holidays
+years = 5                         # horizon, as in the xkcd table
+build_hours = 16 to 60            # hours to write and test the automation
+maintenance_hours = 4 to 16       # hours a year keeping it working as things around it change
+
+# Calculation
+hours_saved = minutes_saved * runs_per_week * weeks_per_year * years / 60   # time no longer spent by hand
+hours_spent = build_hours + maintenance_hours * years                       # time spent on the automation
+net_hours = hours_saved - hours_spent                                       # positive means it was worth it
+
+# Result
+hours_saved
+hours_spent
+P(net_hours > 0)                  # how likely is automating it to save more time than it takes?

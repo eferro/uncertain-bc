@@ -1,0 +1,33 @@
+# Question: what will a migration (to a new framework, language or cloud)
+# cost, and how likely is it to exceed the approved budget?
+#
+# Run it (it uses the shared formulas):
+#   ubc scenarios/formulas.ubc scenarios/engineering/migration.ubc
+# Change an assumption, for example migrating only the core services:
+#   ubc --set 'services = 10 to 15' scenarios/formulas.ubc scenarios/engineering/migration.ubc
+# See which assumption matters most:
+#   ubc --sens cost scenarios/formulas.ubc scenarios/engineering/migration.ubc
+#
+# Every "a to b" is a 90% confidence interval. Amounts are in euros.
+# Migrations overrun mostly through the work nobody listed, so it gets its
+# own assumption, as in the tutorial's project estimate.
+
+# Assumptions
+services = 15 to 30               # services or components to migrate; count them
+weeks_per_service = 1 to 4        # engineer-weeks each; the first few take longer than the rest
+forgotten = 20% to 60%            # unlisted work on top: integrations, data, tooling, docs
+weekly_salary = 1k to 1.8k        # gross salary of an engineer-week
+overhead = 1.25 to 1.4            # taxes, benefits and equipment on top of the salary
+parallel_months = 2 to 6          # months running the old and the new side by side
+parallel_cost = 5k to 20k         # extra infrastructure and licences a month while both run
+budget = 150k                     # what was approved
+
+# Calculation
+engineer_weeks = services * weeks_per_service * (1 + forgotten)          # the work, forgotten part included
+people_cost = engineer_weeks * loaded_cost(weekly_salary, overhead)      # what that work costs the company
+cost = people_cost + parallel_months * parallel_cost                     # plus running both systems for a while
+
+# Result
+engineer_weeks
+cost
+P(cost > budget)                  # how likely is the migration to exceed the budget?

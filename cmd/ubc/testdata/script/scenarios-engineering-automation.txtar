@@ -1,0 +1,10 @@
+exec ubc scenarios/engineering/automation.ubc
+stdout '^L30: ≈ 65\.3 '
+stdout '^L31: ≈ 73\.8 '
+stdout '^L32: 0\.43\n\z'
+! stderr .
+exec ubc --set 'runs_per_week = 1 to 2' scenarios/engineering/automation.ubc
+stdout '^L32: 0\.03\n\z'
+exec ubc --sens net_hours scenarios/engineering/automation.ubc
+stdout '^sensitivity of net_hours \(rank correlation\):\n'
+stdout '^  minutes_saved +\+0\.\d\d '
