@@ -56,35 +56,31 @@ func TestScenarios_TheBinaryEmbedsEveryFile(t *testing.T) {
 func TestScenarios_TheIndexListsEveryFile(t *testing.T) {
 	files, err := modelFiles(scenariosDir)
 	require.NoError(t, err)
-	index, err := os.ReadFile(filepath.Join(scenariosDir, "README.md"))
-	require.NoError(t, err)
+	index := catalogueIndex(t)
 
-	assert.Empty(t, missingFromIndex(string(index), files))
+	assert.Empty(t, missingFromIndex(index, files))
 }
 
 func TestScenarios_EveryIndexLinkPointsToAFile(t *testing.T) {
-	index, err := os.ReadFile(filepath.Join(scenariosDir, "README.md"))
-	require.NoError(t, err)
+	index := catalogueIndex(t)
 
-	assert.Empty(t, brokenLinks(string(index), scenariosDir))
+	assert.Empty(t, brokenLinks(index, scenariosDir))
 }
 
 func TestScenarios_TheIndexStartsWithFiveFeaturedScenarios(t *testing.T) {
-	index, err := os.ReadFile(filepath.Join(scenariosDir, "README.md"))
-	require.NoError(t, err)
+	index := catalogueIndex(t)
 
-	assert.Len(t, indexLinks(section(string(index), "### Start here")), 5)
+	assert.Len(t, indexLinks(section(index, "### Start here")), 5)
 }
 
 func TestScenarios_EveryAreaHasItsOwnSection(t *testing.T) {
 	files, err := modelFiles(scenariosDir)
 	require.NoError(t, err)
-	index, err := os.ReadFile(filepath.Join(scenariosDir, "README.md"))
-	require.NoError(t, err)
+	index := catalogueIndex(t)
 
 	for area, inArea := range filesByArea(files) {
 		t.Run(area, func(t *testing.T) {
-			assert.Empty(t, missingFromIndex(section(string(index), areaHeading(area)), inArea))
+			assert.Empty(t, missingFromIndex(section(index, areaHeading(area)), inArea))
 		})
 	}
 }
@@ -218,6 +214,13 @@ func brokenLinks(index, root string) []string {
 		}
 	}
 	return broken
+}
+
+func catalogueIndex(t *testing.T) string {
+	t.Helper()
+	index, err := os.ReadFile(filepath.Join(scenariosDir, "README.md"))
+	require.NoError(t, err)
+	return string(index)
 }
 
 func scenarioContents(t *testing.T) map[string]string {
