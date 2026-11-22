@@ -1,7 +1,6 @@
 package domain
 
 import (
-	"fmt"
 	"math"
 	"math/rand/v2"
 )
@@ -91,7 +90,7 @@ func pert(lo, mode, hi float64) sampler {
 
 type distribution struct {
 	arity int
-	check func(p []float64) string
+	check paramCheck
 	build func(p []float64) sampler
 }
 
@@ -117,42 +116,4 @@ func (d distribution) call(c call, env Env, args []Value) (Value, error) {
 		return nil, evalErrorAt(c.at, "%s: %s", c.name, problem)
 	}
 	return env.draw(d.build(params)), nil
-}
-
-func positive(i int, name string) func(p []float64) string {
-	return func(p []float64) string {
-		if p[i] <= 0 {
-			return fmt.Sprintf("%s must be positive, got %g", name, p[i])
-		}
-		return ""
-	}
-}
-
-func all(checks ...func(p []float64) string) func(p []float64) string {
-	return func(p []float64) string {
-		for _, check := range checks {
-			if problem := check(p); problem != "" {
-				return problem
-			}
-		}
-		return ""
-	}
-}
-
-func ordered(lo, hi int) func(p []float64) string {
-	return func(p []float64) string {
-		if p[lo] >= p[hi] {
-			return fmt.Sprintf("lo must be below hi, got %g and %g", p[lo], p[hi])
-		}
-		return ""
-	}
-}
-
-var triangle = all(ordered(0, 2), modeInside)
-
-func modeInside(p []float64) string {
-	if p[1] < p[0] || p[1] > p[2] {
-		return fmt.Sprintf("mode must be between lo and hi, got %g, %g and %g", p[0], p[1], p[2])
-	}
-	return ""
 }

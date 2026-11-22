@@ -1,7 +1,6 @@
 package domain
 
 import (
-	"fmt"
 	"math"
 	"math/rand/v2"
 )
@@ -74,31 +73,4 @@ func bernoulliTrials(r *rand.Rand, n, p float64) float64 {
 		}
 	}
 	return successes
-}
-
-func finite(i int, name string) func(p []float64) string {
-	return func(p []float64) string {
-		if math.IsInf(p[i], 0) || math.IsNaN(p[i]) {
-			return fmt.Sprintf("%s must be finite, got %g", name, p[i])
-		}
-		return ""
-	}
-}
-
-func positiveWhole(i int, name string) func(p []float64) string {
-	return func(p []float64) string {
-		if p[i] < 1 || p[i] != math.Trunc(p[i]) || math.IsInf(p[i], 0) {
-			return fmt.Sprintf("%s must be a positive whole number, got %g", name, p[i])
-		}
-		return ""
-	}
-}
-
-func probability(i int, name string) func(p []float64) string {
-	return func(p []float64) string {
-		if !(p[i] >= 0 && p[i] <= 1) {
-			return fmt.Sprintf("%s must be between 0 and 1, got %g", name, p[i])
-		}
-		return ""
-	}
 }
