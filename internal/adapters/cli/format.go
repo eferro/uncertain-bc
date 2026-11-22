@@ -118,22 +118,31 @@ func summarise(v domain.SampleSet, st style) string {
 }
 
 func summaryNumbers(v domain.SampleSet, st style) string {
+	median := st.approx + " " + significant(v.Quantile(0.5))
 	if len(st.quantiles) > 0 {
-		var line strings.Builder
-		fmt.Fprintf(&line, "%s %s", st.approx, significant(v.Quantile(0.5)))
-		for _, q := range st.quantiles {
-			fmt.Fprintf(&line, "   %s %s", quantileLabel(q), significant(v.Quantile(q/100)))
-		}
-		return line.String()
+		return median + quantileList(v, st.quantiles)
 	}
+	return median + "   " + intervals(v, st)
+}
+
+func quantileList(v domain.SampleSet, quantiles []float64) string {
+	var list strings.Builder
+	for _, q := range quantiles {
+		fmt.Fprintf(&list, "   %s %s", quantileLabel(q), significant(v.Quantile(q/100)))
+	}
+	return list.String()
+}
+
+// intervals nests the tail interval around the inner one only while it is
+// the wider of the two (ADR 0040).
+func intervals(v domain.SampleSet, st style) string {
 	ends := intervalEnds(st.interval)
-	line := fmt.Sprintf("%s %s   %s", st.approx, significant(v.Quantile(0.5)),
-		interval(st.interval, significant(v.Quantile(ends[0]/100)), significant(v.Quantile(ends[1]/100)), st))
-	if st.interval < tailInterval {
-		lo, hi := tailEnds(v.Quantile(0.01), v.Quantile(0.99))
-		line += "   " + interval(tailInterval, lo, hi, st)
+	inner := interval(st.interval, significant(v.Quantile(ends[0]/100)), significant(v.Quantile(ends[1]/100)), st)
+	if st.interval >= tailInterval {
+		return inner
 	}
-	return line
+	lo, hi := tailEnds(v.Quantile(0.01), v.Quantile(0.99))
+	return inner + "   " + interval(tailInterval, lo, hi, st)
 }
 
 // tailInterval is the outer interval every summary nests around the inner one,
