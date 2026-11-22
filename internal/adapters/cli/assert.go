@@ -42,5 +42,5 @@ func actual(check domain.Check, st style) string {
 // operand is a value's summary without the sparkline, whatever the output
 // format, because it goes into a one-line message on stderr.
 func operand(value domain.Value, st style) string {
-	return format(value, style{approx: st.approx, ellipsis: st.ellipsis})
+	return format(value, style{approx: st.approx, ellipsis: st.ellipsis, interval: st.interval})
 }

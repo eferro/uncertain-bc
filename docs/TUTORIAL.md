@@ -268,5 +268,5 @@ With the `--set` scenario above, the same assertion fails: the budget is blown 9
 ## Where next
 
 - Run `ubc` with no arguments for an interactive session: assignments print as you type, and `:hist`, `:plot` and `:save` draw histograms, export charts and save the session as a model.
-- `--json` and `--plain` make the results easy to use from scripts; `--hist` draws a histogram under every result; `--quantiles 10,50,90` shows other percentiles.
+- `--json` and `--plain` make the results easy to use from scripts; `--hist` draws a histogram under every result; `--interval 80` prints an 80 % interval instead of the 90 % one; `--quantiles 10,50,90` shows other percentiles.
 - [docs/SPEC.md](SPEC.md) describes the whole language and every flag.

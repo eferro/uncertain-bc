@@ -51,6 +51,8 @@ type options struct {
 	hist        bool
 	quantiles   string
 	percentiles []float64
+	interval    string
+	width       float64
 	presets     []preset
 	watch       bool
 	completion  string
@@ -92,6 +94,7 @@ Flags:
       --echo          also print assignments, with their names
       --hist          draw a histogram under every uncertain result
       --watch         evaluate the files again whenever they change
+      --interval W    print a W% interval instead of the 90% one (default 90)
       --quantiles L   show these percentiles instead of the 90% interval (10,50,90)
   -h, --help          show this help
       --version       print the version
@@ -165,6 +168,7 @@ var flagRules = []struct {
 	{func(o options) bool { return o.json && o.plain }, "--json and --plain cannot be combined"},
 	{func(o options) bool { return o.hist && (o.json || o.plain) }, "--hist cannot be combined with --json or --plain"},
 	{func(o options) bool { return o.sens != "" && (o.json || o.plain) }, "--sens cannot be combined with --json or --plain"},
+	{func(o options) bool { return o.interval != "" && o.quantiles != "" }, "--interval and --quantiles cannot be combined"},
 	{func(o options) bool { return o.random && o.seedGiven }, "--seed and --random cannot be combined"},
 	{func(o options) bool { return o.watch && len(o.files) == 0 }, "--watch needs at least one file"},
 }
@@ -180,6 +184,10 @@ func resolveFlags(opts options) (options, error) {
 			return opts, errors.New(rule.message)
 		}
 	}
+	return parseFlagValues(opts)
+}
+
+func parseFlagValues(opts options) (options, error) {
 	var err error
 	if opts.presets, err = parsePresets(opts); err != nil {
 		return opts, err
@@ -187,7 +195,10 @@ func resolveFlags(opts options) (options, error) {
 	if opts.samplesOut, err = parseSamplesOut(opts.samplesPath); err != nil {
 		return opts, err
 	}
-	opts.percentiles, err = parseQuantiles(opts.quantiles)
+	if opts.percentiles, err = parseQuantiles(opts.quantiles); err != nil {
+		return opts, err
+	}
+	opts.width, err = parseInterval(opts.interval)
 	return opts, err
 }
 
@@ -282,6 +293,7 @@ func registerOutputFlags(fs *flag.FlagSet, opts *options) {
 	fs.BoolVar(&opts.json, "json", false, "print one JSON object per result")
 	fs.BoolVar(&opts.echo, "echo", false, "also print assignments, with their names")
 	fs.BoolVar(&opts.hist, "hist", false, "draw a histogram under every uncertain result")
+	fs.StringVar(&opts.interval, "interval", "", "width of the printed interval, a percentage (default 90)")
 	fs.StringVar(&opts.quantiles, "quantiles", "", "comma-separated percentiles to show instead of the 90% interval")
 }
 

@@ -1,0 +1,26 @@
+exec ubc --interval 80 -e '(8 to 25) * 12'
+stdout '^≈ 170   80% \[109 … 262\]   '
+! stderr .
+
+exec ubc --interval 99.5 -e '10 to 20'
+stdout '^≈ 14\.2   99\.5% \[8\.03 … 26\.1\]   '
+
+exec ubc --interval 90 -e '10 to 20'
+cmp stdout default.txt
+
+exec ubc -e '10 to 20'
+cmp stdout default.txt
+
+exec ubc --json --interval 80 -e '10 to 20'
+stdout '"p5":'
+stdout '"quantiles":\{"p10":[0-9.]+,"p90":[0-9.]+\}'
+
+! exec ubc --interval 80 --quantiles 10,90 -e '10 to 20'
+! stdout .
+stderr '^ubc: --interval and --quantiles cannot be combined\n$'
+
+! exec ubc --interval 100 -e '1'
+stderr '^ubc: --interval expects a percentage between 0 and 100, got ''100''\n$'
+
+-- default.txt --
+≈ 14.2   90% [10 … 19.8]   ▂▄▅▆▇██▇▅▅▃▃▂▂▁▁

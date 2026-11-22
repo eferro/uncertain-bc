@@ -32,6 +32,7 @@ cmd | ubc                   # read program from stdin (non-TTY), print results
 | `--json` | One JSON object per printed result | off |
 | `--echo` | Also print assignments, as `name = summary` (ADR 0025) | off |
 | `--hist` | Draw the 20-row histogram under every uncertain result (not with `--json`/`--plain`) | off |
+| `--interval W` | Print a W% interval instead of the 90% one, e.g. `80`; adds its ends to JSON `quantiles` (ADR 0034) | `90` |
 | `--quantiles LIST` | Show these percentiles instead of the 90% interval, e.g. `10,50,90`; adds `quantiles` to JSON | |
 | `--watch` | Evaluate the files again whenever they change (polls every 300 ms) | off |
 | `--completion SHELL` | Print a completion script for `bash`, `zsh` or `fish` | |
@@ -61,6 +62,8 @@ sensitivity of profit (rank correlation):
 ```
 
 A positive coefficient means EXPR tends to grow with the variable, a negative one that it shrinks. The coefficient measures how strongly they move together, any monotonic relation counting, not how much variance each one explains, and intermediate variables built from EXPR's inputs appear too. EXPR whose value is a plain number (`ubc: --sens 2: needs an uncertain value, got a plain number`) or no other uncertain variable to compare with (`ubc: --sens x: needs other uncertain variables to compare with`) is an evaluation error (exit 1); a broken EXPR is a parse (3) or evaluation (1) error reported as `ubc: --sens EXPR: line 1, col C: message`; then the assertions are not checked. A program that fails prints no ranking. `--sens` with `--json` or `--plain`, or without a program (the REPL, which has `:sens`), is a usage error. With `--watch` the ranking is printed after every run that succeeds.
+
+`--interval W` sets the width of the interval in every summary: results, assignments in the REPL and with `--echo`, `:vars`, `:plot` titles and failed assertions. W is a percentage strictly between 0 and 100, decimals allowed; the interval is central, leaving (100 − W) / 2 % of the samples out on each side, so `--interval 80` prints `≈ 170   80% [109 … 262]`, the 10th and 90th percentiles. `--interval 90` is the default output. With `--json` the standard fields (`p5`, `p95`) stay and the interval's ends are added to the `quantiles` object (`"quantiles":{"p10":…,"p90":…}`); the text form of `:hist` and the sparkline are unchanged (they always span P1–P99). A value that is not such a percentage (`ubc: --interval expects a percentage between 0 and 100, got '100'`) and `--interval` together with `--quantiles`, which replaces the interval, are usage errors (exit 2).
 
 Exit codes: `0` success, `1` evaluation error, `2` usage error (bad flags), `3` parse error, `4` assertion failed (ADR 0029).
 
@@ -157,7 +160,7 @@ One line per top-level expression. In the REPL, assignments print too, as `name 
 | Value | Default output |
 |---|---|
 | Scalar | Shortest decimal representation, max 10 significant figures: `4`, `0.1`, `3.141592654` |
-| SampleSet | `≈ MEDIAN   90% [P5 … P95]   SPARKLINE` |
+| SampleSet | `≈ MEDIAN   90% [P5 … P95]   SPARKLINE` (the width follows `--interval`, §1) |
 | Probability | `0.16` (two decimals; `<0.01` / `>0.99` at the extremes) |
 
 - A SampleSet whose samples are all equal prints as a scalar: `x = 1 to 5; x - x` prints `0`.

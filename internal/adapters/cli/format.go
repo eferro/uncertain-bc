@@ -20,11 +20,14 @@ type style struct {
 	echo      bool
 	hist      bool
 	quantiles []float64
+	interval  float64
+	// jsonQuantiles are the percentiles --json adds to the standard fields.
+	jsonQuantiles []float64
 }
 
 var (
-	unicodeStyle = style{approx: "≈", ellipsis: "…", blocks: unicodeBlocks, axis: "┤", bar: "█"}
-	asciiStyle   = style{approx: "~", ellipsis: "...", blocks: asciiBlocks, axis: "|", bar: "#"}
+	unicodeStyle = style{approx: "≈", ellipsis: "…", blocks: unicodeBlocks, axis: "┤", bar: "█", interval: 90}
+	asciiStyle   = style{approx: "~", ellipsis: "...", blocks: asciiBlocks, axis: "|", bar: "#", interval: 90}
 )
 
 func styleFor(opts options) style {
@@ -37,6 +40,11 @@ func styleFor(opts options) style {
 	st.echo = opts.echo
 	st.hist = opts.hist
 	st.quantiles = opts.percentiles
+	st.interval = opts.width
+	st.jsonQuantiles = opts.percentiles
+	if opts.interval != "" {
+		st.jsonQuantiles = intervalEnds(opts.width)
+	}
 	return st
 }
 
@@ -56,7 +64,7 @@ func formatResult(result domain.Result, st style) string {
 	case result.Name == "":
 		return format(result.Value, st)
 	case st.json:
-		return jsonLine(result.Value, result.Name, st.quantiles)
+		return jsonLine(result.Value, result.Name, st.jsonQuantiles)
 	}
 	return result.Name + " = " + format(result.Value, st)
 }
@@ -66,7 +74,7 @@ func format(value domain.Value, st style) string {
 		return centralValue(value)
 	}
 	if st.json {
-		return jsonLine(value, "", st.quantiles)
+		return jsonLine(value, "", st.jsonQuantiles)
 	}
 	switch v := value.(type) {
 	case domain.SampleSet:
@@ -114,8 +122,15 @@ func summaryNumbers(v domain.SampleSet, st style) string {
 		}
 		return line.String()
 	}
-	return fmt.Sprintf("%s %s   90%% [%s %s %s]", st.approx,
-		significant(v.Quantile(0.5)), significant(v.Quantile(0.05)), st.ellipsis, significant(v.Quantile(0.95)))
+	ends := intervalEnds(st.interval)
+	return fmt.Sprintf("%s %s   %s%% [%s %s %s]", st.approx, significant(v.Quantile(0.5)), shortest(st.interval),
+		significant(v.Quantile(ends[0]/100)), st.ellipsis, significant(v.Quantile(ends[1]/100)))
+}
+
+// intervalEnds are the percentiles that leave the same share of samples out
+// on each side of a central interval of the given width.
+func intervalEnds(width float64) []float64 {
+	return []float64{50 - width/2, 50 + width/2}
 }
 
 // withDropped says how many non-finite samples the summary ignored (SPEC §4 rule 6).
@@ -195,6 +210,18 @@ func parseQuantiles(list string) ([]float64, error) {
 		quantiles = append(quantiles, q)
 	}
 	return quantiles, nil
+}
+
+// parseInterval reads the width of the printed interval, 90 when not given.
+func parseInterval(width string) (float64, error) {
+	if width == "" {
+		return 90, nil
+	}
+	w, err := strconv.ParseFloat(width, 64)
+	if err != nil || !(w > 0 && w < 100) {
+		return 0, fmt.Errorf("--interval expects a percentage between 0 and 100, got '%s'", width)
+	}
+	return w, nil
 }
 
 func quantileLabel(q float64) string {
