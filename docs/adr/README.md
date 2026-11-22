@@ -66,3 +66,4 @@ Template: Status, Effective date, Deciders, then Context, Decision, Consequences
 | [0056](0056-modelling-guide-checked-like-the-tutorial.md) | A modelling guide checked like the tutorial (amends 0030) | Accepted | 2026-11-22 |
 | [0057](0057-user-reference-checked-by-the-test-suite.md) | A user reference checked by the test suite, with errors shown (amends 0030, 0056) | Accepted | 2026-11-22 |
 | [0058](0058-how-to-guides-checked-by-the-test-suite.md) | How-to guides checked by the test suite, with data files and `cat` (amends 0030, 0057) | Accepted | 2026-11-22 |
+| [0059](0059-readme-as-a-short-entry-point.md) | The README as a short entry point, checked like the guides (amends 0056) | Accepted | 2026-11-22 |

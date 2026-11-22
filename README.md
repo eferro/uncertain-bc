@@ -7,69 +7,26 @@ $ ubc -e '(8 to 25) * 12'
 ≈ 170   90% [96 … 296]   98% [75 … 380]   ▃▅▆██▇▆▅▄▃▂▂▂▁▁▁
 ```
 
-Type ranges instead of exact numbers (`10 to 20` means "90 % sure it is between 10 and 20"). `ubc` runs a Monte Carlo simulation and answers with a central value, two nested intervals (90 % and 98 %) and a small chart, right in the terminal. A single Go binary, inspired by the Unix calculator [`bc`](https://www.gnu.org/software/bc/) (quick calculations in the terminal, from the command line, a pipe or an interactive session) and by [Guesstimate](https://www.getguesstimate.com) and [Squiggle](https://www.squiggle-language.com) (modelling uncertainty with ranges).
+A VPS costs between 8 and 25 a month; what does it cost a year? Type a range instead of a number (`8 to 25` means "90 % sure it is between 8 and 25"), and `ubc` runs a Monte Carlo simulation and answers with a central value, two intervals and a small chart, right in the terminal.
 
-```console
-$ ubc -e '(8 to 25) * 12'
-≈ 170   90% [96 … 296]   98% [75 … 380]   ▃▅▆██▇▆▅▄▃▂▂▂▁▁▁
+## Why
 
-$ ubc -e 'yearly = (12 to 30) / 1000 * 24 * 365 * (0.12 to 0.25)' -e 'yearly' -e 'P(yearly > 50)'
-≈ 28.7   90% [16.1 … 51]   98% [12 … 65]   ▃▅▇▇█▇▆▅▄▃▃▂▂▂▁▁
-0.06
+Most estimates are ranges dressed up as numbers. A spreadsheet multiplies the guesses and hides how unsure they were; `ubc` keeps the uncertainty all the way to the answer, so you can ask how likely the bad case is instead of hoping it will not happen.
 
-$ ubc --plain -e '1k to 5k'
-2240.839064891978
-
-$ ubc examples/homelab.ubc
-homelab = ≈ 66.5   90% [47 … 95.7]   98% [40 … 111]   ▂▃▅▆▇█▇▆▅▄▃▃▂▂▂▁
-vps = ≈ 169   90% [94.7 … 295]   98% [75 … 380]   ▃▅▇▇█▇▆▅▄▃▃▂▂▂▁▁
-saving = ≈ 101   90% [21.5 … 229]   98% [-1.5 … 310]   ▃▅▆▇█▇▇▆▄▃▃▂▂▂▁▁
-```
-
-Run `ubc` with no arguments for an interactive session with line editing and history:
-
-```console
-$ ubc
-ubc> watts = 12 to 30
-watts = ≈ 19   90% [12 … 29.7]   98% [9.8 … 37]   ▂▄▆▇██▇▅▅▄▃▂▂▂▁▁
-ubc> yearly = watts / 1000 * 24 * 365 * 0.2
-yearly = ≈ 33.3   90% [21 … 51.9]   98% [17 … 64]   ▂▄▆▇██▇▅▅▄▃▂▂▂▁▁
-ubc> P(yearly > 40)
-0.25
-ubc> :hist yearly
-ubc> :vars
-ubc> :plot yearly yearly.png
-ubc> :save model.ubc
-```
-
-`:help` lists the commands (`:vars`, `:hist`, `:plot`, `:sens`, `:seed`, `:samples`, `:save`, `:load`, `:quit`) and the language. For scripts, `--json` prints one JSON object per result and `--plain` only the median; `--echo` also prints assignments with their names, so `ubc --echo model.ubc` reads like a report. `ubc --watch model.ubc` evaluates the model again every time you save it. `ubc --set team=5 --set 'rate=0.6 to 0.9' model.ubc` runs a scenario: the given values replace the model's own assignments to those names. `ubc --data lead=lead_times.txt model.ubc` does the same with observed data, one number per line, resampled like `[3, 5, 8, 13]`. `ubc --assert 'P(cost > 100k) < 0.1' model.ubc` turns a model into a check for CI: it exits with code 4 unless every assertion certainly holds. `ubc --samples-out samples.csv model.ubc` writes the raw samples of every variable, one column each (or a JSON object with `.json`), for pandas, R or a spreadsheet. `ubc --sens profit model.ubc` (or `:sens profit` in the REPL) ranks the variables by how strongly they drive `profit`'s uncertainty, as a tornado list.
-
-What the language has today:
-
-- Numbers with suffixes (`1.5e3`, `1k`, `2.5M`, `5%`), `+ - * / ^`, parentheses, comments (`#`).
-- `a to b`: a 90 % interval, lognormal when both ends are positive, normal otherwise.
-- Distributions: `normal`, `lognormal`, `uniform`, `triangular`, `beta`, `pert`, `exponential`, `gamma`, `poisson`, `binomial`, and empirical data `[3, 5, 8, 13]` (resampled).
-- Variables that keep their samples (`x - x` is exactly 0), user functions (`cost(n) = n * (2 to 4)`), `last`, `pi`, `e`.
-- Comparisons and `P(...)`; summaries `mean`, `median`, `stdev`, `min`, `max`, `p(x, q)`; `sqrt`, `exp`, `log`, `log10`, `abs`, `round`, `floor`, `ceil`.
-- Input from `-e` (repeatable), files or stdin; flags `-n/--samples`, `-s/--seed`, `--random`, `--plain`, `--ascii` (see `ubc --help`).
-- A built-in catalogue of scenarios: `ubc --scenarios` lists them, `ubc --scenario team/replace-a-person` runs one, `ubc --scenario-source NAME` prints it to copy and edit.
-
-New to `ubc`? Start with the [tutorial](docs/TUTORIAL.md): from plain arithmetic to project estimates, Fermi problems and cloud costs, with every example in [examples/](examples/). Then read the [modelling guide](docs/MODELLING.md) to estimate well: what a 90 % interval claims, choosing a shape, correlation, typical mistakes and Monte Carlo noise. Have a question rather than time for a tutorial? The [scenario catalogue](scenarios/README.md), built into `ubc` (`ubc --scenarios`), has ready-to-use models, such as the cost of replacing a person, hiring, attrition, a team's real capacity, a recurring meeting, the bus factor, a delivery date from your own throughput, Little's law, scope creep, the cost of delay of a feature, CD3 prioritisation, a business case, LTV and CAC payback, buy vs build, the cost of technical debt, a slow CI pipeline, flaky tests, a migration budget, the cost of incidents, composite availability, an SLO error budget, capacity planning, the cost of a bug by where it is caught, an LLM feature billed by the token, log ingestion, growing storage, reserved capacity vs on-demand, the infrastructure cost per customer, per-seat SaaS, ephemeral environments per pull request, the annual loss expectancy of a risk against its mitigation or the cost of a data breach: change the assumptions and run. Recipes for common tasks, such as using your own data, comparing two options, a check in CI or a delivery forecast from real throughput: the [how-to guides](docs/HOWTO.md). Every function, flag, REPL command, output format, exit code and common error: the [reference](docs/REFERENCE.md). The development specification: [docs/SPEC.md](docs/SPEC.md). Goals and roadmap: [docs/VISION.md](docs/VISION.md).
+It is inspired by the Unix calculator [`bc`](https://www.gnu.org/software/bc/), from which it takes the habit and the name: quick calculations in the terminal, from the command line, a pipe or an interactive session. The idea of modelling with ranges comes from [Guesstimate](https://www.getguesstimate.com) and [Squiggle](https://www.squiggle-language.com). It is a single binary with no dependencies, for Linux, macOS and Windows.
 
 ## Install
 
-Pick the line for your system. None of them needs Go.
-
 **macOS and Linux**, with the install script (detects your system, verifies the checksum, installs to `/usr/local/bin` or `~/.local/bin`):
 
-```console
-$ curl -fsSL https://raw.githubusercontent.com/eferro/uncertain-bc/main/install.sh | sh
+```sh
+curl -fsSL https://raw.githubusercontent.com/eferro/uncertain-bc/main/install.sh | sh
 ```
 
 **macOS and Linux**, with [Homebrew](https://brew.sh) (also installs shell completion):
 
-```console
-$ brew install eferro/tap/ubc
+```sh
+brew install eferro/tap/ubc
 ```
 
 **Windows**, in PowerShell (installs to `%LOCALAPPDATA%\Programs\ubc` and adds it to your `PATH`):
@@ -87,29 +44,74 @@ scoop install ubc
 
 **Debian, Ubuntu, Fedora, Alpine**: download the `.deb`, `.rpm` or `.apk` from the [latest release](https://github.com/eferro/uncertain-bc/releases/latest) and install it with `sudo dpkg -i ./ubc_*.deb`, `sudo dnf install ./ubc-*.rpm` or `sudo apk add --allow-untrusted ./ubc_*.apk` (the packages are not signed, so plain `rpm -i` refuses them on recent Fedora).
 
-**With Go**:
+**With Go**: `go install github.com/eferro/uncertain-bc/cmd/ubc@latest`. **By hand**: every [release](https://github.com/eferro/uncertain-bc/releases) has archives for Linux, macOS and Windows (amd64 and arm64) and a `checksums.txt`.
+
+Check it works with `ubc --version`. To pin a version with the scripts, set `UBC_VERSION=0.7.0`; to choose the directory, `UBC_INSTALL_DIR=~/bin`. The binaries are not signed: the script, Homebrew and Scoop installs avoid the warnings; if you download an archive with a browser, macOS needs `xattr -d com.apple.quarantine ubc` and Windows SmartScreen needs "More info → Run anyway". Shell completion (bash, zsh, fish): `source <(ubc --completion bash)` in your shell's startup file; Homebrew installs it for you.
+
+## Get started in three commands
+
+Ask a question with `-e`. Variables keep their uncertainty, and `P(...)` says how likely something is:
 
 ```console
-$ go install github.com/eferro/uncertain-bc/cmd/ubc@latest
+$ ubc -e 'hours = 20 to 60' -e 'cost = hours * (50 to 80)' -e 'P(cost > 3k)'
+0.19
 ```
 
-**By hand**: every [release](https://github.com/eferro/uncertain-bc/releases) has archives for Linux, macOS and Windows (amd64 and arm64) and a `checksums.txt`.
-
-Check it works with `ubc --version`. To pin a version with the scripts, set `UBC_VERSION=0.7.0`; to choose the directory, `UBC_INSTALL_DIR=~/bin`.
-
-The binaries are not signed. The script, Homebrew and Scoop installs avoid the warnings; if you download an archive with a browser, macOS needs `xattr -d com.apple.quarantine ubc` and Windows SmartScreen needs "More info → Run anyway".
-
-Shell completion (bash, zsh, fish): `source <(ubc --completion bash)`, or the same with `zsh`/`fish` in your shell's startup file. Homebrew installs it for you.
-
-## Development
+Run a model from a file. The [example](examples/homelab.ubc) compares the yearly cost of a home server with renting a VPS:
 
 ```console
-$ make local-setup   # once: enable the versioned git hooks
-$ make help          # list targets
-$ make validate      # everything CI checks; the pre-commit hook runs it
+$ ubc examples/homelab.ubc
+homelab = ≈ 66.5   90% [47 … 95.7]   98% [40 … 111]   ▂▃▅▆▇█▇▆▅▄▃▃▂▂▂▁
+vps = ≈ 169   90% [94.7 … 295]   98% [75 … 380]   ▃▅▇▇█▇▆▅▄▃▃▂▂▂▁▁
+saving = ≈ 101   90% [21.5 … 229]   98% [-1.5 … 310]   ▃▅▆▇█▇▇▆▄▃▃▂▂▂▁▁
 ```
 
-Rules and decisions: [AGENTS.md](AGENTS.md), [docs/adr/](docs/adr/README.md).
+Run a ready-made model from the built-in catalogue (`ubc --scenarios` lists them all) and change its assumptions with `--set`. What does it cost to replace an engineer who leaves, if hiring took one to three months?
+
+```console
+$ ubc --set 'vacancy_months = 1 to 3' --scenario team/replace-a-person
+total = ≈ 47.2k   90% [29.4k … 76.8k]   98% [24k … 95k]   ▃▅▇██▇▇▆▄▄▃▂▂▂▂▁
+P(total > 50k) = 0.43
+```
+
+Run `ubc` with no arguments for an interactive session with line editing and history; `:help` lists its commands.
+
+## Reading the output
+
+```
+≈ 170   90% [96 … 296]   98% [75 … 380]   ▃▅▆██▇▆▅▄▃▂▂▂▁▁▁
+  │       │                │                └ the shape, from the 1st to the 99th percentile
+  │       │                └ 98% sure it is in this range
+  │       └ 90% sure it is in this range
+  └ the median: as likely to be above as below
+```
+
+A probability prints with two decimals, a plain number as it is. When a program prints more than one result, each line starts with what it is, usually the variable name. The output is the same every time, because the seed is fixed; `--random` changes it.
+
+## Flags you will use most
+
+| Flag | What it does |
+|---|---|
+| `-e EXPR` | Evaluate an expression (repeatable); without `-e` or files, `ubc` reads stdin |
+| `--echo` | Also print assignments, so a model reads like a report |
+| `--set NAME=EXPR` | Replace a model's value with yours, a number or a range |
+| `--data NAME=FILE` | Use your own measurements, one number per line |
+| `--sens EXPR` | Rank the assumptions that drive a result's uncertainty |
+| `--assert EXPR` | Exit with code 4 unless the condition certainly holds, for CI |
+| `--scenarios`, `--scenario NAME` | List and run the built-in scenarios |
+| `--plain`, `--json` | Output for scripts: only the median, or one JSON object per result |
+
+`ubc --help` lists every flag; the [reference](docs/REFERENCE.md) explains them.
+
+## Learn more
+
+- [Tutorial](docs/TUTORIAL.md): the language step by step, from plain arithmetic to project estimates, a Fermi problem and a cloud bill.
+- [Modelling guide](docs/MODELLING.md): how to estimate well, what a 90 % interval claims, choosing a shape, correlation, typical mistakes and Monte Carlo noise.
+- [How-to guides](docs/HOWTO.md): recipes for common tasks, such as using your own data, comparing two options, a check in CI or a delivery forecast.
+- [Scenario catalogue](scenarios/README.md): ready-to-use models for teams, delivery, product, engineering, reliability, cloud costs and risk.
+- [Reference](docs/REFERENCE.md): every function, flag, REPL command, output format, exit code and common error.
+
+For contributors: the [specification](docs/SPEC.md), the [vision and roadmap](docs/VISION.md), the rules in [AGENTS.md](AGENTS.md) and the decisions in [docs/adr/](docs/adr/README.md). `make local-setup` enables the git hooks, `make help` lists the targets and `make validate` runs everything CI checks.
 
 ## License
 

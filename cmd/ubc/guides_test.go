@@ -13,9 +13,9 @@ import (
 )
 
 func TestGuides_EveryConsoleBlockMatchesTheBinary(t *testing.T) {
-	for _, guide := range []string{"TUTORIAL.md", "MODELLING.md", "REFERENCE.md", "HOWTO.md"} {
+	for _, guide := range []string{"docs/TUTORIAL.md", "docs/MODELLING.md", "docs/REFERENCE.md", "docs/HOWTO.md", "README.md"} {
 		t.Run(guide, func(t *testing.T) {
-			markdown, err := os.ReadFile(filepath.Join("..", "..", "docs", guide))
+			markdown, err := os.ReadFile(filepath.Join("..", "..", filepath.FromSlash(guide)))
 			require.NoError(t, err)
 			archive, err := guideArchive(string(markdown))
 			require.NoError(t, err)
@@ -40,6 +40,8 @@ func TestGuides_AreLinkedFromTheDocsThatPointReadersToThem(t *testing.T) {
 		{"docs/TUTORIAL.md", "(HOWTO.md)"},
 		{"docs/REFERENCE.md", "(HOWTO.md)"},
 		{"scenarios/README.md", "(../docs/HOWTO.md)"},
+		{"README.md", "(docs/TUTORIAL.md)"},
+		{"README.md", "(scenarios/README.md)"},
 	}
 	for _, tt := range tests {
 		doc, link := tt.doc, tt.link
