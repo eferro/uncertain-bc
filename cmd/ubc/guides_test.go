@@ -15,9 +15,7 @@ import (
 func TestGuides_EveryConsoleBlockMatchesTheBinary(t *testing.T) {
 	for _, guide := range []string{"docs/TUTORIAL.md", "docs/MODELLING.md", "docs/REFERENCE.md", "docs/HOWTO.md", "README.md"} {
 		t.Run(guide, func(t *testing.T) {
-			markdown, err := os.ReadFile(filepath.Join("..", "..", filepath.FromSlash(guide)))
-			require.NoError(t, err)
-			archive, err := guideArchive(string(markdown))
+			archive, err := guideArchive(repoDoc(t, guide))
 			require.NoError(t, err)
 			require.NotEmpty(t, archive.Files)
 			dir := t.TempDir()
@@ -46,11 +44,16 @@ func TestGuides_AreLinkedFromTheDocsThatPointReadersToThem(t *testing.T) {
 	for _, tt := range tests {
 		doc, link := tt.doc, tt.link
 		t.Run(doc+" "+link, func(t *testing.T) {
-			content, err := os.ReadFile(filepath.Join("..", "..", doc))
-			require.NoError(t, err)
-			assert.True(t, strings.Contains(string(content), link), "%s does not link to %s", doc, link)
+			assert.True(t, strings.Contains(repoDoc(t, doc), link), "%s does not link to %s", doc, link)
 		})
 	}
+}
+
+func repoDoc(t *testing.T, path string) string {
+	t.Helper()
+	content, err := os.ReadFile(filepath.Join("..", "..", filepath.FromSlash(path)))
+	require.NoError(t, err)
+	return string(content)
 }
 
 func TestGuideArchive_ChecksTheOutputOfEveryCommand(t *testing.T) {
