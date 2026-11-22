@@ -44,3 +44,4 @@ Template: Status, Effective date, Deciders, then Context, Decision, Consequences
 | [0034](0034-configurable-interval-width.md) | Configurable interval width with `--interval` | Accepted | 2026-11-22 |
 | [0035](0035-exact-poisson-and-binomial-sampling.md) | Exact `poisson` and `binomial` sampling by recursive reduction | Accepted | 2026-11-22 |
 | [0036](0036-raw-mode-repl-tested-through-a-pseudo-terminal.md) | Raw-mode REPL tested through testscript's pseudo-terminal | Accepted | 2026-11-22 |
+| [0037](0037-repl-on-windows-consoles.md) | REPL on Windows consoles: escape processing on, checked in CI by reading the code | Accepted | 2026-11-22 |

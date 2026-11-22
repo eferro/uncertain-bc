@@ -172,7 +172,7 @@ One line per top-level expression. In the REPL, assignments print too, as `name 
 
 ## 7. REPL
 
-- Prompt `ubc> `, line editing and persistent history in `$XDG_STATE_HOME/ubc/history` (default `~/.local/state/ubc/history`), using `golang.org/x/term` (ADR 0023); a testscript scenario drives it through a pseudo-terminal (ADR 0036). The REPL starts when stdin is a terminal and there are no `-e` expressions or files.
+- Prompt `ubc> `, line editing and persistent history in `$XDG_STATE_HOME/ubc/history` (default `~/.local/state/ubc/history`), using `golang.org/x/term` (ADR 0023); a testscript scenario drives it through a pseudo-terminal (ADR 0036). On Windows the REPL turns on escape-sequence processing for the console while it runs and restores it on exit; Ctrl-Z also ends the session there (ADR 0037). The REPL starts when stdin is a terminal and there are no `-e` expressions or files.
 - Every line prints its result, assignments included. `:` commands work only in the REPL.
 - State (variables, `last`, RNG) persists for the session.
 - Commands start with `:` and are not part of the language:

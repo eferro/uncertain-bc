@@ -48,6 +48,9 @@ func (a App) terminalRepl(in *os.File, stdout, stderr io.Writer, run func(lineRe
 		return run(newPromptedScanner(in, stdout), stdout, stderr)
 	}
 	defer func() { _ = term.Restore(fd, state) }()
+	if out, ok := stdout.(*os.File); ok {
+		defer enableVirtualTerminal(out)()
+	}
 	editor := newLineEditor(struct {
 		io.Reader
 		io.Writer
