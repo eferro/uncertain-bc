@@ -1,0 +1,31 @@
+# Question: how much does it cost to replace an engineer who leaves the team,
+# and how likely is it to cost more than 50k euros?
+#
+# Run it:
+#   ubc scenarios/team/replace-a-person.ubc
+# Change an assumption, for example a faster hiring process:
+#   ubc --set 'vacancy_months = 1 to 3' scenarios/team/replace-a-person.ubc
+# See which assumption matters most:
+#   ubc --sens total scenarios/team/replace-a-person.ubc
+#
+# Every "a to b" is a 90% confidence interval. Amounts are in euros.
+
+# Assumptions
+candidates = 6 to 15              # interviewed until an offer is accepted; typical funnels need 5-15
+hours_per_candidate = 3 to 8      # interviewer hours per candidate, all rounds and debriefs included
+interviewer_cost = 50 to 90       # loaded cost of an engineer's hour (salary plus ~30% overheads)
+hiring_fees = 3k to 20k           # job ads at the low end, an agency (15-25% of salary) at the high end
+vacancy_months = 2 to 5           # notice period plus the hiring process, until the new hire starts
+value_per_month = 6k to 15k       # value one engineer delivers a month; at least their loaded cost
+ramp_up_months = 3 to 6           # until the new hire is fully productive
+ramp_up_gap = 0.3 to 0.6          # average share of a full month's value missing while ramping up
+
+# Calculation
+interviewing = candidates * hours_per_candidate * interviewer_cost   # team time spent interviewing
+vacancy = vacancy_months * value_per_month                           # value lost while the seat is empty
+ramp_up = ramp_up_months * ramp_up_gap * value_per_month             # value lost while the new hire learns
+total = interviewing + hiring_fees + vacancy + ramp_up
+
+# Result
+total
+P(total > 50k)                    # how likely is it to cost more than 50k euros?

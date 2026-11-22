@@ -49,3 +49,4 @@ Template: Status, Effective date, Deciders, then Context, Decision, Consequences
 | [0039](0039-round-by-exact-powers-of-ten.md) | Round printed numbers by exact powers of ten | Accepted | 2026-11-22 |
 | [0040](0040-nested-98-percent-interval.md) | A nested 98% interval in every summary (amends 0006, 0034) | Accepted | 2026-11-22 |
 | [0041](0041-whole-test-suite-on-windows.md) | The whole test suite on Windows: portable tests and LF checkouts (amends 0037) | Accepted | 2026-11-22 |
+| [0042](0042-scenario-catalogue.md) | A scenario catalogue checked by the test suite | Accepted | 2026-11-22 |

@@ -20,7 +20,7 @@ func TestTutorial_EveryConsoleBlockMatchesTheBinary(t *testing.T) {
 	dir := t.TempDir()
 	require.NoError(t, os.WriteFile(filepath.Join(dir, "tutorial.txtar"), txtar.Format(archive), 0o600))
 
-	testscript.Run(t, testscript.Params{Dir: dir, Setup: copyExamples})
+	testscript.Run(t, testscript.Params{Dir: dir, Setup: copyModels})
 }
 
 func TestTutorialArchive_ChecksTheOutputOfEveryCommand(t *testing.T) {

@@ -19,26 +19,37 @@ func TestMain(m *testing.M) {
 func TestScripts(t *testing.T) {
 	testscript.Run(t, testscript.Params{
 		Dir:   "testdata/script",
-		Setup: copyExamples,
+		Setup: copyModels,
 		Cmds:  map[string]func(*testscript.TestScript, bool, []string){"unescape": unescape},
 	})
 }
 
-func copyExamples(env *testscript.Env) error {
-	examples, err := filepath.Glob("../../examples/*.ubc")
+// copyModels gives every scenario the models a reader runs from the
+// repository root, so commands read exactly as in the docs.
+func copyModels(env *testscript.Env) error {
+	for _, dir := range []string{"examples", "scenarios"} {
+		if err := copyTree(filepath.Join("..", "..", dir), filepath.Join(env.WorkDir, dir)); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func copyTree(from, to string) error {
+	files, err := modelFiles(from)
 	if err != nil {
 		return err
 	}
-	dir := filepath.Join(env.WorkDir, "examples")
-	if err := os.Mkdir(dir, 0o700); err != nil {
-		return err
-	}
-	for _, path := range examples {
-		content, err := os.ReadFile(path)
+	for _, file := range files {
+		content, err := os.ReadFile(filepath.Join(from, file))
 		if err != nil {
 			return err
 		}
-		if err := os.WriteFile(filepath.Join(dir, filepath.Base(path)), content, 0o600); err != nil {
+		target := filepath.Join(to, filepath.FromSlash(file))
+		if err := os.MkdirAll(filepath.Dir(target), 0o700); err != nil {
+			return err
+		}
+		if err := os.WriteFile(target, content, 0o600); err != nil {
 			return err
 		}
 	}

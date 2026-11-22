@@ -1,0 +1,12 @@
+exec ubc scenarios/team/replace-a-person.ubc
+cmp stdout replace.out
+
+exec ubc --set 'vacancy_months = 1 to 3' scenarios/team/replace-a-person.ubc
+stdout '^L31: 0\.43\n'
+
+exec ubc --sens total scenarios/team/replace-a-person.ubc
+stdout '^sensitivity of total \(rank correlation\):\n  vacancy +\+0\.86 '
+
+-- replace.out --
+L30: ≈ 61.1k   90% [37.8k … 100k]   98% [31k … 122k]   ▃▅▆██▇▇▆▅▄▃▂▂▂▁▁
+L31: 0.75
