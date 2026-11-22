@@ -7,5 +7,10 @@ stdout '^10\n$'
 exec ubc -e '10k to 50k'
 cmp stdout thousands.out
 
+exec ubc -e '11.5M to 11.7M'
+cmp stdout millions.out
+
 -- thousands.out --
 ≈ 22.4k   90% [9990 … 49k]   ▄▇██▇▅▄▄▃▂▂▂▁▁▁▁
+-- millions.out --
+≈ 11.6M   90% [11.5M … 11.7M]   ▂▂▃▄▅▆▇██▇▆▅▄▃▂▂

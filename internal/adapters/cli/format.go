@@ -178,6 +178,12 @@ func roundSignificant(x float64, digits int) float64 {
 		return 0
 	}
 	decimals := digits - 1 - int(math.Floor(math.Log10(math.Abs(x))))
+	// Only whole powers of ten are exact in binary, so rounding to tens or more
+	// divides and multiplies by one instead of using an inexact 10^-n (ADR 0039).
+	if decimals < 0 {
+		step := math.Pow(10, float64(-decimals))
+		return math.Round(x/step) * step
+	}
 	scale := math.Pow(10, float64(decimals))
 	return math.Round(x*scale) / scale
 }

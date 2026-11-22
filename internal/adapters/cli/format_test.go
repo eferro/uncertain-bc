@@ -39,6 +39,19 @@ func TestSignificant_UsesASuffixFromTenThousandUp(t *testing.T) {
 	}
 }
 
+func TestSignificant_ShowsNoFloatNoise_WhenRoundingToTensOrMore(t *testing.T) {
+	cases := map[float64]string{
+		11560770:  "11.6M",
+		11499000:  "11.5M",
+		11699000:  "11.7M",
+		1.03e17:   "103000T",
+		-11560770: "-11.6M",
+	}
+	for value, want := range cases {
+		assert.Equal(t, want, significant(value), "significant(%v)", value)
+	}
+}
+
 func TestProbability_ShowsTwoDecimalsAndFlagsTheExtremes(t *testing.T) {
 	cases := map[float64]string{
 		0.5:   "0.50",
@@ -62,6 +75,17 @@ func TestPlain_ShowsAtMostTenSignificantFigures(t *testing.T) {
 		1e12:              "1000000000000",
 		-2.5:              "-2.5",
 		0.000123456789012: "0.000123456789",
+	}
+	for value, want := range cases {
+		assert.Equal(t, want, plain(value), "plain(%v)", value)
+	}
+}
+
+func TestPlain_ShowsNoFloatNoise_WhenRoundingToTensOrMore(t *testing.T) {
+	cases := map[float64]string{
+		100000010000000:  "100000010000000",
+		1.03000001e18:    "1030000010000000000",
+		-100000010000000: "-100000010000000",
 	}
 	for value, want := range cases {
 		assert.Equal(t, want, plain(value), "plain(%v)", value)

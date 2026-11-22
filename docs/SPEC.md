@@ -166,6 +166,7 @@ One line per top-level expression. In the REPL, assignments print too, as `name 
 
 - A SampleSet whose samples are all equal prints as a scalar: `x = 1 to 5; x - x` prints `0`.
 - SampleSet numbers use **3 significant figures** without trailing zeros (`≈ 14.2   90% [10 … 19.8]`), and suffixes from 10k up, chosen number by number after rounding: `≈ 22.4k   90% [9990 … 49k]`.
+- Rounding is exact in decimal, so no printed number shows binary floating-point noise: `11.5M to 11.7M` prints `≈ 11.6M   90% [11.5M … 11.7M]`, never `11.599999999999998M` (ADR 0039).
 - The sparkline is 16 cells wide, built from a histogram over [P1, P99]; Unicode block elements `▁▂▃▄▅▆▇█`, ASCII fallback ` .:-=+*#`.
 - `--plain` prints the median (scalar as is) with full float precision and no `L<n>:` prefixes, for `$(ubc -e ...)`.
 - `--json` prints, per result: `{"kind":"samples","median":…,"mean":…,"stdev":…,"p5":…,"p95":…,"n":5000,"dropped":0}` or `{"kind":"scalar","value":…}` or `{"kind":"probability","value":…}`. One object per line, no `L<n>:` prefixes; statistics ignore non-finite samples, and values that are not finite (`1 / 0`, or no finite samples at all) are `null`. `--json` and `--plain` cannot be combined.
