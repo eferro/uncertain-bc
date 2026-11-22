@@ -1,0 +1,36 @@
+# Question: what does a data breach cost (records exposed × cost per
+# record + the regulator's fine), what loss should we expect a year, and
+# how likely is one breach to cost more than 5M euros?
+#
+# Run it (it uses the shared formulas):
+#   ubc scenarios/formulas.ubc scenarios/risk/data-breach.ubc
+# Change an assumption, for example a small breach of a few thousand records:
+#   ubc --set 'records = 1k to 20k' scenarios/formulas.ubc scenarios/risk/data-breach.ubc
+# See which assumption matters most:
+#   ubc --sens breach_cost scenarios/formulas.ubc scenarios/risk/data-breach.ubc
+#
+# Every "a to b" is a 90% confidence interval. Amounts are in euros. The
+# cost per record (detection, notification, response and lost business)
+# follows reports like IBM's Cost of a Data Breach, around 150-200 dollars
+# in recent years, but it falls for very large breaches, so choose a range
+# for the size you are modelling. Under the GDPR a fine can reach 4% of
+# the yearly worldwide turnover or 20M euros, whichever is higher; the
+# fines actually imposed are usually a small share of that.
+
+# Assumptions
+records = 10k to 200k             # records exposed: customers, users and employees
+cost_per_record = 50 to 200       # detection, notification, response and lost business per record
+turnover = 20M to 100M            # the company's yearly worldwide turnover
+fine_share = 0.1% to 2%           # the fine as a share of the turnover; regulators rarely go near the 4% cap
+breach_probability = 5% to 20%    # chance of a breach in a year
+
+# Calculation
+fine = turnover * fine_share                                # what the regulator charges
+breach_cost = records * cost_per_record + fine              # what one breach costs
+yearly_loss = annual_loss(breach_probability, breach_cost)  # the loss to expect a year
+
+# Result
+fine
+breach_cost
+yearly_loss
+P(breach_cost > 5M)               # how likely is one breach to cost more than 5M euros?

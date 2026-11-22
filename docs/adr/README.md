@@ -57,3 +57,4 @@ Template: Status, Effective date, Deciders, then Context, Decision, Consequences
 | [0047](0047-engineering-scenarios.md) | Engineering scenarios for technical debt and productivity, counted in recoverable hours | Accepted | 2026-11-22 |
 | [0048](0048-reliability-scenarios.md) | Reliability scenarios, with availability described by its downtime share | Accepted | 2026-11-22 |
 | [0049](0049-cloud-cost-scenarios.md) | Cloud and variable cost scenarios, in dollars | Accepted | 2026-11-22 |
+| [0050](0050-risk-scenarios.md) | Risk and security scenarios around the annual loss expectancy | Accepted | 2026-11-22 |

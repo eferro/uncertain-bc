@@ -1,0 +1,34 @@
+# Question: what does a risk cost a year (probability per year × impact),
+# and does a mitigation pay off: how likely is the loss it avoids to exceed
+# what it costs?
+#
+# Run it (it uses the shared formulas):
+#   ubc scenarios/formulas.ubc scenarios/risk/annual-loss.ubc
+# Change an assumption, for example a cheaper mitigation:
+#   ubc --set 'mitigation_cost = 5k to 15k' scenarios/formulas.ubc scenarios/risk/annual-loss.ubc
+# See which assumption matters most:
+#   ubc --sens net_benefit scenarios/formulas.ubc scenarios/risk/annual-loss.ubc
+#
+# Every "a to b" is a 90% confidence interval. Amounts are in euros. The
+# annual loss expectancy is the loss to expect on average each year, not
+# what one year costs: most years the incident does not happen, and the
+# year it does it costs the whole impact. Keep the probability well below
+# 1; for something that happens several times a year, use the expected
+# count instead, as reliability/incident-cost does.
+
+# Assumptions
+probability = 5% to 25%           # chance of the incident in a year: your history, industry reports or expert judgement
+impact = 100k to 1M               # what one incident costs: recovery, lost business, legal costs and customers
+residual = 20% to 50%             # share of the probability left once the mitigation is in place
+mitigation_cost = 20k to 50k      # what the mitigation costs a year: licences, people's time and upkeep
+
+# Calculation
+loss_before = annual_loss(probability, impact)              # expected loss a year without the mitigation
+loss_after = annual_loss(probability * residual, impact)    # expected loss a year with it
+net_benefit = loss_before - loss_after - mitigation_cost    # what it saves a year minus what it costs; positive when it pays off
+
+# Result
+loss_before
+loss_after
+net_benefit
+P(net_benefit > 0)                # how likely is the mitigation to pay off?

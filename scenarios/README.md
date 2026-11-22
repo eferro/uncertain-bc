@@ -57,6 +57,8 @@ Every scenario is checked by the test suite: it must evaluate without errors and
 | cloud | [cost-per-customer](cloud/cost-per-customer.ubc) | What does the infrastructure for one customer cost a month (unit economics), and how likely is it to take more than 30% of the price? |
 | cloud | [saas-seats](cloud/saas-seats.ubc) | What will the per-seat SaaS tools cost a month in two years as the team grows, unused seats included, and how likely is the bill to exceed 20k dollars? |
 | cloud | [ephemeral-environments](cloud/ephemeral-environments.ubc) | What do ephemeral environments, one per pull request, cost a month (pull requests a day × hours alive × cost per hour), and how likely is it to exceed 10k dollars? |
+| risk | [annual-loss](risk/annual-loss.ubc) | What does a risk cost a year (probability per year × impact), and how likely is a mitigation to save more than it costs? |
+| risk | [data-breach](risk/data-breach.ubc) | What does a data breach cost (records exposed × cost per record + the regulator's fine), what loss should we expect a year, and how likely is one breach to cost more than 5M euros? |
 | all | [formulas](formulas.ubc) | Reusable formulas shared by every scenario: loaded cost, real capacity, Little's law, cost of delay and CD3, LTV and CAC payback, annual loss expectancy, availability in series and in parallel, compound growth, present value and NPV. |
 
 ## Reusable formulas
