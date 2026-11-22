@@ -177,14 +177,19 @@ func roundSignificant(x float64, digits int) float64 {
 	if x == 0 {
 		return 0
 	}
-	decimals := digits - 1 - int(math.Floor(math.Log10(math.Abs(x))))
-	// Only whole powers of ten are exact in binary, so rounding to tens or more
-	// divides and multiplies by one instead of using an inexact 10^-n (ADR 0039).
-	if decimals < 0 {
-		step := math.Pow(10, float64(-decimals))
+	magnitude := int(math.Floor(math.Log10(math.Abs(x))))
+	return roundToPowerOfTen(x, magnitude-digits+1)
+}
+
+// roundToPowerOfTen rounds x to a multiple of 10^exponent. Only whole powers of
+// ten are exact in binary, so it always divides or multiplies by one of those and
+// never by an inexact 10^-n, which would print noise (ADR 0039).
+func roundToPowerOfTen(x float64, exponent int) float64 {
+	if exponent > 0 {
+		step := math.Pow(10, float64(exponent))
 		return math.Round(x/step) * step
 	}
-	scale := math.Pow(10, float64(decimals))
+	scale := math.Pow(10, float64(-exponent))
 	return math.Round(x*scale) / scale
 }
 
