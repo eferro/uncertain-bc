@@ -21,7 +21,7 @@ lost = 3% to 12%                  # share of customers who leave because of it; 
 
 # Calculation
 before = customers * price * 12                                  # yearly revenue today
-after = customers * (1 - lost) * price * (1 + increase) * 12     # fewer customers paying more
+after = before * (1 - lost) * (1 + increase)                     # fewer customers paying more
 gain = after - before                                            # what the change adds a year
 breakeven = increase / (1 + increase)                            # the share we can lose before it stops paying
 
