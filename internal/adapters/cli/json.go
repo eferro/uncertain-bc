@@ -2,7 +2,6 @@ package cli
 
 import (
 	"encoding/json"
-	"math"
 
 	"github.com/eferro/uncertain-bc/internal/domain"
 )
@@ -47,7 +46,7 @@ func jsonLine(value domain.Value, name string, quantiles []float64) string {
 
 // finite turns NaN and ±Inf into null, which JSON can represent.
 func finite(x float64) *float64 {
-	if math.IsNaN(x) || math.IsInf(x, 0) {
+	if !domain.IsFinite(x) {
 		return nil
 	}
 	return &x

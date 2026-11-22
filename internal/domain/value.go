@@ -49,11 +49,17 @@ func (s SampleSet) Dropped() int {
 func (s SampleSet) finite() []float64 {
 	finite := make([]float64, 0, len(s))
 	for _, x := range s {
-		if !math.IsNaN(x) && !math.IsInf(x, 0) {
+		if IsFinite(x) {
 			finite = append(finite, x)
 		}
 	}
 	return finite
+}
+
+// IsFinite tells the samples that summaries and correlations count from the
+// NaN and infinities that division by zero leaves (SPEC §4 rule 6).
+func IsFinite(x float64) bool {
+	return !math.IsNaN(x) && !math.IsInf(x, 0)
 }
 
 func finiteValues(v Value) []float64 {

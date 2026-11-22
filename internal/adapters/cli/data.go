@@ -2,12 +2,12 @@ package cli
 
 import (
 	"fmt"
-	"math"
 	"os"
 	"strconv"
 	"strings"
 
 	"github.com/eferro/uncertain-bc/internal/application"
+	"github.com/eferro/uncertain-bc/internal/domain"
 )
 
 type dataset struct {
@@ -58,7 +58,7 @@ func readNumbers(path string) ([]float64, error) {
 			continue
 		}
 		x, err := strconv.ParseFloat(field, 64)
-		if err != nil || math.IsNaN(x) || math.IsInf(x, 0) {
+		if err != nil || !domain.IsFinite(x) {
 			return nil, fmt.Errorf("%s: line %d: '%s' is not a number", path, i+1, field)
 		}
 		values = append(values, x)

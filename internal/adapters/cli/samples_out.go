@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"math"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -79,7 +78,7 @@ func csvTable(columns []column) string {
 }
 
 func csvNumber(x float64) string {
-	if math.IsNaN(x) || math.IsInf(x, 0) {
+	if !domain.IsFinite(x) {
 		return ""
 	}
 	return strconv.FormatFloat(x, 'g', -1, 64)

@@ -20,16 +20,12 @@ func finitePairs(x, y SampleSet) ([]float64, []float64) {
 	fx := make([]float64, 0, len(x))
 	fy := make([]float64, 0, len(y))
 	for i := range x {
-		if isFinite(x[i]) && isFinite(y[i]) {
+		if IsFinite(x[i]) && IsFinite(y[i]) {
 			fx = append(fx, x[i])
 			fy = append(fy, y[i])
 		}
 	}
 	return fx, fy
-}
-
-func isFinite(x float64) bool {
-	return !math.IsNaN(x) && !math.IsInf(x, 0)
 }
 
 func ranks(values []float64) []float64 {
