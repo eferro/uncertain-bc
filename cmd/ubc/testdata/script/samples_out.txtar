@@ -1,0 +1,42 @@
+exec ubc -n 4 --samples-out out.csv model.ubc
+stdout '^30\n$'
+cmp out.csv want.csv
+
+exec ubc -n 4 --samples-out out.json model.ubc
+cmp out.json want.json
+
+exec ubc -n 2 --samples-out inf.csv -e 'x = [0, 1]' -e '1 / x'
+cmp inf.csv want-inf.csv
+
+! exec ubc --samples-out out.txt -e 1
+! stdout .
+stderr '^ubc: --samples-out writes \.csv or \.json files, got ''out\.txt''\n$'
+
+! exec ubc --samples-out none.csv -e 'f(x) = x'
+! stdout .
+stderr '^ubc: --samples-out none\.csv: nothing to export\n$'
+! exists none.csv
+
+! exec ubc --samples-out missing/out.csv -e 1
+stderr '^ubc: --samples-out missing/out\.csv: open missing/out\.csv: no such file or directory\n$'
+
+! exec ubc --samples-out bad.csv -e 'x = 1' -e 'y'
+! exists bad.csv
+
+-- model.ubc --
+price = 10
+units = [1, 2, 3]
+revenue = price * units
+max(revenue)
+-- want.csv --
+price,units,revenue,last
+10,3,30,30
+10,1,10,30
+10,3,30,30
+10,3,30,30
+-- want.json --
+{"price":[10,10,10,10],"units":[3,1,3,3],"revenue":[30,10,30,30],"last":[30,30,30,30]}
+-- want-inf.csv --
+x,last
+0,
+1,1

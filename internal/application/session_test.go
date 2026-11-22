@@ -190,3 +190,34 @@ func TestSession_KeepsAssertionsOutOfTheTranscript(t *testing.T) {
 	require.NoError(t, err)
 	assert.Empty(t, session.Transcript())
 }
+
+func TestSession_VariablesAndLast_AddsLastAfterTheUserVariables(t *testing.T) {
+	session := application.NewSession(application.DefaultSettings())
+	_, err := session.Evaluate("y = 2; 5; x = 1")
+	require.NoError(t, err)
+
+	assert.Equal(t, []application.Variable{
+		{Name: "y", Value: domain.Scalar(2)},
+		{Name: "x", Value: domain.Scalar(1)},
+		{Name: "last", Value: domain.Scalar(5)},
+	}, session.VariablesAndLast())
+}
+
+func TestSession_VariablesAndLast_LeavesLastOut_WhenNoExpressionRan(t *testing.T) {
+	session := application.NewSession(application.DefaultSettings())
+	_, err := session.Evaluate("y = 2")
+	require.NoError(t, err)
+
+	assert.Equal(t, []application.Variable{{Name: "y", Value: domain.Scalar(2)}}, session.VariablesAndLast())
+}
+
+func TestSession_VariablesAndLast_ListsLastOnce_WhenTheProgramAssignsIt(t *testing.T) {
+	session := application.NewSession(application.DefaultSettings())
+	_, err := session.Evaluate("last = 3; y = 2")
+	require.NoError(t, err)
+
+	assert.Equal(t, []application.Variable{
+		{Name: "last", Value: domain.Scalar(3)},
+		{Name: "y", Value: domain.Scalar(2)},
+	}, session.VariablesAndLast())
+}

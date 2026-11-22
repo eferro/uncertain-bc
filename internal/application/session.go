@@ -93,6 +93,19 @@ func (s *Session) Variables() []Variable {
 	return variables
 }
 
+// VariablesAndLast is everything a run leaves behind: the user variables and
+// then last, unless the program assigned it itself (ADR 0032).
+func (s *Session) VariablesAndLast() []Variable {
+	variables := s.Variables()
+	if slices.Contains(s.names, "last") {
+		return variables
+	}
+	if value, ok := s.env.Variable("last"); ok {
+		variables = append(variables, Variable{Name: "last", Value: value})
+	}
+	return variables
+}
+
 func (s *Session) Reseed(seed uint64) {
 	s.env.Reseed(seed)
 }

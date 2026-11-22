@@ -54,6 +54,8 @@ type options struct {
 	presets     []preset
 	watch       bool
 	completion  string
+	samplesPath string
+	samplesOut  *samplesOut
 }
 
 type multiString []string
@@ -77,6 +79,8 @@ Flags:
       --data NAME=FILE
                       set NAME to the numbers in FILE, one per line (repeatable)
       --assert EXPR   after the program, exit 4 unless EXPR certainly holds (repeatable)
+      --samples-out FILE
+                      after the program, write every variable's samples to FILE (.csv or .json)
   -n, --samples N     Monte Carlo sample count (default 5000)
   -s, --seed N        random seed (default 1)
       --random        seed from the clock
@@ -114,8 +118,8 @@ func (a App) Run(args []string, stdin io.Reader, stdout, stderr io.Writer) int {
 
 func (a App) execute(opts options, settings application.Settings, stdin io.Reader, stdout, stderr io.Writer) int {
 	if a.Interactive && len(opts.expressions) == 0 && len(opts.files) == 0 {
-		if len(opts.asserts) > 0 {
-			fmt.Fprintln(stderr, "ubc: --assert needs a program: -e, files or stdin")
+		if name := programOnlyFlag(opts); name != "" {
+			fmt.Fprintf(stderr, "ubc: %s needs a program: -e, files or stdin\n", name)
 			return exitUsageError
 		}
 		session, code := startSession(opts, settings, stderr)
@@ -143,6 +147,9 @@ func evaluateSources(opts options, settings application.Settings, st style, stdi
 	if code := evaluateAll(session, sources, st, stdout, stderr); code != exitOK {
 		return code
 	}
+	if code := exportSamples(session, opts.samplesOut, opts.samples, stderr); code != exitOK {
+		return code
+	}
 	return checkAssertions(session, opts.asserts, st, stderr)
 }
 
@@ -167,17 +174,39 @@ func resolveFlags(opts options) (options, error) {
 			return opts, errors.New(rule.message)
 		}
 	}
+	var err error
+	if opts.presets, err = parsePresets(opts); err != nil {
+		return opts, err
+	}
+	if opts.samplesOut, err = parseSamplesOut(opts.samplesPath); err != nil {
+		return opts, err
+	}
+	opts.percentiles, err = parseQuantiles(opts.quantiles)
+	return opts, err
+}
+
+func parsePresets(opts options) ([]preset, error) {
 	overrides, err := parseOverrides(opts.sets)
 	if err != nil {
-		return opts, err
+		return nil, err
 	}
 	datasets, err := parseDatasets(opts.data)
 	if err != nil {
-		return opts, err
+		return nil, err
 	}
-	opts.presets = slices.Concat(datasets, overrides)
-	opts.percentiles, err = parseQuantiles(opts.quantiles)
-	return opts, err
+	return slices.Concat(datasets, overrides), nil
+}
+
+// programOnlyFlag names a flag that acts after a program, which the REPL
+// does not have.
+func programOnlyFlag(opts options) string {
+	switch {
+	case len(opts.asserts) > 0:
+		return "--assert"
+	case opts.samplesOut != nil:
+		return "--samples-out"
+	}
+	return ""
 }
 
 func readFlags(args []string, stdout, stderr io.Writer) (options, int, bool) {
@@ -225,6 +254,7 @@ func registerInputFlags(fs *flag.FlagSet, opts *options) {
 	fs.Var(&opts.sets, "set", "set NAME=EXPR, overriding the model's value (repeatable)")
 	fs.Var(&opts.data, "data", "set NAME to the numbers in FILE, one per line (repeatable)")
 	fs.Var(&opts.asserts, "assert", "exit 4 unless EXPR holds after the program (repeatable)")
+	fs.StringVar(&opts.samplesPath, "samples-out", "", "write every variable's samples to FILE (.csv or .json)")
 	for _, name := range []string{"n", "samples"} {
 		fs.IntVar(&opts.samples, name, opts.samples, "Monte Carlo sample count")
 	}

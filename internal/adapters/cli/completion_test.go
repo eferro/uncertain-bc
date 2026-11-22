@@ -84,7 +84,7 @@ func bashCompletes(t *testing.T, word string) string {
 }
 
 func TestBashCompletion_CompletesLongFlags(t *testing.T) {
-	assert.Equal(t, "--samples", bashCompletes(t, "--sa"))
+	assert.Equal(t, "--samples --samples-out", bashCompletes(t, "--sa"))
 }
 
 func TestBashCompletion_CompletesFileNames(t *testing.T) {
