@@ -1,0 +1,55 @@
+exec docsite mkdocs.yml
+! stdout .
+cmp build/docs/README.md want/README.md
+cmp build/docs/docs/GUIDE.md want/GUIDE.md
+! exists build/docs/docs/NOTES.md
+
+cp broken.md docs/GUIDE.md
+! exec docsite mkdocs.yml
+stderr '^docsite: docs/GUIDE.md: broken link to docs/MISSING.md$'
+
+! exec docsite missing.yml
+stderr '^docsite: open missing.yml: '
+
+! exec docsite
+stderr '^usage: docsite MKDOCS_CONFIG$'
+
+-- mkdocs.yml --
+site_name: test
+repo_url: https://github.com/owner/repo
+docs_dir: build/docs
+nav:
+  - Home: README.md
+  - Guide: docs/GUIDE.md
+-- README.md --
+# Home
+
+Read the [guide](docs/GUIDE.md#start), the [notes](docs/NOTES.md), the [examples](examples/) and the [license](LICENSE).
+Links elsewhere stay: [site](https://example.com/a.md) and [top](#home).
+-- docs/GUIDE.md --
+# Guide
+
+## Start
+
+Back [home](../README.md) or to the [notes](NOTES.md#why).
+-- docs/NOTES.md --
+# Notes
+-- examples/model.ubc --
+1 + 1
+-- LICENSE --
+MIT
+-- broken.md --
+# Guide
+
+See [nothing](MISSING.md).
+-- want/README.md --
+# Home
+
+Read the [guide](docs/GUIDE.md#start), the [notes](https://github.com/owner/repo/blob/main/docs/NOTES.md), the [examples](https://github.com/owner/repo/tree/main/examples/) and the [license](https://github.com/owner/repo/blob/main/LICENSE).
+Links elsewhere stay: [site](https://example.com/a.md) and [top](#home).
+-- want/GUIDE.md --
+# Guide
+
+## Start
+
+Back [home](../README.md) or to the [notes](https://github.com/owner/repo/blob/main/docs/NOTES.md#why).

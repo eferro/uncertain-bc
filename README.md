@@ -105,6 +105,8 @@ A probability prints with two decimals, a plain number as it is. When a program 
 
 ## Learn more
 
+The guides below are also published, with search, at <https://eferro.github.io/uncertain-bc/>.
+
 - [Tutorial](docs/TUTORIAL.md): the language step by step, from plain arithmetic to project estimates, a Fermi problem and a cloud bill.
 - [Modelling guide](docs/MODELLING.md): how to estimate well, what a 90 % interval claims, choosing a shape, correlation, typical mistakes and Monte Carlo noise.
 - [How-to guides](docs/HOWTO.md): recipes for common tasks, such as using your own data, comparing two options, a check in CI or a delivery forecast.

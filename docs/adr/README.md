@@ -68,3 +68,4 @@ Template: Status, Effective date, Deciders, then Context, Decision, Consequences
 | [0058](0058-how-to-guides-checked-by-the-test-suite.md) | How-to guides checked by the test suite, with data files and `cat` (amends 0030, 0057) | Accepted | 2026-11-22 |
 | [0059](0059-readme-as-a-short-entry-point.md) | The README as a short entry point, checked like the guides (amends 0056) | Accepted | 2026-11-22 |
 | [0060](0060-changelog-as-the-release-notes.md) | A changelog that is also the release notes (amends 0015) | Accepted | 2026-11-22 |
+| [0061](0061-documentation-website-with-mkdocs.md) | A documentation website built by MkDocs and deployed to GitHub Pages | Accepted | 2026-11-22 |

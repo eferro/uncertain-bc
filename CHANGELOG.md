@@ -17,6 +17,7 @@ All notable changes to `ubc` are documented in this file. The format follows [Ke
 - A scenario catalogue of ready-to-use models for teams, delivery, product, engineering, reliability, cloud costs and risk, with reusable formulas and a source for every assumption. It is built into the binary: `--scenarios` lists it, `--scenario NAME` runs one and `--scenario-source NAME` prints its source.
 - A tutorial, a modelling guide, a user reference and how-to guides, whose examples the test suite runs against the binary.
 - This changelog.
+- A documentation website at <https://eferro.github.io/uncertain-bc/> with the README, the guides, the reference, the scenario catalogue and this changelog, and a search box.
 
 ### Changed
 

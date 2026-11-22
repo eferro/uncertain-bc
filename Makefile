@@ -17,8 +17,10 @@ GREMLINS_VERSION := v0.6.0
 GREMLINS := $(TOOLS)/gremlins
 MUTATION_MIN := 85
 MUTATION_MEMORY_KB := 4000000
+DOCS_VENV := $(TOOLS)/docs-venv
+MKDOCS := $(DOCS_VENV)/bin/mkdocs
 
-.PHONY: help local-setup test test-pkg coverage format lint check-test-style check-architecture check-binary check-scripts secrets-scan test-mutation validate build release-check release-snapshot release-notes
+.PHONY: help local-setup test test-pkg coverage format lint check-test-style check-architecture check-binary check-scripts secrets-scan test-mutation validate build release-check release-snapshot release-notes docs
 
 help: ## List available targets
 	@grep -hE '^[a-zA-Z_-]+:.*## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*## "} {printf "  %-20s %s\n", $$1, $$2}'
@@ -88,3 +90,13 @@ release-snapshot: $(GORELEASER) ## Build all release archives locally into dist/
 
 release-notes: ## Print the CHANGELOG.md section of a version, used as its release notes: make -s release-notes VERSION=v1.2.0 (ADR 0060)
 	@go run ./tools/releasenotes CHANGELOG.md $(VERSION)
+
+$(MKDOCS): tools/docsite/requirements.txt
+	python3 -m venv $(DOCS_VENV)
+	$(DOCS_VENV)/bin/pip install --quiet --requirement tools/docsite/requirements.txt
+	touch $@
+
+docs: $(MKDOCS) ## Build the documentation website into build/site; fails on broken links (ADR 0061)
+	rm -rf build/docs
+	go run ./tools/docsite mkdocs.yml
+	$(MKDOCS) build --strict

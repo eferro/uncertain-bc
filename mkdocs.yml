@@ -1,0 +1,28 @@
+# The documentation website (ADR 0061). `make docs` assembles docs_dir from the
+# pages in nav with tools/docsite, then MkDocs builds site_dir from it.
+site_name: ubc
+site_description: A bc-like calculator for uncertain numbers
+site_url: https://eferro.github.io/uncertain-bc/
+repo_url: https://github.com/eferro/uncertain-bc
+repo_name: eferro/uncertain-bc
+edit_uri: ""
+docs_dir: build/docs
+site_dir: build/site
+strict: true
+theme:
+  name: mkdocs
+plugins:
+  - search
+validation:
+  omitted_files: warn
+  absolute_links: warn
+  unrecognized_links: warn
+  anchors: warn
+nav:
+  - Home: README.md
+  - Tutorial: docs/TUTORIAL.md
+  - Modelling guide: docs/MODELLING.md
+  - How-to guides: docs/HOWTO.md
+  - Reference: docs/REFERENCE.md
+  - Scenario catalogue: scenarios/README.md
+  - Changelog: CHANGELOG.md
