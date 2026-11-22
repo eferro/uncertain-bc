@@ -4,28 +4,28 @@
 
 ```console
 $ ubc -e '(8 to 25) * 12'
-≈ 170   90% [96 … 300]   ▁▃▇█▅▃▂▁
+≈ 170   90% [96 … 296]   98% [80 … 380]   ▃▅▆██▇▆▅▄▃▂▂▂▁▁▁
 ```
 
-Type ranges instead of exact numbers (`10 to 20` means "90 % sure it is between 10 and 20"). `ubc` runs a Monte Carlo simulation and answers with a central value, an interval and a small chart, right in the terminal. A single Go binary, inspired by [Guesstimate](https://www.getguesstimate.com) and [Squiggle](https://www.squiggle-language.com).
+Type ranges instead of exact numbers (`10 to 20` means "90 % sure it is between 10 and 20"). `ubc` runs a Monte Carlo simulation and answers with a central value, two nested intervals (90 % and 98 %) and a small chart, right in the terminal. A single Go binary, inspired by [Guesstimate](https://www.getguesstimate.com) and [Squiggle](https://www.squiggle-language.com).
 
 Status: calculator MVP with an interactive REPL, JSON output and chart export (phase 3, v0.4.0).
 
 ```console
 $ ubc -e '(8 to 25) * 12'
-≈ 170   90% [96 … 296]   ▃▅▆██▇▆▅▄▃▂▂▂▁▁▁
+≈ 170   90% [96 … 296]   98% [80 … 380]   ▃▅▆██▇▆▅▄▃▂▂▂▁▁▁
 
 $ ubc -e 'yearly = (12 to 30) / 1000 * 24 * 365 * (0.12 to 0.25)' -e 'yearly' -e 'P(yearly > 50)'
-≈ 28.7   90% [16.1 … 51]   ▃▅▇▇█▇▆▅▄▃▃▂▂▂▁▁
+≈ 28.7   90% [16.1 … 51]   98% [13 … 64]   ▃▅▇▇█▇▆▅▄▃▃▂▂▂▁▁
 0.06
 
 $ ubc --plain -e '1k to 5k'
 2240.839064891978
 
 $ ubc examples/homelab.ubc
-L15: ≈ 66.5   90% [47 … 95.7]   ▂▃▅▆▇█▇▆▅▄▃▃▂▂▂▁
-L16: ≈ 169   90% [94.7 … 295]   ▃▅▇▇█▇▆▅▄▃▃▂▂▂▁▁
-L18: ≈ 101   90% [21.5 … 229]   ▃▅▆▇█▇▇▆▄▃▃▂▂▂▁▁
+L15: ≈ 66.5   90% [47 … 95.7]   98% [41 … 110]   ▂▃▅▆▇█▇▆▅▄▃▃▂▂▂▁
+L16: ≈ 169   90% [94.7 … 295]   98% [80 … 370]   ▃▅▇▇█▇▆▅▄▃▃▂▂▂▁▁
+L18: ≈ 101   90% [21.5 … 229]   98% [0 … 310]   ▃▅▆▇█▇▇▆▄▃▃▂▂▂▁▁
 ```
 
 Run `ubc` with no arguments for an interactive session with line editing and history:
@@ -33,9 +33,9 @@ Run `ubc` with no arguments for an interactive session with line editing and his
 ```console
 $ ubc
 ubc> watts = 12 to 30
-watts = ≈ 19   90% [12 … 29.7]   ▂▄▆▇██▇▅▅▄▃▂▂▂▁▁
+watts = ≈ 19   90% [12 … 29.7]   98% [10 … 36]   ▂▄▆▇██▇▅▅▄▃▂▂▂▁▁
 ubc> yearly = watts / 1000 * 24 * 365 * 0.2
-yearly = ≈ 33.3   90% [21 … 51.9]   ▂▄▆▇██▇▅▅▄▃▂▂▂▁▁
+yearly = ≈ 33.3   90% [21 … 51.9]   98% [17 … 63]   ▂▄▆▇██▇▅▅▄▃▂▂▂▁▁
 ubc> P(yearly > 40)
 0.25
 ubc> :hist yearly

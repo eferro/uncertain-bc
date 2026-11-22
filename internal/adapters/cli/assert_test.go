@@ -29,7 +29,7 @@ func TestAssert_ShowsTheValue_WhenItIsNotAComparison(t *testing.T) {
 }
 
 func TestAssert_ShowsTheSummaryAndTheProbability_WhenTheComparisonIsUncertain(t *testing.T) {
-	want := "ubc: --assert normal(0, 1) < 1 failed: ~ 0.00436   90% [-1.65 ... 1.6] < 1 (P = 0.85)\n"
+	want := "ubc: --assert normal(0, 1) < 1 failed: ~ 0.00436   90% [-1.65 ... 1.6]   98% [-2.3 ... 2.3] < 1 (P = 0.85)\n"
 
 	assert.Equal(t, want, run(t, "", "--ascii", "--plain", "--assert", "normal(0, 1) < 1", "-e", "x = 1").stderr)
 }
@@ -101,7 +101,7 @@ func TestAssert_ShowsUnusualOperands_AsTheOutputDoes(t *testing.T) {
 	cases := map[string]string{
 		"x - x > 1":       "0 > 1",
 		"(x - x) / 0 > 1": "no finite samples (100 dropped) > 1",
-		"normal(0, 1) / (uniform(0, 1) > 0.5) < 5": "≈ 0.193   90% [-1.41 … 1.44]   (54 non-finite dropped) < 5 (P = 0.72)",
+		"normal(0, 1) / (uniform(0, 1) > 0.5) < 5": "≈ 0.193   90% [-1.41 … 1.44]   98% [-2 … 1.9]   (54 non-finite dropped) < 5 (P = 0.72)",
 	}
 	for expr, compared := range cases {
 		t.Run(expr, func(t *testing.T) {

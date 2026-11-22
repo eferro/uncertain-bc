@@ -56,7 +56,7 @@ func TestRun_PrintsOnlyAscii_WhenAsked(t *testing.T) {
 	got := run(t, "", "--ascii", "-e", "10 to 20")
 
 	assert.Equal(t, 0, got.code)
-	assert.Regexp(t, `^~ \S+   90% \[\S+ \.\.\. \S+\]   [ .:\-=+*#]{16}\n$`, got.stdout)
+	assert.Regexp(t, `^~ \S+   90% \[\S+ \.\.\. \S+\]   98% \[\S+ \.\.\. \S+\]   [ .:\-=+*#]{16}\n$`, got.stdout)
 }
 
 func TestRun_PrintsUsage_WhenHelpIsRequested(t *testing.T) {

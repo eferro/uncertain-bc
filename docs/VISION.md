@@ -40,14 +40,14 @@ One-shot, like `bc -e`:
 
 ```console
 $ ubc -e '(8 to 25) * 12'
-≈ 170   90% [96 … 300]   ▁▃▇█▅▃▂▁
+≈ 170   90% [96 … 296]   98% [80 … 380]   ▃▅▆██▇▆▅▄▃▂▂▂▁▁▁
 ```
 
 Pipes and scripts:
 
 ```console
 $ echo '(0.12 to 0.25) * 24 * 365 * (12 to 30) / 1000' | ubc
-≈ 37    90% [19 … 70]     ▂▆█▆▃▂▁▁
+≈ 28.6   90% [16 … 51]   98% [12 … 64]   ▃▅▇██▇▆▅▄▃▃▂▂▂▁▁
 
 $ ubc --json -e '1k to 5k' | jq .median
 2236
@@ -58,12 +58,13 @@ Interactive REPL with variables, kept between lines (no re-sampling, so `a` keep
 ```console
 $ ubc
 ubc> watts = 12 to 30
-≈ 19    90% [12 … 30]     ▂▇█▆▃▂▁▁
+watts = ≈ 19   90% [12 … 29.7]   98% [10 … 36]   ▂▄▆▇██▇▅▅▄▃▂▂▂▁▁
 ubc> price = 0.12 to 0.25
+price = ≈ 0.173   90% [0.121 … 0.249]   98% [0.1 … 0.29]   ▂▄▆▇██▇▇▅▅▄▃▂▂▂▁
 ubc> yearly = watts / 1000 * 24 * 365 * price
-≈ 33    90% [17 … 62]     ▂▆█▆▃▂▁▁
+yearly = ≈ 28.7   90% [16.1 … 51]   98% [13 … 64]   ▃▅▇▇█▇▆▅▄▃▃▂▂▂▁▁
 ubc> P(yearly > 50)
-0.16
+0.06
 ubc> :hist yearly
    15 ┤▇▇▇▇▇
    25 ┤▇▇▇▇▇▇▇▇▇▇▇▇▇▇
@@ -115,7 +116,7 @@ REPL commands start with `:` so they never clash with the language: `:hist x`, `
 
 ## 6. Output design
 
-- **Default line:** `≈ median   90% [p5 … p95]   sparkline`, three significant figures.
+- **Default line:** `≈ median   90% [p5 … p95]   98% [p1 … p99]   sparkline`, three significant figures, the outer interval rounded more coarsely (ADR 0040).
 - **Plain numbers stay plain:** `2 + 2` prints `4`, as in bc.
 - **Probabilities:** a single number with two decimals.
 - **Machine output:** `--json` (summary stats plus optional samples) and `--plain` (just the median, for `$(ubc -e ...)`).

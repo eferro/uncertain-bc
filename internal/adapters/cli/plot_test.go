@@ -65,7 +65,7 @@ func TestSVGHistogram_ShowsTitleSummaryTicksAndClipping(t *testing.T) {
 	texts := parseSVG(t, svgHistogram(evenlySpread(1000), "cost <& more>")).texts
 
 	assert.Contains(t, texts, "cost <& more>")
-	assert.Contains(t, texts, "≈ 500   90% [50 … 949]")
+	assert.Contains(t, texts, "≈ 500   90% [50 … 949]   98% [10 … 990]")
 	assert.Contains(t, texts, "9.99")
 	assert.Contains(t, texts, "989")
 	assert.Contains(t, texts, "P1 to P99 shown, 20 samples outside")

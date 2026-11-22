@@ -32,7 +32,7 @@ func TestJSON_SummarisesASampleSet(t *testing.T) {
 	got := run(t, "", "--json", "-e", "10 to 20")
 
 	require.Equal(t, 0, got.code)
-	assert.Regexp(t, `^\{"kind":"samples","median":[\d.]+,"mean":[\d.]+,"stdev":[\d.]+,"p5":[\d.]+,"p95":[\d.]+,"n":5000,"dropped":0\}\n$`, got.stdout)
+	assert.Regexp(t, `^\{"kind":"samples","median":[\d.]+,"mean":[\d.]+,"stdev":[\d.]+,"p1":[\d.]+,"p5":[\d.]+,"p95":[\d.]+,"p99":[\d.]+,"n":5000,"dropped":0\}\n$`, got.stdout)
 	object := decodeLines(t, got.stdout)[0]
 	assert.InDelta(t, 14.14, object["median"], 0.3)
 	assert.InDelta(t, 10, object["p5"], 0.3)
@@ -55,7 +55,7 @@ func TestJSON_CountsDroppedSamplesAndKeepsSummariesFinite(t *testing.T) {
 
 func TestJSON_UsesNullForValuesThatAreNotFinite(t *testing.T) {
 	assert.Equal(t, `{"kind":"scalar","value":null}`+"\n", run(t, "", "--json", "-e", "1 / 0").stdout)
-	assert.Equal(t, `{"kind":"samples","median":null,"mean":null,"stdev":null,"p5":null,"p95":null,"n":5000,"dropped":5000}`+"\n",
+	assert.Equal(t, `{"kind":"samples","median":null,"mean":null,"stdev":null,"p1":null,"p5":null,"p95":null,"p99":null,"n":5000,"dropped":5000}`+"\n",
 		run(t, "", "--json", "-e", "(1 to 2) * 0 / 0").stdout)
 }
 

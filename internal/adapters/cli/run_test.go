@@ -58,11 +58,11 @@ func TestRun_ExitsWithEvaluationError_WhenTheExpressionCannotBeEvaluated(t *test
 	assert.Equal(t, want, run(t, "", "-e", "10 to 5"))
 }
 
-func TestRun_SummarisesASampleSetAsMedianAndNinetyPercentInterval(t *testing.T) {
+func TestRun_SummarisesASampleSetAsMedianAndTwoNestedIntervals(t *testing.T) {
 	got := run(t, "", "-e", "10 to 20")
 
 	assert.Equal(t, 0, got.code)
-	assert.Regexp(t, `^≈ \S+   90% \[\S+ … \S+\]   [▁▂▃▄▅▆▇█]{16}\n$`, got.stdout)
+	assert.Regexp(t, `^≈ \S+   90% \[\S+ … \S+\]   98% \[\S+ … \S+\]   [▁▂▃▄▅▆▇█]{16}\n$`, got.stdout)
 }
 
 func TestRun_PrintsTheVersion_WhenAskedFor(t *testing.T) {
@@ -151,7 +151,7 @@ func TestRun_ReportsHowManyNonFiniteSamplesWereDropped(t *testing.T) {
 	got := run(t, "", "-e", "x = 0 to 1; x / (x > 0.5)")
 
 	assert.Equal(t, 0, got.code)
-	assert.Regexp(t, `^≈ \S+   90% \[\S+ … \S+\]   [▁▂▃▄▅▆▇█]{16}   \(\d+ non-finite dropped\)\n$`, got.stdout)
+	assert.Regexp(t, `^≈ \S+   90% \[\S+ … \S+\]   98% \[\S+ … \S+\]   [▁▂▃▄▅▆▇█]{16}   \(\d+ non-finite dropped\)\n$`, got.stdout)
 }
 
 func TestRun_SaysSo_WhenNoSampleIsFinite(t *testing.T) {

@@ -50,4 +50,4 @@ stderr '^ubc: --data lead: empty.txt: no values to resample\n$'
 lead = 1 to 2
 max(lead)
 -- empirical.out --
-≈ 5   90% [3 … 13]   █▁▁█▁▁▁▁█▁▁▁▁▁▁█
+≈ 5   90% [3 … 13]   98% [3 … 13]   █▁▁█▁▁▁▁█▁▁▁▁▁▁█

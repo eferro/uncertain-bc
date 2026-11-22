@@ -94,7 +94,7 @@ Flags:
       --hist          draw a histogram under every uncertain result
       --watch         evaluate the files again whenever they change
       --interval W    print a W% interval instead of the 90% one (default 90)
-      --quantiles L   show these percentiles instead of the 90% interval (10,50,90)
+      --quantiles L   show these percentiles instead of the intervals (10,50,90)
   -h, --help          show this help
       --version       print the version
       --completion S  print a completion script for bash, zsh or fish
@@ -293,7 +293,7 @@ func registerOutputFlags(fs *flag.FlagSet, opts *options) {
 	fs.BoolVar(&opts.echo, "echo", false, "also print assignments, with their names")
 	fs.BoolVar(&opts.hist, "hist", false, "draw a histogram under every uncertain result")
 	fs.StringVar(&opts.interval, "interval", "", "width of the printed interval, a percentage (default 90)")
-	fs.StringVar(&opts.quantiles, "quantiles", "", "comma-separated percentiles to show instead of the 90% interval")
+	fs.StringVar(&opts.quantiles, "quantiles", "", "comma-separated percentiles to show instead of the 90% and 98% intervals")
 }
 
 func (a App) settings(opts options) application.Settings {

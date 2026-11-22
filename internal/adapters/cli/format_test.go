@@ -91,3 +91,29 @@ func TestPlain_ShowsNoFloatNoise_WhenRoundingToTensOrMore(t *testing.T) {
 		assert.Equal(t, want, plain(value), "plain(%v)", value)
 	}
 }
+
+func TestTailEnds_KeepTwoSignificantFiguresOfTheirDistance(t *testing.T) {
+	cases := []struct {
+		lo, hi         float64
+		wantLo, wantHi string
+	}{
+		{75.53, 378.3, "80", "380"},
+		{8.642, 23.03, "9", "23"},
+		{11458340, 11741129, "11.46M", "11.74M"},
+		{997.9, 1012.05, "998", "1012"},
+		{-2.105, 12.04, "-2", "12"},
+		{0.01234, 0.0987, "0.012", "0.099"},
+		{-1.5, 310, "0", "310"},
+	}
+	for _, c := range cases {
+		lo, hi := tailEnds(c.lo, c.hi)
+
+		assert.Equal(t, []string{c.wantLo, c.wantHi}, []string{lo, hi}, "%g %g", c.lo, c.hi)
+	}
+}
+
+func TestTailEnds_KeepThreeSignificantFigures_WhenBothEndsAreEqual(t *testing.T) {
+	lo, hi := tailEnds(1234, 1234)
+
+	assert.Equal(t, []string{"1230", "1230"}, []string{lo, hi})
+}

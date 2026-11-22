@@ -1,6 +1,6 @@
 # ADR 0034: Configurable interval width with `--interval`
 
-- Status: Accepted
+- Status: Accepted, amended by [ADR 0040](0040-nested-98-percent-interval.md)
 - Effective date: 2026-11-22
 - Deciders: eduardo.ferro
 - Complements: [ADR 0006](0006-bc-like-cli-with-honest-summary-output.md), [ADR 0025](0025-command-line-ux-additions.md)

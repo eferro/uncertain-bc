@@ -10,7 +10,7 @@ import (
 func TestInterval_SetsTheWidthOfThePrintedInterval(t *testing.T) {
 	got := run(t, "", "--interval", "80", "-e", "10 to 20")
 
-	assert.Regexp(t, `^≈ 14\.2   80% \[10\.8 … 18\.4\]   [▁▂▃▄▅▆▇█]{16}\n$`, got.stdout)
+	assert.Regexp(t, `^≈ 14\.2   80% \[10\.8 … 18\.4\]   98% \[9 … 23\]   [▁▂▃▄▅▆▇█]{16}\n$`, got.stdout)
 }
 
 func TestInterval_AcceptsFractionalWidths(t *testing.T) {
@@ -56,5 +56,5 @@ func TestInterval_RejectsWhatIsNotAWidth(t *testing.T) {
 func TestInterval_AppliesToFailedAssertions(t *testing.T) {
 	got := run(t, "", "--interval", "50", "--assert", "x < 15", "-e", "x = 10 to 20")
 
-	assert.Regexp(t, `^ubc: --assert x < 15 failed: ≈ 14\.2   50% \[\S+ … \S+\] < 15 \(P = `, got.stderr)
+	assert.Regexp(t, `^ubc: --assert x < 15 failed: ≈ 14\.2   50% \[\S+ … \S+\]   98% \[9 … 23\] < 15 \(P = `, got.stderr)
 }

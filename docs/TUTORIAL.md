@@ -41,15 +41,16 @@ When you do not know a number, give a range instead. `a to b` means "I am 90 % s
 
 ```console
 $ ubc examples/ranges.ubc
-L2: ≈ 14.2   90% [8 … 24.6]   ▃▅▆██▇▆▅▄▃▂▂▂▁▁▁
-L3: ≈ 169   90% [96.9 … 298]   ▃▅▇██▇▆▅▄▃▃▂▂▂▁▁
-L4: ≈ -0.0367   90% [-4.94 … 5.2]   ▂▂▃▄▅▆▇█▇▇▆▅▃▃▂▂
+L2: ≈ 14.2   90% [8 … 24.6]   98% [6 … 32]   ▃▅▆██▇▆▅▄▃▂▂▂▁▁▁
+L3: ≈ 169   90% [96.9 … 298]   98% [80 … 380]   ▃▅▇██▇▆▅▄▃▃▂▂▂▁▁
+L4: ≈ -0.0367   90% [-4.94 … 5.2]   98% [-7 … 7]   ▂▂▃▄▅▆▇█▇▇▆▅▃▃▂▂
 ```
 
 `ubc` draws 5000 random samples for every range and computes with all of them (a Monte Carlo simulation). Each uncertain result is one line:
 
 - `≈ 169`: the median, the value in the middle.
 - `90% [96.9 … 298]`: 90 % of the samples fall in this interval.
+- `98% [80 … 380]`: a wider interval that holds 98 % of the samples, so you can see how far the tails reach. Its ends rest on few samples, so they are rounded more coarsely.
 - the sparkline: the shape of the distribution, from low to high values.
 
 A range with both ends positive is lognormal: values cannot go below zero and the right tail is longer, which suits prices, durations and sizes. A range that includes zero or negative numbers is normal and symmetric. Write parentheses around a range before using it: `to` binds looser than arithmetic, so `8 to 25 * 12` means `8 to 300`.
@@ -69,11 +70,11 @@ yearly - price * 12     # exactly 0: same samples on both sides
 
 ```console
 $ ubc --echo examples/variables.ubc
-price = ≈ 14.2   90% [8 … 24.6]   ▃▅▆██▇▆▅▄▃▂▂▂▁▁▁
-yearly = ≈ 170   90% [96 … 296]   ▃▅▆██▇▆▅▄▃▂▂▂▁▁▁
-L4: ≈ 170   90% [96 … 296]   ▃▅▆██▇▆▅▄▃▂▂▂▁▁▁
+price = ≈ 14.2   90% [8 … 24.6]   98% [6 … 32]   ▃▅▆██▇▆▅▄▃▂▂▂▁▁▁
+yearly = ≈ 170   90% [96 … 296]   98% [80 … 380]   ▃▅▆██▇▆▅▄▃▂▂▂▁▁▁
+L4: ≈ 170   90% [96 … 296]   98% [80 … 380]   ▃▅▆██▇▆▅▄▃▂▂▂▁▁▁
 L5: 0
-L6: ≈ -0.0758   90% [-12.6 … 12]   ▁▂▂▃▄▅▇██▇▆▄▃▂▂▁
+L6: ≈ -0.0758   90% [-12.6 … 12]   98% [-20 … 18]   ▁▂▂▃▄▅▇██▇▆▄▃▂▂▁
 ```
 
 Assignments print nothing by default; `--echo` prints them too, so a model reads like a report. Every range draws new samples: the two `8 to 25` on the last line are independent guesses, and their difference is anything between about -12 and 12.
@@ -92,10 +93,10 @@ pert(3, 5, 12)                # minimum, most likely, maximum
 
 ```console
 $ ubc examples/distributions.ubc
-L2: ≈ 100   90% [75.3 … 124]   ▂▂▃▄▅▆▇██▇▆▅▄▃▂▂
-L3: ≈ 14.9   90% [10.5 … 19.5]   ██▇█▇█▇█▇▇▇▇▇█▇█
-L4: ≈ 5.65   90% [3.59 … 8.64]   ▄▆▇▇█▇▇▇▆▅▅▄▃▃▂▂
-L5: ≈ 15   90% [12 … 31]   ▅▁█▁▁▅▁▁▁▁▁▁▁▁▁▅
+L2: ≈ 100   90% [75.3 … 124]   98% [65 … 135]   ▂▂▃▄▅▆▇██▇▆▅▄▃▂▂
+L3: ≈ 14.9   90% [10.5 … 19.5]   98% [10.1 … 19.9]   ██▇█▇█▇█▇▇▇▇▇█▇█
+L4: ≈ 5.65   90% [3.59 … 8.64]   98% [3.2 … 9.8]   ▄▆▇▇█▇▇▇▆▅▅▄▃▃▂▂
+L5: ≈ 15   90% [12 … 31]   98% [12 … 31]   ▅▁█▁▁▅▁▁▁▁▁▁▁▁▁▅
 ```
 
 `pert` is the classic three-point estimate: it leans towards the most likely value. A list of numbers is empirical data: each sample picks one of them at random. The [specification](SPEC.md#5-built-in-functions-mvp) lists every distribution (`lognormal`, `triangular`, `beta`, `exponential`, `gamma`).
@@ -113,8 +114,8 @@ task(5) + task(3) + task(8)
 
 ```console
 $ ubc examples/functions.ubc
-L3: ≈ 5.66   90% [4 … 7.93]   ▂▄▅▆▇██▇▅▅▃▃▂▂▁▁
-L4: ≈ 18.3   90% [14.8 … 22.8]   ▂▃▄▅▆██▇▆▆▄▃▃▂▂▂
+L3: ≈ 5.66   90% [4 … 7.93]   98% [3.5 … 9.2]   ▂▄▅▆▇██▇▅▅▃▃▂▂▁▁
+L4: ≈ 18.3   90% [14.8 … 22.8]   98% [13 … 25]   ▂▃▄▅▆██▇▆▆▄▃▃▂▂▂
 ```
 
 A range inside a function draws fresh samples on every call, so each task gets its own error. That is why the sum of three tasks (≈ 18.3) is relatively narrower than a single one: the errors partly cancel out.
@@ -170,7 +171,7 @@ round(p(days, 0.85))       # days we can promise with 85% confidence
 
 ```console
 $ ubc examples/project-estimate.ubc
-L15: ≈ 38.8   90% [29.6 … 51.8]   ▂▄▅▇███▇▆▅▃▃▂▂▂▁
+L15: ≈ 38.8   90% [29.6 … 51.8]   98% [27 … 59]   ▂▄▅▇███▇▆▅▃▃▂▂▂▁
 L16: 0.07
 L17: 46
 ```
@@ -201,17 +202,17 @@ tuners
 
 ```console
 $ ubc --echo examples/fermi.ubc
-people = ≈ 3.29M   90% [3M … 3.59M]   ▂▂▃▄▅▆██▇▆▆▄▃▂▂▂
-per_household = ≈ 2.49   90% [2.3 … 2.7]   ▂▂▄▅▆▇████▆▅▃▃▂▂
-households = ≈ 1.32M   90% [1.17M … 1.49M]   ▂▂▄▄▆▇█▇▆▆▅▄▃▂▂▂
-with_piano = ≈ 0.0222   90% [0.0101 … 0.0516]   ▄▇██▆▅▄▃▃▂▂▂▁▁▁▁
-pianos = ≈ 30.9k   90% [14.6k … 69.3k]   ▄▇█▇▆▅▄▃▂▂▂▁▁▁▁▁
-tunings = ≈ 0.863   90% [0.493 … 1.48]   ▃▅▆▇██▆▅▅▃▃▂▂▂▁▁
-per_day = ≈ 2.84   90% [1.98 … 4.07]   ▂▄▅▇███▇▆▅▃▃▂▂▂▁
-workdays = ≈ 220   90% [200 … 241]   ▂▂▄▅▇▇███▇▆▅▃▃▂▂
-per_tuner = ≈ 622   90% [431 … 901]   ▃▄▆▇██▇▇▅▄▃▃▂▂▂▁
-tuners = ≈ 42.8   90% [15.8 … 118]   ▅██▆▅▃▃▂▂▂▁▁▁▁▁▁
-≈ 42.8   90% [15.8 … 118]   ▅██▆▅▃▃▂▂▂▁▁▁▁▁▁
+people = ≈ 3.29M   90% [3M … 3.59M]   98% [2.89M … 3.74M]   ▂▂▃▄▅▆██▇▆▆▄▃▂▂▂
+per_household = ≈ 2.49   90% [2.3 … 2.7]   98% [2.23 … 2.79]   ▂▂▄▅▆▇████▆▅▃▃▂▂
+households = ≈ 1.32M   90% [1.17M … 1.49M]   98% [1.11M … 1.57M]   ▂▂▄▄▆▇█▇▆▆▅▄▃▂▂▂
+with_piano = ≈ 0.0222   90% [0.0101 … 0.0516]   98% [0.007 … 0.072]   ▄▇██▆▅▄▃▃▂▂▂▁▁▁▁
+pianos = ≈ 30.9k   90% [14.6k … 69.3k]   98% [11k … 101k]   ▄▇█▇▆▅▄▃▂▂▂▁▁▁▁▁
+tunings = ≈ 0.863   90% [0.493 … 1.48]   98% [0.4 … 1.8]   ▃▅▆▇██▆▅▅▃▃▂▂▂▁▁
+per_day = ≈ 2.84   90% [1.98 … 4.07]   98% [1.7 … 4.7]   ▂▄▅▇███▇▆▅▃▃▂▂▂▁
+workdays = ≈ 220   90% [200 … 241]   98% [193 … 250]   ▂▂▄▅▇▇███▇▆▅▃▃▂▂
+per_tuner = ≈ 622   90% [431 … 901]   98% [380 … 1040]   ▃▄▆▇██▇▇▅▄▃▃▂▂▂▁
+tuners = ≈ 42.8   90% [15.8 … 118]   98% [10 … 190]   ▅██▆▅▃▃▂▂▂▁▁▁▁▁▁
+≈ 42.8   90% [15.8 … 118]   98% [10 … 190]   ▅██▆▅▃▃▂▂▂▁▁▁▁▁▁
 ```
 
 With `--echo`, every step shows its own uncertainty, so you can see which guess drives the result: the share of households with a piano spans a factor of five, more than anything else. That is the number worth researching first. (A file with a single expression prints it without a line number.)
@@ -243,7 +244,7 @@ P(bill > 300)                   # how often would we blow the budget?
 
 ```console
 $ ubc examples/cloud-cost.ubc
-L17: ≈ 216   90% [130 … 387]   ▃▅▇█▇▆▅▄▃▂▂▂▂▁▁▁
+L17: ≈ 216   90% [130 … 387]   98% [110 … 500]   ▃▅▇█▇▆▅▄▃▂▂▂▂▁▁▁
 L18: 0.17
 ```
 
@@ -251,7 +252,7 @@ What if the launch goes well? `--set` runs a scenario without editing the file: 
 
 ```console
 $ ubc --set 'users=100k to 200k' examples/cloud-cost.ubc
-L17: ≈ 600   90% [321 … 1170]   ▄▆██▇▆▅▄▃▃▂▂▂▁▁▁
+L17: ≈ 600   90% [321 … 1170]   98% [300 … 1600]   ▄▆██▇▆▅▄▃▃▂▂▂▁▁▁
 L18: 0.96
 ```
 
@@ -259,7 +260,7 @@ L18: 0.96
 
 ```console
 $ ubc --assert 'P(bill > 300) < 0.2' examples/cloud-cost.ubc
-L17: ≈ 216   90% [130 … 387]   ▃▅▇█▇▆▅▄▃▂▂▂▂▁▁▁
+L17: ≈ 216   90% [130 … 387]   98% [110 … 500]   ▃▅▇█▇▆▅▄▃▂▂▂▂▁▁▁
 L18: 0.17
 ```
 

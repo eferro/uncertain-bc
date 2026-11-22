@@ -7,7 +7,7 @@ stdout '^300\n$'
 stderr '^ubc: --assert fixed > 200 failed: 150 > 200\n$'
 
 ! exec ubc --assert 'cost < 150' model.ubc
-stderr '^ubc: --assert cost < 150 failed: ≈ 142   90% \[100 … 198\] < 150 \(P = 0\.61\)\n$'
+stderr '^ubc: --assert cost < 150 failed: ≈ 142   90% \[100 … 198\]   98% \[90 … 230\] < 150 \(P = 0\.61\)\n$'
 
 ! exec ubc --assert 'P(cost > 180)' --assert 'fixed == 150' --assert 'fixed != 150' model.ubc
 stderr '^ubc: --assert P\(cost > 180\) failed: 0\.\d\d\nubc: --assert fixed != 150 failed: 150 != 150\n$'

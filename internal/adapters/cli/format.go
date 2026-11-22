@@ -127,8 +127,39 @@ func summaryNumbers(v domain.SampleSet, st style) string {
 		return line.String()
 	}
 	ends := intervalEnds(st.interval)
-	return fmt.Sprintf("%s %s   %s%% [%s %s %s]", st.approx, significant(v.Quantile(0.5)), shortest(st.interval),
-		significant(v.Quantile(ends[0]/100)), st.ellipsis, significant(v.Quantile(ends[1]/100)))
+	line := fmt.Sprintf("%s %s   %s", st.approx, significant(v.Quantile(0.5)),
+		interval(st.interval, significant(v.Quantile(ends[0]/100)), significant(v.Quantile(ends[1]/100)), st))
+	if st.interval < tailInterval {
+		lo, hi := tailEnds(v.Quantile(0.01), v.Quantile(0.99))
+		line += "   " + interval(tailInterval, lo, hi, st)
+	}
+	return line
+}
+
+// tailInterval is the outer interval every summary nests around the inner one,
+// so P1 and P99 show without a flag (ADR 0040).
+const tailInterval = 98
+
+func interval(width float64, lo, hi string, st style) string {
+	return fmt.Sprintf("%s%% [%s %s %s]", shortest(width), lo, st.ellipsis, hi)
+}
+
+// tailEnds keep two significant figures of the distance between P1 and P99:
+// those percentiles rest on few samples, and their noise grows with the spread,
+// not with the size of the values (ADR 0040).
+func tailEnds(lo, hi float64) (string, string) {
+	if lo == hi {
+		end := significant(lo)
+		return end, end
+	}
+	exponent := int(math.Floor(math.Log10(hi-lo))) - 1
+	return suffixed(roundToSpread(lo, exponent)), suffixed(roundToSpread(hi, exponent))
+}
+
+// roundToSpread can round a small negative end to zero, and adding a positive
+// zero turns -0 into 0 so it never prints with a sign.
+func roundToSpread(x float64, exponent int) float64 {
+	return roundToPowerOfTen(x, exponent) + 0
 }
 
 // intervalEnds are the percentiles that leave the same share of samples out
@@ -159,7 +190,10 @@ var suffixes = []struct {
 // significant keeps three significant figures, because Monte Carlo noise makes
 // further digits meaningless (ADR 0006), and uses suffixes from 10k up (SPEC §6).
 func significant(x float64) string {
-	rounded := roundSignificant(x, 3)
+	return suffixed(roundSignificant(x, 3))
+}
+
+func suffixed(rounded float64) string {
 	for _, s := range suffixes {
 		if math.Abs(rounded) >= s.from {
 			return shortest(rounded/s.scale) + s.name
