@@ -1,10 +1,10 @@
 exec ubc scenarios/formulas.ubc scenarios/reliability/availability.ubc
-stdout '^L33: ≈ 2\.8 '
-stdout '^L34: ≈ 68\.6 '
-stdout '^L35: 0\.14\n\z'
+stdout '^L36: ≈ 2\.8 '
+stdout '^L37: ≈ 68\.6 '
+stdout '^L38: 0\.14\n\z'
 ! stderr .
 exec ubc --set 'database_down = 0.01% to 0.05%' scenarios/formulas.ubc scenarios/reliability/availability.ubc
-stdout '^L35: 0\.93\n\z'
+stdout '^L38: 0\.93\n\z'
 exec ubc --sens availability scenarios/formulas.ubc scenarios/reliability/availability.ubc
 stdout '^sensitivity of availability \(rank correlation\):\n'
 stdout '^  database_down +-0\.\d\d '

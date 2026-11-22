@@ -24,10 +24,13 @@ database_down = 0.05% to 0.3%     # share of the time the single database is dow
 minutes_per_month = 43200         # 30 days
 
 # Calculation
-application = availability_parallel(1 - instance_down, 1 - instance_down)                     # either instance is enough
-availability = availability_series(1 - balancer_down, availability_series(application, 1 - database_down))   # all three steps are needed
-downtime_minutes = (1 - availability) * minutes_per_month                                      # minutes down a month
-nines = -log10(1 - availability)                                                               # 3 nines is 99.9%
+balancer = 1 - balancer_down                                                # availability of each piece
+instance = 1 - instance_down
+database = 1 - database_down
+application = availability_parallel(instance, instance)                     # either instance is enough
+availability = availability_series(balancer, availability_series(application, database))   # all three steps are needed
+downtime_minutes = (1 - availability) * minutes_per_month                   # minutes down a month
+nines = -log10(1 - availability)                                            # 3 nines is 99.9%
 
 # Result
 nines
