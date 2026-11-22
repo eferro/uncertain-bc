@@ -20,6 +20,7 @@ type guideScript struct {
 	files    []txtar.File
 	source   *fencedBlock
 	outputs  int
+	errors   int
 	sources  int
 }
 
@@ -109,16 +110,40 @@ func (s *guideScript) addCommand(command string, output []string) error {
 	if err := s.checkSource(command); err != nil {
 		return err
 	}
-	fmt.Fprintf(&s.commands, "exec %s\n", command)
-	if len(output) == 0 {
-		s.commands.WriteString("! stdout .\n")
-		return nil
+	stdout, stderr := splitErrors(output)
+	if len(stderr) > 0 {
+		s.commands.WriteString("! ")
 	}
-	s.outputs++
-	name := fmt.Sprintf("output%d", s.outputs)
-	fmt.Fprintf(&s.commands, "cmp stdout %s\n", name)
-	s.files = append(s.files, txtar.File{Name: name, Data: joinLines(output)})
+	fmt.Fprintf(&s.commands, "exec %s\n", command)
+	if len(stdout) == 0 {
+		s.commands.WriteString("! stdout .\n")
+	} else {
+		s.outputs++
+		s.expect("stdout", fmt.Sprintf("output%d", s.outputs), stdout)
+	}
+	if len(stderr) > 0 {
+		s.errors++
+		s.expect("stderr", fmt.Sprintf("error%d", s.errors), stderr)
+	}
 	return nil
+}
+
+// splitErrors separates the lines ubc writes to stderr, which all start with
+// "ubc: ", from its results (ADR 0057).
+func splitErrors(output []string) (stdout, stderr []string) {
+	for _, line := range output {
+		if strings.HasPrefix(line, "ubc: ") {
+			stderr = append(stderr, line)
+		} else {
+			stdout = append(stdout, line)
+		}
+	}
+	return stdout, stderr
+}
+
+func (s *guideScript) expect(stream, name string, lines []string) {
+	fmt.Fprintf(&s.commands, "cmp %s %s\n", stream, name)
+	s.files = append(s.files, txtar.File{Name: name, Data: joinLines(lines)})
 }
 
 func (s *guideScript) checkSource(command string) error {

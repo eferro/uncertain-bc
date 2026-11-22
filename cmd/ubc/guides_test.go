@@ -13,7 +13,7 @@ import (
 )
 
 func TestGuides_EveryConsoleBlockMatchesTheBinary(t *testing.T) {
-	for _, guide := range []string{"TUTORIAL.md", "MODELLING.md"} {
+	for _, guide := range []string{"TUTORIAL.md", "MODELLING.md", "REFERENCE.md"} {
 		t.Run(guide, func(t *testing.T) {
 			markdown, err := os.ReadFile(filepath.Join("..", "..", "docs", guide))
 			require.NoError(t, err)
@@ -28,13 +28,18 @@ func TestGuides_EveryConsoleBlockMatchesTheBinary(t *testing.T) {
 	}
 }
 
-func TestModellingGuide_IsLinkedFromTheReadmeTheTutorialAndTheCatalogue(t *testing.T) {
-	for doc, link := range map[string]string{
-		"README.md":           "(docs/MODELLING.md)",
-		"docs/TUTORIAL.md":    "(MODELLING.md)",
-		"scenarios/README.md": "(../docs/MODELLING.md)",
-	} {
-		t.Run(doc, func(t *testing.T) {
+func TestGuides_AreLinkedFromTheDocsThatPointReadersToThem(t *testing.T) {
+	tests := []struct{ doc, link string }{
+		{"README.md", "(docs/MODELLING.md)"},
+		{"docs/TUTORIAL.md", "(MODELLING.md)"},
+		{"scenarios/README.md", "(../docs/MODELLING.md)"},
+		{"README.md", "(docs/REFERENCE.md)"},
+		{"docs/SPEC.md", "(REFERENCE.md)"},
+		{"docs/TUTORIAL.md", "(REFERENCE.md)"},
+	}
+	for _, tt := range tests {
+		doc, link := tt.doc, tt.link
+		t.Run(doc+" "+link, func(t *testing.T) {
 			content, err := os.ReadFile(filepath.Join("..", "..", doc))
 			require.NoError(t, err)
 			assert.True(t, strings.Contains(string(content), link), "%s does not link to %s", doc, link)
@@ -59,6 +64,33 @@ func TestGuideArchive_ExpectsNoOutput_WhenTheCommandShowsNone(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, "exec ubc -e 'x = 1'\n! stdout .\n", string(archive.Comment))
 	assert.Empty(t, archive.Files)
+}
+
+func TestGuideArchive_ExpectsTheCommandToFail_WhenItShowsAnError(t *testing.T) {
+	archive, err := guideArchive("```console\n$ ubc -e '10 to 5'\nubc: line 1, col 4: bad range\n```\n")
+
+	require.NoError(t, err)
+	assert.Equal(t, "! exec ubc -e '10 to 5'\n! stdout .\ncmp stderr error1\n", string(archive.Comment))
+	assert.Equal(t, []txtar.File{{Name: "error1", Data: []byte("ubc: line 1, col 4: bad range\n")}}, archive.Files)
+}
+
+func TestGuideArchive_ChecksStdoutAndStderrApart_WhenTheCommandShowsBoth(t *testing.T) {
+	archive, err := guideArchive("```console\n$ ubc --assert 'x > 3' -e 'x = 1'\n1\nubc: --assert x > 3 failed: 1 > 3\n$ ubc -e '2'\n2\n```\n")
+
+	require.NoError(t, err)
+	assert.Equal(t, "! exec ubc --assert 'x > 3' -e 'x = 1'\ncmp stdout output1\ncmp stderr error1\nexec ubc -e '2'\ncmp stdout output2\n", string(archive.Comment))
+	assert.Equal(t, []txtar.File{
+		{Name: "output1", Data: []byte("1\n")},
+		{Name: "error1", Data: []byte("ubc: --assert x > 3 failed: 1 > 3\n")},
+		{Name: "output2", Data: []byte("2\n")},
+	}, archive.Files)
+}
+
+func TestGuideArchive_ReadsALineAsOutput_WhenItStartsWithUbcButNotTheErrorPrefix(t *testing.T) {
+	archive, err := guideArchive("```console\n$ ubc --scenario-source x\nubc:3\n```\n")
+
+	require.NoError(t, err)
+	assert.Equal(t, "exec ubc --scenario-source x\ncmp stdout output1\n", string(archive.Comment))
 }
 
 func TestGuideArchive_ChecksTheShownSourceAgainstTheFileTheNextBlockRuns(t *testing.T) {
