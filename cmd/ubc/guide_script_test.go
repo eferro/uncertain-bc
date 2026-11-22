@@ -134,8 +134,7 @@ func (s *guideScript) addCat(command, file string, output []string) error {
 	if len(output) == 0 {
 		return fmt.Errorf("console command %q shows no content", command)
 	}
-	s.outputs++
-	s.expect(file, fmt.Sprintf("output%d", s.outputs), output)
+	s.expectOutput(file, output)
 	return nil
 }
 
@@ -151,8 +150,12 @@ func (s *guideScript) expectStdout(lines []string) {
 		s.commands.WriteString("! stdout .\n")
 		return
 	}
+	s.expectOutput("stdout", lines)
+}
+
+func (s *guideScript) expectOutput(target string, lines []string) {
 	s.outputs++
-	s.expect("stdout", fmt.Sprintf("output%d", s.outputs), lines)
+	s.expect(target, fmt.Sprintf("output%d", s.outputs), lines)
 }
 
 func (s *guideScript) expectStderr(lines []string) {
