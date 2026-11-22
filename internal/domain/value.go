@@ -127,6 +127,16 @@ func combine(op func(a, b float64) float64, left, right Value) Value {
 	return out
 }
 
+// AsSamples gives v as n samples, a plain number standing for the same value
+// in every sample, as in arithmetic (SPEC §4 rule 1).
+func AsSamples(v Value, n int) SampleSet {
+	samples := make(SampleSet, n)
+	for i := range samples {
+		samples[i] = at(v, i)
+	}
+	return samples
+}
+
 func size(v Value) int {
 	if s, ok := v.(SampleSet); ok {
 		return len(s)

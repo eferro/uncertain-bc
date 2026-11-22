@@ -67,3 +67,12 @@ func TestEnv_WithSamples_KeepsUserFunctions(t *testing.T) {
 
 	assert.Equal(t, domain.Scalar(8), evaluateIn(t, env.WithSamples(3), "double(4)"))
 }
+
+func TestAsSamples_RepeatsAPlainNumberOrAProbability_InEverySample(t *testing.T) {
+	assert.Equal(t, domain.SampleSet{2.5, 2.5, 2.5}, domain.AsSamples(domain.Scalar(2.5), 3))
+	assert.Equal(t, domain.SampleSet{0.25, 0.25}, domain.AsSamples(domain.Probability(0.25), 2))
+}
+
+func TestAsSamples_KeepsASampleSetInOrder(t *testing.T) {
+	assert.Equal(t, domain.SampleSet{3, 1, 2}, domain.AsSamples(domain.SampleSet{3, 1, 2}, 3))
+}

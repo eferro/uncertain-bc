@@ -56,27 +56,9 @@ func (o samplesOut) write(session *application.Session, samples int) error {
 func columnsOf(variables []application.Variable, samples int) []column {
 	columns := make([]column, 0, len(variables))
 	for _, v := range variables {
-		columns = append(columns, column{name: v.Name, samples: samplesOf(v.Value, samples)})
+		columns = append(columns, column{name: v.Name, samples: domain.AsSamples(v.Value, samples)})
 	}
 	return columns
-}
-
-func samplesOf(value domain.Value, samples int) []float64 {
-	switch v := value.(type) {
-	case domain.SampleSet:
-		return v
-	case domain.Probability:
-		return repeated(float64(v), samples)
-	}
-	return repeated(float64(value.(domain.Scalar)), samples)
-}
-
-func repeated(x float64, samples int) []float64 {
-	values := make([]float64, samples)
-	for i := range values {
-		values[i] = x
-	}
-	return values
 }
 
 // csvTable leaves non-finite samples empty, the usual missing value in CSV.
