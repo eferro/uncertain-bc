@@ -1,0 +1,38 @@
+[!linux] [!darwin] skip 'pseudo-terminals only on Linux and macOS'
+env XDG_STATE_HOME=$WORK/state
+
+unescape typing.keys
+ttyin -stdin typing.keys
+exec ubc
+stdout '^ubc> 1 \+ 2\r\n3\r\nubc> :quit\r\n$'
+
+unescape editing.keys
+ttyin -stdin editing.keys
+exec ubc
+stdout '^ubc> .*\r\n7\r\n'
+cmp state/ubc/history history.want
+
+env XDG_STATE_HOME=$WORK/recalled
+unescape recall.keys
+ttyin -stdin recall.keys
+exec ubc
+stdout '^ubc> .*\r\n42\r\n'
+cmp recalled/ubc/history recalled.want
+
+-- typing.keys --
+1 + 2\n:quit\n
+-- editing.keys --
+2 * 3\x011 + \n:quit\n
+-- history.want --
+1 + 2
+:quit
+1 + 2 * 3
+:quit
+-- recall.keys --
+\x10\n:quit\n
+-- recalled/ubc/history --
+40 + 2
+-- recalled.want --
+40 + 2
+40 + 2
+:quit

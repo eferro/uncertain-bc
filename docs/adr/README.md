@@ -43,3 +43,4 @@ Template: Status, Effective date, Deciders, then Context, Decision, Consequences
 | [0033](0033-sensitivity-by-rank-correlation.md) | Sensitivity analysis by rank correlation, with `:sens` and `--sens` | Accepted | 2026-11-22 |
 | [0034](0034-configurable-interval-width.md) | Configurable interval width with `--interval` | Accepted | 2026-11-22 |
 | [0035](0035-exact-poisson-and-binomial-sampling.md) | Exact `poisson` and `binomial` sampling by recursive reduction | Accepted | 2026-11-22 |
+| [0036](0036-raw-mode-repl-tested-through-a-pseudo-terminal.md) | Raw-mode REPL tested through testscript's pseudo-terminal | Accepted | 2026-11-22 |
