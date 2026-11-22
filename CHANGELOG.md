@@ -4,6 +4,10 @@ All notable changes to `ubc` are documented in this file. The format follows [Ke
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-11-23
+
+First stable version: from now on the language, flags, REPL commands, `--json` and `--plain` output, exit codes and scenario names only change in a backwards-incompatible way with a new major version ([ADR 0062](https://github.com/eferro/uncertain-bc/blob/main/docs/adr/0062-version-1-and-its-stability-promise.md)).
+
 ### Added
 
 - `--set name=expr` overrides a model's variables from the command line.
@@ -111,7 +115,8 @@ All notable changes to `ubc` are documented in this file. The format follows [Ke
 - Syntax errors report their position.
 - `ubc --version`, and release binaries for Linux, macOS and Windows.
 
-[Unreleased]: https://github.com/eferro/uncertain-bc/compare/v0.7.2...HEAD
+[Unreleased]: https://github.com/eferro/uncertain-bc/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/eferro/uncertain-bc/compare/v0.7.2...v1.0.0
 [0.7.2]: https://github.com/eferro/uncertain-bc/compare/v0.7.1...v0.7.2
 [0.7.1]: https://github.com/eferro/uncertain-bc/compare/v0.7.0...v0.7.1
 [0.7.0]: https://github.com/eferro/uncertain-bc/compare/v0.6.0...v0.7.0

@@ -1,6 +1,6 @@
 # ADR 0015: GitHub Actions CI and goreleaser releases
 
-- Status: Accepted
+- Status: Accepted (versioning amended by [ADR 0062](0062-version-1-and-its-stability-promise.md))
 - Effective date: 2026-11-21
 - Deciders: eduardo.ferro
 
