@@ -1,9 +1,13 @@
 package cli
 
 import (
+	"math"
+	"math/rand/v2"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+
+	"github.com/eferro/uncertain-bc/internal/domain"
 )
 
 func TestSignificant_RoundsToThreeSignificantFigures(t *testing.T) {
@@ -92,28 +96,83 @@ func TestPlain_ShowsNoFloatNoise_WhenRoundingToTensOrMore(t *testing.T) {
 	}
 }
 
-func TestTailEnds_KeepTwoSignificantFiguresOfTheirDistance(t *testing.T) {
+func TestTailEnds_RoundOutwardsToTwoSignificantFiguresOfTheirDistance(t *testing.T) {
 	cases := []struct {
 		lo, hi         float64
-		wantLo, wantHi string
+		wantLo, wantHi float64
 	}{
-		{75.53, 378.3, "80", "380"},
-		{8.642, 23.03, "9", "23"},
-		{11458340, 11741129, "11.46M", "11.74M"},
-		{997.9, 1012.05, "998", "1012"},
-		{-2.105, 12.04, "-2", "12"},
-		{0.01234, 0.0987, "0.012", "0.099"},
-		{-1.5, 310, "0", "310"},
+		{11458340, 11741129, 11450000, 11750000},
+		{997.9, 1012.05, 997, 1013},
+		{0.01234, 0.0987, 0.012, 0.099},
+		{0.29, 0.57, 0.29, 0.57},
+		{610, 15000, 610, 15000},
 	}
 	for _, c := range cases {
-		lo, hi := tailEnds(c.lo, c.hi)
+		lo, hi := tailEnds(c.lo, c.hi, c.lo, c.hi)
 
-		assert.Equal(t, []string{c.wantLo, c.wantHi}, []string{lo, hi}, "%g %g", c.lo, c.hi)
+		assert.Equal(t, []float64{c.wantLo, c.wantHi}, []float64{lo, hi}, "%g %g", c.lo, c.hi)
 	}
 }
 
-func TestTailEnds_KeepThreeSignificantFigures_WhenBothEndsAreEqual(t *testing.T) {
-	lo, hi := tailEnds(1234, 1234)
+func TestTailEnds_KeepTwoSignificantFiguresOfTheirOwn_WhenTheDistanceIsCoarser(t *testing.T) {
+	cases := []struct {
+		lo, hi         float64
+		wantLo, wantHi float64
+	}{
+		{615.9, 15978.1, 610, 16000},
+		{75.53, 378.3, 75, 380},
+		{8.642, 23.03, 8.6, 24},
+		{-2.105, 12.04, -2.2, 13},
+		{-1.5, 310, -1.5, 310},
+		{-310, -1.5, -310, -1.5},
+	}
+	for _, c := range cases {
+		lo, hi := tailEnds(c.lo, c.hi, c.lo, c.hi)
 
-	assert.Equal(t, []string{"1230", "1230"}, []string{lo, hi})
+		assert.Equal(t, []float64{c.wantLo, c.wantHi}, []float64{lo, hi}, "%g %g", c.lo, c.hi)
+	}
+}
+
+func TestIntervals_KeepThe98PercentAroundThe90Percent_WhenTheInnerEndsRoundFurtherOut(t *testing.T) {
+	samples := clampedRamp(1004, 1046)
+
+	got := intervals(samples, unicodeStyle)
+
+	assert.Equal(t, "90% [1000 … 1050]   98% [1000 … 1050]", got)
+}
+
+func TestTailEnds_KeepThreeSignificantFigures_WhenBothEndsAreEqual(t *testing.T) {
+	lo, hi := tailEnds(1234, 1234, 1230, 1230)
+
+	assert.Equal(t, []float64{1230, 1230}, []float64{lo, hi})
+}
+
+func TestTailEnds_ContainTheTailsAndTheInnerInterval_ForSkewedSamples(t *testing.T) {
+	for seed := range uint64(40) {
+		samples := skewedSamples(seed)
+		p1, p99 := samples.Quantile(0.01), samples.Quantile(0.99)
+		innerLo, innerHi := roundSignificant(samples.Quantile(0.05), 3), roundSignificant(samples.Quantile(0.95), 3)
+
+		lo, hi := tailEnds(p1, p99, innerLo, innerHi)
+
+		assert.LessOrEqual(t, lo, math.Min(p1, innerLo), "seed %d", seed)
+		assert.GreaterOrEqual(t, hi, math.Max(p99, innerHi), "seed %d", seed)
+	}
+}
+
+func clampedRamp(lo, hi float64) domain.SampleSet {
+	samples := make(domain.SampleSet, 100)
+	for i := range samples {
+		samples[i] = min(max(lo, 1000+float64(i)/2), hi)
+	}
+	return samples
+}
+
+func skewedSamples(seed uint64) domain.SampleSet {
+	r := rand.New(rand.NewPCG(seed, seed))
+	samples := make(domain.SampleSet, 5000)
+	for i := range samples {
+		samples[i] = 1000 * math.Exp(r.NormFloat64())
+	}
+	return samples
 }

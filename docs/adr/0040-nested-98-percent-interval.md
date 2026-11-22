@@ -1,6 +1,6 @@
 # ADR 0040: A nested 98% interval in every summary
 
-- Status: Accepted
+- Status: Accepted, amended by [ADR 0051](0051-round-the-98-percent-ends-outwards.md)
 - Effective date: 2026-11-22
 - Deciders: eduardo.ferro
 - Amends: [ADR 0006](0006-bc-like-cli-with-honest-summary-output.md), [ADR 0034](0034-configurable-interval-width.md)

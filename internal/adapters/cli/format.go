@@ -137,42 +137,46 @@ func quantileList(v domain.SampleSet, quantiles []float64) string {
 // the wider of the two (ADR 0040).
 func intervals(v domain.SampleSet, st style) string {
 	ends := intervalEnds(st.interval)
-	inner := interval(st.interval, significant(v.Quantile(ends[0]/100)), significant(v.Quantile(ends[1]/100)), st)
+	lo, hi := roundSignificant(v.Quantile(ends[0]/100), 3), roundSignificant(v.Quantile(ends[1]/100), 3)
+	inner := interval(st.interval, suffixed(lo), suffixed(hi), st)
 	if st.interval >= tailInterval {
 		return inner
 	}
-	lo, hi := tailEnds(v.Quantile(0.01), v.Quantile(0.99))
-	return inner + "   " + interval(tailInterval, lo, hi, st)
+	outerLo, outerHi := tailEnds(v.Quantile(0.01), v.Quantile(0.99), lo, hi)
+	return inner + "   " + interval(tailInterval, suffixed(outerLo), suffixed(outerHi), st)
 }
 
-// tailInterval is the outer interval every summary nests around the inner one,
-// so P1 and P99 show without a flag (ADR 0040).
 const tailInterval = 98
 
 func interval(width float64, lo, hi string, st style) string {
 	return fmt.Sprintf("%s%% [%s %s %s]", shortest(width), lo, st.ellipsis, hi)
 }
 
-// tailEnds keep two significant figures of the distance between P1 and P99:
-// those percentiles rest on few samples, and their noise grows with the spread,
-// not with the size of the values (ADR 0040).
-func tailEnds(lo, hi float64) (string, string) {
-	if lo == hi {
-		end := significant(lo)
-		return end, end
+// tailEnds rounds P1 down and P99 up to two significant figures of their
+// distance, since their noise grows with the spread, but never coarser than
+// two of their own, and never inside the printed inner interval, so the 98%
+// interval always contains the true tails and the inner interval (ADR 0051).
+func tailEnds(p1, p99, innerLo, innerHi float64) (float64, float64) {
+	if p1 == p99 {
+		return roundSignificant(p1, 3), roundSignificant(p99, 3)
 	}
-	exponent := int(math.Floor(math.Log10(hi-lo))) - 1
-	return suffixed(roundToSpread(lo, exponent)), suffixed(roundToSpread(hi, exponent))
+	spread := magnitude(p99-p1) - 1
+	lo := roundOutwards(p1, min(spread, magnitude(p1)-1), -1)
+	hi := roundOutwards(p99, min(spread, magnitude(p99)-1), 1)
+	return math.Min(lo, innerLo), math.Max(hi, innerHi)
 }
 
-// roundToSpread can round a small negative end to zero, and adding a positive
-// zero turns -0 into 0 so it never prints with a sign.
-func roundToSpread(x float64, exponent int) float64 {
-	return roundToPowerOfTen(x, exponent) + 0
+// roundOutwards rounds to the nearest step first and then moves one step in
+// direction if that crossed x, so a value already on a step stays there
+// instead of picking up the float error of x·10^k (ADR 0039).
+func roundOutwards(x float64, exponent int, direction float64) float64 {
+	steps := math.Round(toSteps(x, exponent))
+	if (fromSteps(steps, exponent)-x)*direction < 0 {
+		steps += direction
+	}
+	return fromSteps(steps, exponent)
 }
 
-// intervalEnds are the percentiles that leave the same share of samples out
-// on each side of a central interval of the given width.
 func intervalEnds(width float64) []float64 {
 	return []float64{50 - width/2, 50 + width/2}
 }
@@ -220,20 +224,31 @@ func roundSignificant(x float64, digits int) float64 {
 	if x == 0 {
 		return 0
 	}
-	magnitude := int(math.Floor(math.Log10(math.Abs(x))))
-	return roundToPowerOfTen(x, magnitude-digits+1)
+	return roundToPowerOfTen(x, magnitude(x)-digits+1)
 }
 
-// roundToPowerOfTen rounds x to a multiple of 10^exponent. Only whole powers of
-// ten are exact in binary, so it always divides or multiplies by one of those and
-// never by an inexact 10^-n, which would print noise (ADR 0039).
+func magnitude(x float64) int {
+	return int(math.Floor(math.Log10(math.Abs(x))))
+}
+
 func roundToPowerOfTen(x float64, exponent int) float64 {
+	return fromSteps(math.Round(toSteps(x, exponent)), exponent)
+}
+
+// toSteps and fromSteps scale by an exact power of ten, dividing for negative
+// exponents, because 10^-k has no exact float (ADR 0039).
+func toSteps(x float64, exponent int) float64 {
 	if exponent > 0 {
-		step := math.Pow(10, float64(exponent))
-		return math.Round(x/step) * step
+		return x / math.Pow(10, float64(exponent))
 	}
-	scale := math.Pow(10, float64(-exponent))
-	return math.Round(x*scale) / scale
+	return x * math.Pow(10, float64(-exponent))
+}
+
+func fromSteps(steps float64, exponent int) float64 {
+	if exponent > 0 {
+		return steps * math.Pow(10, float64(exponent))
+	}
+	return steps / math.Pow(10, float64(-exponent))
 }
 
 func shortest(x float64) string {

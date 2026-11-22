@@ -9,13 +9,13 @@ import (
 func TestNestedInterval_FollowsTheNinetyPercentOneByDefault(t *testing.T) {
 	got := run(t, "", "-e", "(8 to 25) * 12")
 
-	assert.Regexp(t, `^≈ 170   90% \[96 … 296\]   98% \[80 … 380\]   [▁▂▃▄▅▆▇█]{16}\n$`, got.stdout)
+	assert.Regexp(t, `^≈ 170   90% \[96 … 296\]   98% \[75 … 380\]   [▁▂▃▄▅▆▇█]{16}\n$`, got.stdout)
 }
 
 func TestNestedInterval_StaysAtNinetyEightPercent_WhenTheInnerWidthChanges(t *testing.T) {
 	got := run(t, "", "--interval", "50", "-e", "(8 to 25) * 12")
 
-	assert.Regexp(t, `^≈ 170   50% \[\S+ … \S+\]   98% \[80 … 380\]   `, got.stdout)
+	assert.Regexp(t, `^≈ 170   50% \[\S+ … \S+\]   98% \[75 … 380\]   `, got.stdout)
 }
 
 func TestNestedInterval_IsLeftOut_WhenTheIntervalIsAtLeastNinetyEightPercent(t *testing.T) {
@@ -29,7 +29,7 @@ func TestNestedInterval_IsLeftOut_WhenTheIntervalIsAtLeastNinetyEightPercent(t *
 func TestNestedInterval_IsShown_WhenTheIntervalIsJustBelowNinetyEightPercent(t *testing.T) {
 	got := run(t, "", "--interval", "97.9", "-e", "(8 to 25) * 12")
 
-	assert.Regexp(t, `^≈ 170   97\.9% \[\S+ … \S+\]   98% \[80 … 380\]   `, got.stdout)
+	assert.Regexp(t, `^≈ 170   97\.9% \[\S+ … \S+\]   98% \[75 … 380\]   `, got.stdout)
 }
 
 func TestNestedInterval_IsReplacedByQuantiles(t *testing.T) {
@@ -51,8 +51,8 @@ func TestNestedInterval_AppliesToFailedAssertions(t *testing.T) {
 	assert.Regexp(t, `^ubc: --assert x < 15 failed: ≈ 14\.2   90% \[10 … 19\.8\]   98% \[\S+ … \S+\] < 15 \(P = `, got.stderr)
 }
 
-func TestNestedInterval_RoundsItsEndsToTheSpread_WhenTheDistributionIsNarrow(t *testing.T) {
+func TestNestedInterval_RoundsItsEndsOutwardsToTheSpread_WhenTheDistributionIsNarrow(t *testing.T) {
 	got := run(t, "", "-e", "1000 to 1010")
 
-	assert.Regexp(t, `^≈ 1010   90% \[1000 … 1010\]   98% \[998 … 1012\]   `, got.stdout)
+	assert.Regexp(t, `^≈ 1010   90% \[1000 … 1010\]   98% \[997 … 1013\]   `, got.stdout)
 }

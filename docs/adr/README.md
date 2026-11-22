@@ -58,3 +58,4 @@ Template: Status, Effective date, Deciders, then Context, Decision, Consequences
 | [0048](0048-reliability-scenarios.md) | Reliability scenarios, with availability described by its downtime share | Accepted | 2026-11-22 |
 | [0049](0049-cloud-cost-scenarios.md) | Cloud and variable cost scenarios, in dollars | Accepted | 2026-11-22 |
 | [0050](0050-risk-scenarios.md) | Risk and security scenarios around the annual loss expectancy | Accepted | 2026-11-22 |
+| [0051](0051-round-the-98-percent-ends-outwards.md) | Round the ends of the 98% interval outwards (amends 0040) | Accepted | 2026-11-22 |

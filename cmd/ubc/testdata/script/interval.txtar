@@ -23,4 +23,4 @@ stderr '^ubc: --interval and --quantiles cannot be combined\n$'
 stderr '^ubc: --interval expects a percentage between 0 and 100, got ''100''\n$'
 
 -- default.txt --
-≈ 14.2   90% [10 … 19.8]   98% [9 … 23]   ▂▄▅▆▇██▇▅▅▃▃▂▂▁▁
+≈ 14.2   90% [10 … 19.8]   98% [8.6 … 24]   ▂▄▅▆▇██▇▅▅▃▃▂▂▁▁
