@@ -168,9 +168,9 @@ func tailEnds(p1, p99, innerLo, innerHi float64) (float64, float64) {
 	if p1 == p99 {
 		return roundForSummary(p1, 0), roundForSummary(p99, 0)
 	}
-	spread := magnitude(p99-p1) - 1
-	lo := roundOutwards(p1, min(spread, magnitude(p1)-1), -1)
-	hi := roundOutwards(p99, min(spread, magnitude(p99)-1), 1)
+	spread := figuresExponent(p99-p1, tailFigures)
+	lo := roundOutwards(p1, min(spread, figuresExponent(p1, tailFigures)), -1)
+	hi := roundOutwards(p99, min(spread, figuresExponent(p99, tailFigures)), 1)
 	return math.Min(lo, innerLo), math.Max(hi, innerHi)
 }
 
@@ -215,11 +215,12 @@ func significant(x float64) string {
 }
 
 // summaryFigures and widthFigures set the precision of every summary number
-// but the 98% ends; the 98% clamp relies on rounding the inner ends exactly as
-// they are printed (ADR 0006, ADR 0051, ADR 0052).
+// but the 98% ends, which use tailFigures; the 98% clamp relies on rounding
+// the inner ends exactly as they are printed (ADR 0006, ADR 0051, ADR 0052).
 const (
 	summaryFigures = 3
 	widthFigures   = 2
+	tailFigures    = 2
 )
 
 // roundForSummary keeps the finer of three significant figures of x and two
@@ -229,9 +230,9 @@ func roundForSummary(x, width float64) float64 {
 	if x == 0 {
 		return 0
 	}
-	exponent := magnitude(x) - summaryFigures + 1
+	exponent := figuresExponent(x, summaryFigures)
 	if width > 0 {
-		exponent = min(exponent, magnitude(width)-widthFigures+1)
+		exponent = min(exponent, figuresExponent(width, widthFigures))
 	}
 	return roundToPowerOfTen(x, exponent)
 }
@@ -254,7 +255,13 @@ func roundSignificant(x float64, digits int) float64 {
 	if x == 0 {
 		return 0
 	}
-	return roundToPowerOfTen(x, magnitude(x)-digits+1)
+	return roundToPowerOfTen(x, figuresExponent(x, digits))
+}
+
+// figuresExponent is the power of ten of the last of the first figures
+// significant digits of x, the step every rounding rule is stated in.
+func figuresExponent(x float64, figures int) int {
+	return magnitude(x) - figures + 1
 }
 
 func magnitude(x float64) int {
