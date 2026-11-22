@@ -104,6 +104,8 @@ var distributions = map[string]distribution{
 	"exponential": {1, positive(0, "rate"), func(p []float64) sampler { return exponential(p[0]) }},
 	"gamma":       {2, all(positive(0, "shape"), positive(1, "scale")), func(p []float64) sampler { return gammaScaled(p[0], p[1]) }},
 	"pert":        {3, triangle, func(p []float64) sampler { return pert(p[0], p[1], p[2]) }},
+	"poisson":     {1, all(positive(0, "lambda"), finite(0, "lambda")), func(p []float64) sampler { return poisson(p[0]) }},
+	"binomial":    {2, all(positiveWhole(0, "n"), probability(1, "p")), func(p []float64) sampler { return binomial(p[0], p[1]) }},
 }
 
 func (d distribution) call(c call, env Env, args []Value) (Value, error) {

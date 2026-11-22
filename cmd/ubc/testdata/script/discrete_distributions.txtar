@@ -1,0 +1,8 @@
+exec ubc -e 'poisson(4)' -e 'binomial(10, 0.3)' -e 'P(poisson(4) == 4)'
+stdout '^≈ 4   90% \[1 … 8\]'
+stdout '^≈ 3   90% \[1 … 5\]'
+stdout '^0\.19$'
+! exec ubc -e 'poisson(0)'
+stderr '^ubc: line 1, col 1: poisson: lambda must be positive, got 0\n$'
+! exec ubc -e 'binomial(2.5, 0.5)'
+stderr '^ubc: line 1, col 1: binomial: n must be a positive whole number, got 2.5\n$'

@@ -130,6 +130,7 @@ Rules:
 |---|---|
 | `normal(mean, sd)`, `lognormal(mu, sigma)`, `uniform(lo, hi)`, `triangular(lo, mode, hi)`, `beta(a, b)` | SampleSet |
 | `exponential(rate)`, `gamma(shape, scale)`, `pert(lo, mode, hi)` (phase 4) | SampleSet; `pert` is Beta-PERT with mean `(lo + 4·mode + hi) / 6` |
+| `poisson(lambda)`, `binomial(n, p)` | SampleSet of whole numbers, drawn exactly for any size (ADR 0035); `lambda` positive and finite, `n` a positive whole number, `p` in [0, 1] |
 | `mean(x)`, `median(x)`, `stdev(x)`, `min(x)`, `max(x)` | Scalar (identity on scalars); `stdev` is the population standard deviation |
 | `p(x, q)` | q-quantile, `q` in [0, 1] |
 | `P(cond)` | Probability |

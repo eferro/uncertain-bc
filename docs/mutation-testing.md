@@ -17,3 +17,6 @@ Surviving mutants that no test can kill with the current behaviour. Revisit this
 | `rank_correlation.go` `ranks`, `cmp.Compare(values[a], values[b])` | `cmp.Compare(values[b], values[a])` | Both sides are ranked the same way, so descending order reverses both rankings and Pearson's coefficient of the ranks stays the same. |
 | `rank_correlation.go` `ranks`, `(start+end+1) / 2` | `(start+end) / 2` | Every rank moves by the same 0.5, and a correlation does not change when a variable is shifted. |
 | `rank_correlation.go` `pearson`, `my := mean(y)` | `mean(x)` | `pearson` only ever gets ranks, and average ranks of n values always sum to n(n+1)/2, so both means are (n+1)/2. |
+| `discrete_distribution.go` `poissonDirectLimit`, `binomialDirectLimit` | other limits | Both paths draw exactly the same distribution; the limit only decides which one is faster (ADR 0035). |
+| `discrete_distribution.go` `poissonDraw`, `m := ⌊7λ/8⌋`; `binomialDraw`, `a := ⌊n/2⌋ + 1` | other split points | The reduction is exact for any split point; it only changes how many steps the recursion takes. |
+| `discrete_distribution.go` `poissonDraw`, `x < lambda`; `binomialDraw`, `x >= p`; `poissonByProduct`, `product > limit`; `bernoulliTrials`, `u < p` | `<=` / `<` / `>=` | The two sides differ only when a continuous draw hits a boundary exactly, which has probability zero. |

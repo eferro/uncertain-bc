@@ -42,3 +42,4 @@ Template: Status, Effective date, Deciders, then Context, Decision, Consequences
 | [0032](0032-export-samples-with-samples-out.md) | Export raw samples with `--samples-out` | Accepted | 2026-11-22 |
 | [0033](0033-sensitivity-by-rank-correlation.md) | Sensitivity analysis by rank correlation, with `:sens` and `--sens` | Accepted | 2026-11-22 |
 | [0034](0034-configurable-interval-width.md) | Configurable interval width with `--interval` | Accepted | 2026-11-22 |
+| [0035](0035-exact-poisson-and-binomial-sampling.md) | Exact `poisson` and `binomial` sampling by recursive reduction | Accepted | 2026-11-22 |
