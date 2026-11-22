@@ -1,6 +1,6 @@
 # Scenario catalogue
 
-Ready-to-use `ubc` models for questions that come up in software engineering and product strategy. Pick the one closest to your question, change the assumptions you know better, and run it. You do not need to learn the whole language first: every scenario explains itself in its comments. If you want to learn the language, start with the [tutorial](../docs/TUTORIAL.md); to write good ranges of your own, read the [modelling guide](../docs/MODELLING.md).
+Ready-to-use `ubc` models for questions that come up in software engineering and product strategy. Pick the one closest to your question, change the assumptions you know better, and run it. You do not need to learn the whole language first: every scenario explains itself in its comments. If you want to learn the language, start with the [tutorial](../docs/TUTORIAL.md); to write good ranges of your own, read the [modelling guide](../docs/MODELLING.md); to adapt a scenario step by step, see the [how-to guides](../docs/HOWTO.md).
 
 Every scenario is built into `ubc`, so it runs wherever `ubc` is installed, with no clone of this repository ([ADR 0054](../docs/adr/0054-scenarios-built-into-the-binary.md)). List them, run one, or print one to copy and edit it:
 

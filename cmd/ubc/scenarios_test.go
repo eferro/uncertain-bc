@@ -306,3 +306,18 @@ func writeFile(t *testing.T, root, name string) {
 	require.NoError(t, os.MkdirAll(filepath.Dir(path), 0o700))
 	require.NoError(t, os.WriteFile(path, []byte("1\n"), 0o600))
 }
+
+func TestCopyTree_CopiesModelsAndDataFiles(t *testing.T) {
+	from, to := t.TempDir(), t.TempDir()
+	writeFile(t, from, "a.ubc")
+	writeFile(t, from, "data/weeks.txt")
+	writeFile(t, from, "README.md")
+
+	require.NoError(t, copyTree(from, to))
+
+	assert.FileExists(t, filepath.Join(to, "a.ubc"))
+	data, err := os.ReadFile(filepath.Join(to, "data", "weeks.txt"))
+	require.NoError(t, err)
+	assert.Equal(t, "1\n", string(data))
+	assert.NoFileExists(t, filepath.Join(to, "README.md"))
+}

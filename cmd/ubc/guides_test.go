@@ -13,7 +13,7 @@ import (
 )
 
 func TestGuides_EveryConsoleBlockMatchesTheBinary(t *testing.T) {
-	for _, guide := range []string{"TUTORIAL.md", "MODELLING.md", "REFERENCE.md"} {
+	for _, guide := range []string{"TUTORIAL.md", "MODELLING.md", "REFERENCE.md", "HOWTO.md"} {
 		t.Run(guide, func(t *testing.T) {
 			markdown, err := os.ReadFile(filepath.Join("..", "..", "docs", guide))
 			require.NoError(t, err)
@@ -36,6 +36,10 @@ func TestGuides_AreLinkedFromTheDocsThatPointReadersToThem(t *testing.T) {
 		{"README.md", "(docs/REFERENCE.md)"},
 		{"docs/SPEC.md", "(REFERENCE.md)"},
 		{"docs/TUTORIAL.md", "(REFERENCE.md)"},
+		{"README.md", "(docs/HOWTO.md)"},
+		{"docs/TUTORIAL.md", "(HOWTO.md)"},
+		{"docs/REFERENCE.md", "(HOWTO.md)"},
+		{"scenarios/README.md", "(../docs/HOWTO.md)"},
 	}
 	for _, tt := range tests {
 		doc, link := tt.doc, tt.link
@@ -93,6 +97,17 @@ func TestGuideArchive_ReadsALineAsOutput_WhenItStartsWithUbcButNotTheErrorPrefix
 	assert.Equal(t, "exec ubc --scenario-source x\ncmp stdout output1\n", string(archive.Comment))
 }
 
+func TestGuideArchive_ComparesTheFileWithTheOutput_WhenTheCommandIsCat(t *testing.T) {
+	archive, err := guideArchive("```console\n$ ubc -n 2 --samples-out s.csv -e 'x = 1'\n1\n$ cat s.csv\nx\n1\n1\n```\n")
+
+	require.NoError(t, err)
+	assert.Equal(t, "exec ubc -n 2 --samples-out s.csv -e 'x = 1'\ncmp stdout output1\ncmp s.csv output2\n", string(archive.Comment))
+	assert.Equal(t, []txtar.File{
+		{Name: "output1", Data: []byte("1\n")},
+		{Name: "output2", Data: []byte("x\n1\n1\n")},
+	}, archive.Files)
+}
+
 func TestGuideArchive_ChecksTheShownSourceAgainstTheFileTheNextBlockRuns(t *testing.T) {
 	archive, err := guideArchive("```ubc\nx = 1\nx\n```\n\nRun it:\n\n```console\n$ ubc --echo examples/x.ubc\nx = 1\n```\n")
 
@@ -132,7 +147,10 @@ func TestGuideArchive_Fails(t *testing.T) {
 		markdown string
 		message  string
 	}{
-		{"WhenACommandIsNotUbc", "```console\n$ ls\n```\n", `console command "ls" does not run ubc`},
+		{"WhenACommandIsNotUbc", "```console\n$ ls\n```\n", `console command "ls" runs neither ubc nor cat FILE`},
+		{"WhenCatShowsMoreThanOneFile", "```console\n$ cat a.csv b.csv\nx\n```\n", `console command "cat a.csv b.csv" runs neither ubc nor cat FILE`},
+		{"WhenCatNamesNoFile", "```console\n$ cat\nx\n```\n", `console command "cat" runs neither ubc nor cat FILE`},
+		{"WhenCatShowsNothing", "```console\n$ cat a.csv\n```\n", `console command "cat a.csv" shows no content`},
 		{"WhenAConsoleBlockIsEmpty", "```console\n```\n", "console block is empty"},
 		{"WhenAConsoleBlockStartsWithOutput", "```console\n2\n$ ubc -e '2'\n```\n", `console block starts with "2" instead of a $ command`},
 		{"WhenTheSourceIsNeverRun", "```ubc\nx\n```\n", "ubc block is not followed by a console block that runs it"},

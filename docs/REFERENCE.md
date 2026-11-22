@@ -1,6 +1,6 @@
 # Reference
 
-Everything you can type into `ubc`: the language, the built-in functions, the flags, the REPL commands, the output formats, the exit codes and the common errors with how to fix them. To learn the language step by step, read the [tutorial](TUTORIAL.md); to estimate well, the [modelling guide](MODELLING.md).
+Everything you can type into `ubc`: the language, the built-in functions, the flags, the REPL commands, the output formats, the exit codes and the common errors with how to fix them. To learn the language step by step, read the [tutorial](TUTORIAL.md); to estimate well, the [modelling guide](MODELLING.md); for recipes for common tasks, the [how-to guides](HOWTO.md).
 
 Every command shown in a console block here is run by the test suite, which compares its output with this page, so what you read is what `ubc` prints. Lines that start with `ubc: ` go to stderr; the rest go to stdout. The examples use the default seed and sample count, so you get the same numbers.
 

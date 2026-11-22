@@ -4,11 +4,12 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
+	"slices"
 
 	"github.com/rogpeppe/go-internal/testscript"
 )
 
-// copyModels gives every scenario the models a reader runs from the
+// copyModels gives every scenario the models and data files a reader runs from the
 // repository root, so commands read exactly as in the docs.
 func copyModels(env *testscript.Env) error {
 	for _, dir := range []string{"examples", "scenarios"} {
@@ -20,7 +21,7 @@ func copyModels(env *testscript.Env) error {
 }
 
 func copyTree(from, to string) error {
-	files, err := modelFiles(from)
+	files, err := filesWith(from, ".ubc", ".txt")
 	if err != nil {
 		return err
 	}
@@ -40,12 +41,16 @@ func copyTree(from, to string) error {
 	return nil
 }
 
-// modelFiles relies on WalkDir visiting entries in lexical order, so the
-// result is sorted.
 func modelFiles(root string) ([]string, error) {
+	return filesWith(root, ".ubc")
+}
+
+// filesWith relies on WalkDir visiting entries in lexical order, so the
+// result is sorted.
+func filesWith(root string, extensions ...string) ([]string, error) {
 	var files []string
 	err := filepath.WalkDir(root, func(path string, entry fs.DirEntry, err error) error {
-		if err != nil || entry.IsDir() || filepath.Ext(path) != ".ubc" {
+		if err != nil || entry.IsDir() || !slices.Contains(extensions, filepath.Ext(path)) {
 			return err
 		}
 		rel, err := filepath.Rel(root, path)

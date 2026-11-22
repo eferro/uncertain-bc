@@ -104,8 +104,11 @@ func consoleCommands(lines []string) ([]consoleCommand, error) {
 }
 
 func (s *guideScript) addCommand(command string, output []string) error {
+	if file, ok := catFile(command); ok {
+		return s.addCat(command, file, output)
+	}
 	if !strings.HasPrefix(command, "ubc ") {
-		return fmt.Errorf("console command %q does not run ubc", command)
+		return fmt.Errorf("console command %q runs neither ubc nor cat FILE", command)
 	}
 	if err := s.checkSource(command); err != nil {
 		return err
@@ -114,6 +117,25 @@ func (s *guideScript) addCommand(command string, output []string) error {
 	s.exec(command, len(stderr) > 0)
 	s.expectStdout(stdout)
 	s.expectStderr(stderr)
+	return nil
+}
+
+// catFile recognises "cat FILE", which shows a file ubc wrote, such as the
+// samples of --samples-out (ADR 0058).
+func catFile(command string) (string, bool) {
+	fields := strings.Fields(command)
+	if len(fields) != 2 || fields[0] != "cat" {
+		return "", false
+	}
+	return fields[1], true
+}
+
+func (s *guideScript) addCat(command, file string, output []string) error {
+	if len(output) == 0 {
+		return fmt.Errorf("console command %q shows no content", command)
+	}
+	s.outputs++
+	s.expect(file, fmt.Sprintf("output%d", s.outputs), output)
 	return nil
 }
 
