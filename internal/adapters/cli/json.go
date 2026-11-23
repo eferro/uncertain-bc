@@ -32,7 +32,7 @@ type samplesJSON struct {
 // jsonLine describes a result as one JSON object (SPEC §6).
 func jsonLine(value domain.Value, name string, quantiles []float64) string {
 	var object any
-	switch v := value.(type) {
+	switch v := domain.Shown(value).(type) {
 	case domain.SampleSet:
 		object = samplesJSON{
 			Name: name, Kind: "samples", Median: finite(v.Quantile(0.5)), Mean: finite(v.Mean()), Stdev: finite(v.Stdev()),
@@ -40,8 +40,8 @@ func jsonLine(value domain.Value, name string, quantiles []float64) string {
 			N: len(v), Dropped: v.Dropped(),
 			Quantiles: quantilesJSON(v, quantiles),
 		}
-	case domain.Probability, domain.Event:
-		object = numberJSON{Name: name, Kind: "probability", Value: finite(chance(v))}
+	case domain.Probability:
+		object = numberJSON{Name: name, Kind: "probability", Value: finite(float64(v))}
 	case domain.Scalar:
 		object = numberJSON{Name: name, Kind: "scalar", Value: finite(float64(v))}
 	}

@@ -31,6 +31,15 @@ func (Event) isValue() {}
 
 func (e Event) Probability() float64 { return mean(e) }
 
+// Shown is a value as it is printed and checked: an Event becomes the
+// probability that it happens; anything else stays as it is (ADR 0066).
+func Shown(v Value) Value {
+	if event, ok := v.(Event); ok {
+		return Probability(event.Probability())
+	}
+	return v
+}
+
 // Samples returns the samples of an uncertain value, SampleSet or Event.
 func Samples(v Value) (SampleSet, bool) {
 	switch v := v.(type) {
