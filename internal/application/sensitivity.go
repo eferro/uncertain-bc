@@ -31,7 +31,7 @@ func (s *Session) Sensitivity(expr string) ([]Driver, error) {
 	if err != nil {
 		return nil, err
 	}
-	target, ok := value.(domain.SampleSet)
+	target, ok := domain.Samples(value)
 	if !ok {
 		return nil, ErrCertainTarget
 	}
@@ -48,7 +48,7 @@ func (s *Session) Sensitivity(expr string) ([]Driver, error) {
 func (s *Session) driversOf(target domain.SampleSet, self string) []Driver {
 	var drivers []Driver
 	for _, v := range s.Variables() {
-		samples, ok := v.Value.(domain.SampleSet)
+		samples, ok := domain.Samples(v.Value)
 		if !ok || v.Name == self {
 			continue
 		}

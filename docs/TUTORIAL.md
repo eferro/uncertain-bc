@@ -128,7 +128,7 @@ A range answers "how much?". To decide, you usually need "how likely?" and "what
 # Ask questions about an uncertain value.
 delivery = 20 to 45         # days
 P(delivery > 40)            # how likely is it to slip past 40 days?
-delivery < 25               # a bare comparison is a probability too
+delivery < 25               # a comparison prints as a probability too
 median(delivery)
 round(p(delivery, 0.9))     # 90th percentile, rounded: a safe commitment
 mean(delivery)
@@ -143,7 +143,7 @@ round(p(delivery, 0.9)) = 41
 mean(delivery) = 30.87175467
 ```
 
-`P(...)` is the share of samples where the condition holds. The summaries `median`, `mean`, `stdev`, `min`, `max` and `p(x, q)` (the `q` quantile) turn a distribution into a plain number, ready for `round`, `floor` or `ceil`. Note how the mean is above the median: the right tail of a lognormal pulls it up.
+`P(...)` is the share of samples where the condition holds. A comparison on its own line prints the same share, but it keeps the outcome of every sample, so `late = delivery > 40` names an event you can compute with, as in `late * penalty` (see [events that may or may not happen](MODELLING.md#7-events-that-may-or-may-not-happen)). The summaries `median`, `mean`, `stdev`, `min`, `max` and `p(x, q)` (the `q` quantile) turn a distribution into a plain number, ready for `round`, `floor` or `ceil`. Note how the mean is above the median: the right tail of a lognormal pulls it up.
 
 ## 7. A project estimate
 

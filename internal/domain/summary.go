@@ -18,7 +18,7 @@ func (s summary) call(c call, _ Env, args []Value) (Value, error) {
 }
 
 func quantile(v Value, q float64) float64 {
-	if s, ok := v.(SampleSet); ok {
+	if s, ok := Samples(v); ok {
 		return s.Quantile(q)
 	}
 	return at(v, 0)

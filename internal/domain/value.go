@@ -22,6 +22,26 @@ type Probability float64
 
 func (Probability) isValue() {}
 
+// An Event is a comparison of uncertain values, sample by sample: 1 where it
+// holds and 0 where it does not. It keeps its samples, so it computes like a
+// SampleSet, and it is shown as the probability that it happens (ADR 0066).
+type Event []float64
+
+func (Event) isValue() {}
+
+func (e Event) Probability() float64 { return mean(e) }
+
+// Samples returns the samples of an uncertain value, SampleSet or Event.
+func Samples(v Value) (SampleSet, bool) {
+	switch v := v.(type) {
+	case SampleSet:
+		return v, true
+	case Event:
+		return SampleSet(v), true
+	}
+	return nil, false
+}
+
 // Quantile interpolates linearly between the two nearest sorted finite
 // samples (Hyndman & Fan type 7, the default in R and NumPy). Non-finite
 // samples are ignored (SPEC §4 rule 6).
@@ -63,7 +83,7 @@ func IsFinite(x float64) bool {
 }
 
 func finiteValues(v Value) []float64 {
-	if s, ok := v.(SampleSet); ok {
+	if s, ok := Samples(v); ok {
 		return s.finite()
 	}
 	x, _ := scalarOf(v)
@@ -144,14 +164,14 @@ func AsSamples(v Value, n int) SampleSet {
 }
 
 func size(v Value) int {
-	if s, ok := v.(SampleSet); ok {
+	if s, ok := Samples(v); ok {
 		return len(s)
 	}
 	return 1
 }
 
 func at(v Value, i int) float64 {
-	if s, ok := v.(SampleSet); ok {
+	if s, ok := Samples(v); ok {
 		return s[i]
 	}
 	x, _ := scalarOf(v)

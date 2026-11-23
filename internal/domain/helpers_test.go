@@ -26,6 +26,13 @@ func evaluateSamples(t *testing.T, program string) domain.SampleSet {
 	return value.(domain.SampleSet)
 }
 
+func evaluateEvent(t *testing.T, program string) domain.Event {
+	t.Helper()
+	value := evaluate(t, program)
+	require.IsType(t, domain.Event{}, value)
+	return value.(domain.Event)
+}
+
 func assertNear(t *testing.T, want, got, intervalWidth float64) {
 	t.Helper()
 	assert.InDelta(t, want, got, 0.03*intervalWidth)

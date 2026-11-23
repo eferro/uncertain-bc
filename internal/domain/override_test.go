@@ -76,6 +76,16 @@ func TestOverride_ReplacesAnEarlierOverride(t *testing.T) {
 	assert.Equal(t, domain.Scalar(6), value)
 }
 
+func TestOverride_KeepsTheSamplesOfAComparison(t *testing.T) {
+	env := domain.NewEnv(1, samples)
+	override(t, env, "hit", "0 to 10 > 5")
+
+	value, _ := env.Variable("hit")
+
+	require.IsType(t, domain.Event{}, value)
+	assert.InDelta(t, 0.5, value.(domain.Event).Probability(), 0.03)
+}
+
 func TestOverride_ReportsAComparisonAsAProbability(t *testing.T) {
 	env := domain.NewEnv(1, samples)
 	override(t, env, "chance", "1 < 2")

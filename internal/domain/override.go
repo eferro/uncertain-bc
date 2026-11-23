@@ -40,7 +40,7 @@ func evaluateExpression(source string, env Env) (Value, error) {
 	if err != nil {
 		return nil, err
 	}
-	return statement{expr: expr}.evaluate(env)
+	return expr.evaluate(env)
 }
 
 // parseExpression reads a source that must hold exactly one expression, as

@@ -28,6 +28,16 @@ func TestJSON_DescribesAProbability(t *testing.T) {
 	assert.Equal(t, outcome{code: 0, stdout: `{"kind":"probability","value":1}` + "\n"}, run(t, "", "--json", "-e", "P(2 > 1)"))
 }
 
+func TestJSON_DescribesAnAssignedComparison_AsAProbability(t *testing.T) {
+	got := run(t, "", "--json", "--echo", "-e", "hit = 0 to 10 > 5")
+
+	require.Equal(t, 0, got.code)
+	object := decodeLines(t, got.stdout)[0]
+	assert.Equal(t, "hit", object["name"])
+	assert.Equal(t, "probability", object["kind"])
+	assert.InDelta(t, 0.5, object["value"], 0.03)
+}
+
 func TestJSON_SummarisesASampleSet(t *testing.T) {
 	got := run(t, "", "--json", "-e", "10 to 20")
 

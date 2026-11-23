@@ -88,8 +88,8 @@ func format(value domain.Value, st style) string {
 		return withDropped(summarise(v, st), v.Dropped())
 	case domain.Scalar:
 		return plain(float64(v))
-	case domain.Probability:
-		return probability(float64(v))
+	case domain.Probability, domain.Event:
+		return probability(chance(v))
 	}
 	panic(fmt.Sprintf("cli: unknown value type %T", value))
 }
@@ -99,10 +99,20 @@ func centralValue(value domain.Value) string {
 	if s, ok := value.(domain.SampleSet); ok {
 		return shortest(s.Quantile(0.5))
 	}
-	if p, ok := value.(domain.Probability); ok {
-		return shortest(float64(p))
+	switch value.(type) {
+	case domain.Probability, domain.Event:
+		return shortest(chance(value))
 	}
 	return shortest(float64(value.(domain.Scalar)))
+}
+
+// chance is what a probability or an event prints: an event prints as the
+// probability that it happens (ADR 0066).
+func chance(value domain.Value) float64 {
+	if e, ok := value.(domain.Event); ok {
+		return e.Probability()
+	}
+	return float64(value.(domain.Probability))
 }
 
 // summarise leaves out the sparkline in a style without blocks, as error

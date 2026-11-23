@@ -11,7 +11,16 @@ func (c comparison) evaluate(env Env) (Value, error) {
 	if err != nil {
 		return nil, err
 	}
-	return c.apply(left, right), nil
+	return outcome(c.apply(left, right)), nil
+}
+
+// outcome is how a comparison is kept (SPEC §4 rule 5): a probability when
+// both sides are plain numbers, an Event that keeps its samples otherwise.
+func outcome(v Value) Value {
+	if samples, uncertain := v.(SampleSet); uncertain {
+		return Event(samples)
+	}
+	return Probability(at(v, 0))
 }
 
 func (c comparison) operands(env Env) (left, right Value, err error) {

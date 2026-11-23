@@ -85,6 +85,13 @@ func TestRun_PrintsOnlyTheCentralValueWithFullPrecision_WhenPlain(t *testing.T) 
 	assert.Regexp(t, `^3\n14\.\d{6,}\n0\.\d+\n$`, got.stdout)
 }
 
+func TestRun_PrintsTheProbability_OfAnAssignedComparison_WhenPlain(t *testing.T) {
+	got := run(t, "hit = 0 to 10 > 5\nhit\n", "--plain")
+
+	assert.Equal(t, 0, got.code)
+	assert.Regexp(t, `^0\.\d+\n$`, got.stdout)
+}
+
 func TestRun_PrintsACompletionScript(t *testing.T) {
 	got := run(t, "", "--completion", "bash")
 

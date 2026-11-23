@@ -76,3 +76,28 @@ func TestAsSamples_RepeatsAPlainNumberOrAProbability_InEverySample(t *testing.T)
 func TestAsSamples_KeepsASampleSetInOrder(t *testing.T) {
 	assert.Equal(t, domain.SampleSet{3, 1, 2}, domain.AsSamples(domain.SampleSet{3, 1, 2}, 3))
 }
+
+func TestAsSamples_KeepsTheOutcomesOfAnEvent(t *testing.T) {
+	assert.Equal(t, domain.SampleSet{0, 1, 0}, domain.AsSamples(domain.Event{0, 1, 0}, 3))
+}
+
+func TestSamples_ReturnsTheSamples_OfASampleSetOrAnEvent(t *testing.T) {
+	cases := map[string]struct {
+		value     domain.Value
+		want      domain.SampleSet
+		uncertain bool
+	}{
+		"sample set":  {domain.SampleSet{3, 1}, domain.SampleSet{3, 1}, true},
+		"event":       {domain.Event{1, 0}, domain.SampleSet{1, 0}, true},
+		"scalar":      {domain.Scalar(2), nil, false},
+		"probability": {domain.Probability(0.5), nil, false},
+	}
+	for name, c := range cases {
+		t.Run(name, func(t *testing.T) {
+			got, uncertain := domain.Samples(c.value)
+
+			assert.Equal(t, c.uncertain, uncertain)
+			assert.Equal(t, c.want, got)
+		})
+	}
+}

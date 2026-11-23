@@ -1,6 +1,6 @@
 # Modelling guide
 
-How to estimate well with `ubc`. The [tutorial](TUTORIAL.md) teaches the language; this guide is about the numbers you type into it: what a range claims, which shape to choose, how ranges combine, the mistakes that make a model lie, how to keep units straight without units in the language, and how much to trust the simulation itself.
+How to estimate well with `ubc`. The [tutorial](TUTORIAL.md) teaches the language; this guide is about the numbers you type into it: what a range claims, which shape to choose, how ranges combine, the mistakes that make a model lie, how to keep units straight without units in the language, how much to trust the simulation itself, and how to model something that may or may not happen.
 
 Like the tutorial, every output below is checked against the binary by the test suite. Run the commands from the root of the repository.
 
@@ -126,6 +126,17 @@ The mean is eight times the median, and only 15 % of outcomes reach it. Use the 
 
 **Heavy tails.** A range whose ends are a factor of a thousand apart, like `1k to 1M`, says you do not know the order of magnitude; its 98 % interval reaches past 4M. Multiplying several wide ranges makes the tail longer still. That may be true, and then it is the most important thing the model tells you: look at the 98 % interval and at `P(x > limit)`, not only at the middle. If it is not true, the range is too wide: find out more about the quantity that drives it (`--sens` ranks them).
 
+**A probability where you meant an event.** `P(...)` is one number, the same in every sample. Multiplying an impact by it spreads a tenth of the cost over every sample, which is the expected cost, not what happens:
+
+```console
+$ ubc --echo -e 'p_hit = P(uniform(0, 1) < 0.1)' -e 'loss = p_hit * (50k to 500k)' -e 'P(loss > 0)'
+p_hit = 0.10
+loss = ≈ 15.5k   90% [5010 … 49k]   98% [3100 … 79k]   ▆█▇▅▄▃▂▂▂▂▁▁▁▁▁▁
+1
+```
+
+`loss` is never 0, and never as large as a real incident. To say "10 % of the time it happens, and then it costs 50k to 500k", keep the event: `hit = uniform(0, 1) < 0.1`, without `P`. [Section 7](#7-events-that-may-or-may-not-happen) shows how.
+
 ## 5. Units
 
 `ubc` has no units, by decision ([ADR 0065](adr/0065-no-units-in-the-language.md)): every number is a plain number, and keeping track of what it measures is up to the model. Three habits do most of the work.
@@ -201,6 +212,38 @@ Twenty times more samples makes the noise about four and a half times smaller (i
 - two options are close and you want to know whether the difference is real or noise.
 
 A quick check before trusting a close call: run with two or three seeds (or `--random`). If the answer changes, raise `--samples` or decide that the options are, as far as you know, equivalent. No sample count can fix a range you got wrong: the noise of the simulation is almost always far smaller than the uncertainty in your inputs.
+
+## 7. Events that may or may not happen
+
+Many questions are "if it happens, it costs X": an incident, a missed date, a risk, an experiment that wins. Name the event with a comparison, then multiply by what it costs when it happens:
+
+```console
+$ ubc --echo -e 'hit = uniform(0, 1) < 0.1' -e 'loss = hit * (50k to 500k)' -e 'P(loss > 0)' -e 'mean(loss)' -e 'p(loss, 0.95)'
+hit = 0.10
+loss = ≈ 0   90% [0 … 155k]   98% [0 … 410k]   █▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+0.10
+21032.27932
+155428.0518
+```
+
+`uniform(0, 1) < 0.1` holds in about 10 % of the samples. A comparison of uncertain values is an *event*: `hit` keeps its 0/1 outcome in every sample and only prints as the probability that it happens, `0.10`. So `loss` is 0 in the 90 % of samples where nothing happened and the whole impact in the rest, and `P(loss > 0)` is about `0.1`. The median of `loss` is 0, because most of the time nothing happens; the mean, about 21k, is the expected loss, the figure to budget when the same risk repeats over many years or many projects; the 95th percentile, about 155k, is a bad year.
+
+Three ways to write the event give the same samples:
+
+- **A named comparison**, `hit = uniform(0, 1) < 0.1`, as above. It reads as the question you are asking, prints as a probability, and the chance can be uncertain itself: `uniform(0, 1) < (5% to 25%)`.
+- **`binomial(1, p)`**, `hit = binomial(1, 0.1)`: one trial, 1 with probability `p`. It is an ordinary uncertain number, so it prints as a summary (`≈ 0   90% [0 … 1]`) instead of a probability.
+- **Inline**, `(uniform(0, 1) < 0.1) * (50k to 500k)`, when the event has no name of its own.
+
+```console
+$ ubc -e 'chance = 5% to 25%' -e 'hit = uniform(0, 1) < chance' -e 'loss = hit * (100k to 1M)' -e 'P(loss > 0)' -e 'mean(loss)' -e 'P(loss > 500k)'
+0.13
+51353.26035
+0.03
+```
+
+What not to write is `P(...) * impact`: `P` turns the event into one number, and the loss becomes a fraction of the impact in every sample ([typical mistakes](#4-typical-mistakes)). Use the probability when you want the probability (`P(loss > 0)`), and the event when you compute what happens.
+
+For something that happens several times a year, an event that happens or not is the wrong shape: count the occurrences with `poisson(rate)`, or multiply by the expected count as the [incident cost scenario](../scenarios/reliability/incident-cost.ubc) does.
 
 ## Where next
 

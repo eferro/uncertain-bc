@@ -1,6 +1,7 @@
 package domain_test
 
 import (
+	"slices"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -21,7 +22,6 @@ func TestEvaluate_ReturnsAProbability_WhenATopLevelStatementIsAComparison(t *tes
 		"1 > 1":      0,
 		"1 >= 1":     1,
 		"1 + 1 == 2": 1,
-		"1 to 3 > 0": 1,
 	}
 	for program, want := range cases {
 		t.Run(program, func(t *testing.T) {
@@ -31,10 +31,51 @@ func TestEvaluate_ReturnsAProbability_WhenATopLevelStatementIsAComparison(t *tes
 }
 
 func TestEvaluate_ComparesEverySample(t *testing.T) {
-	p := evaluate(t, "x = 0 to 10; x > 5")
+	event := evaluateEvent(t, "x = 0 to 10; x > 5")
 
-	require.IsType(t, domain.Probability(0), p)
+	assert.InDelta(t, 0.5, event.Probability(), 0.03)
+}
+
+func TestEvaluate_KeepsTheSamplesOfAComparison_WhenItIsAssigned(t *testing.T) {
+	event := evaluateEvent(t, "x = 0 to 10; hit = x > 5")
+
+	assert.Len(t, event, samples)
+	assert.Equal(t, 0.0, slices.Min(event))
+	assert.Equal(t, 1.0, slices.Max(event))
+}
+
+func TestEvaluate_ComputesWithAnAssignedComparison_SampleBySample(t *testing.T) {
+	p := evaluate(t, "hit = uniform(0, 1) < 0.1; loss = hit * (50k to 500k); P(loss > 0)")
+
+	assert.InDelta(t, 0.1, float64(p.(domain.Probability)), 0.01)
+}
+
+func TestEvaluate_KeepsAPlainComparisonAsAProbability_WhenItIsAssigned(t *testing.T) {
+	assert.Equal(t, domain.Probability(1), evaluate(t, "ok = 3 > 2; ok"))
+}
+
+func TestEvaluate_ReturnsAnEvent_FromAFunctionWhoseBodyIsAComparison(t *testing.T) {
+	event := evaluateEvent(t, "above(x, t) = x > t; above(0 to 10, 5)")
+
+	assert.InDelta(t, 0.5, event.Probability(), 0.03)
+}
+
+func TestEvaluate_BindsTheEventToLast_WhenAComparisonIsAnExpression(t *testing.T) {
+	s := evaluateSamples(t, "x = 0 to 10; x > 5; last * 2")
+
+	assert.Equal(t, 0.0, s.Quantile(0))
+	assert.Equal(t, 2.0, s.Quantile(1))
+}
+
+func TestP_ReturnsTheProbability_OfAnAssignedComparison(t *testing.T) {
+	p := evaluate(t, "hit = 0 to 10 > 5; P(hit)")
+
 	assert.InDelta(t, 0.5, float64(p.(domain.Probability)), 0.03)
+}
+
+func TestSummaries_UseTheSamples_OfAnEvent(t *testing.T) {
+	assert.Equal(t, domain.Scalar(1), evaluate(t, "hit = 0 to 10 > 5; max(hit)"))
+	assert.Equal(t, domain.Scalar(0), evaluate(t, "hit = 0 to 10 > 5; p(hit, 0.01)"))
 }
 
 func TestEvaluate_KeepsAComparisonAsZerosAndOnes_InsideArithmetic(t *testing.T) {

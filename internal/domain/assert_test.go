@@ -72,6 +72,21 @@ func TestAssert_HasNoOperands_WhenItIsNotAComparison(t *testing.T) {
 	assert.Equal(t, domain.Check{Value: domain.Probability(0)}, result)
 }
 
+func TestAssert_ChecksAVariableBoundToAComparison_AsItsProbability(t *testing.T) {
+	cases := map[string]bool{"0 to 10 > -100": true, "0 to 10 > 5": false}
+	for comparison, holds := range cases {
+		t.Run(comparison, func(t *testing.T) {
+			env := domain.NewEnv(1, samples)
+			override(t, env, "hit", comparison)
+
+			result := check(t, env, "hit")
+
+			require.IsType(t, domain.Probability(0), result.Value)
+			assert.Equal(t, holds, result.Holds())
+		})
+	}
+}
+
 func TestAssert_LeavesTheSessionUnchanged(t *testing.T) {
 	env := domain.NewEnv(1, samples)
 

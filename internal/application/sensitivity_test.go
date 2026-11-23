@@ -55,6 +55,26 @@ func TestSensitivity_ComparesAnExpressionWithEveryVariable(t *testing.T) {
 	assert.Equal(t, []string{"y"}, driverNames(drivers))
 }
 
+func TestSensitivity_CountsAnAssignedComparison_AsADriver(t *testing.T) {
+	session := sessionWith(t, "hit = uniform(0, 1) < 0.3; noise = 1 to 2; loss = hit * (50k to 500k) + noise")
+
+	drivers, err := session.Sensitivity("loss")
+
+	require.NoError(t, err)
+	require.NotEmpty(t, drivers)
+	assert.Equal(t, "hit", drivers[0].Name)
+	assert.Greater(t, drivers[0].Correlation, 0.5)
+}
+
+func TestSensitivity_RanksTheDriversOfAComparison(t *testing.T) {
+	session := sessionWith(t, "x = 1 to 2; y = 3 to 4")
+
+	drivers, err := session.Sensitivity("x > 1.5")
+
+	require.NoError(t, err)
+	assert.Equal(t, []string{"x", "y"}, driverNames(drivers))
+}
+
 func TestSensitivity_FailsForAPlainNumber(t *testing.T) {
 	session := sessionWith(t, "x = 1 to 2")
 

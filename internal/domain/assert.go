@@ -36,13 +36,22 @@ func evaluateCheck(expr node, env Env) (Check, error) {
 	c, isComparison := expr.(comparison)
 	if !isComparison {
 		value, err := expr.evaluate(env)
-		return Check{Value: value}, err
+		return Check{Value: asProbability(value)}, err
 	}
 	left, right, err := c.operands(env)
 	if err != nil {
 		return Check{}, err
 	}
 	return Check{Value: Probability(mean(c.apply(left, right))), Left: left, Right: right, Operator: c.symbol}, nil
+}
+
+// asProbability checks an Event by the share of samples where it holds, as a
+// comparison is checked (ADR 0029, ADR 0066).
+func asProbability(v Value) Value {
+	if event, ok := v.(Event); ok {
+		return Probability(event.Probability())
+	}
+	return v
 }
 
 func isCondition(v Value) bool {

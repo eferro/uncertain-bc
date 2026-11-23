@@ -1,7 +1,7 @@
 # Ask questions about an uncertain value.
 delivery = 20 to 45         # days
 P(delivery > 40)            # how likely is it to slip past 40 days?
-delivery < 25               # a bare comparison is a probability too
+delivery < 25               # a comparison prints as a probability too
 median(delivery)
 round(p(delivery, 0.9))     # 90th percentile, rounded: a safe commitment
 mean(delivery)

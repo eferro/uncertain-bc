@@ -1,6 +1,6 @@
 # ADR 0028: Override variables from the command line with `--set`
 
-- Status: Accepted
+- Status: Accepted, amended by [ADR 0066](0066-an-assigned-comparison-keeps-its-samples.md)
 - Effective date: 2026-11-21
 - Deciders: eduardo.ferro
 - Complements: [ADR 0025](0025-command-line-ux-additions.md)

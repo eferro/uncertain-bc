@@ -8,6 +8,7 @@ Every command shown in a console block is run by the test suite, which compares 
 - [Compare two options](#compare-two-options)
 - [Find which assumption to research first](#find-which-assumption-to-research-first)
 - [Use ubc as a check in CI](#use-ubc-as-a-check-in-ci)
+- [Model a risk, an incident or a missed date that may or may not happen](#model-a-risk-an-incident-or-a-missed-date-that-may-or-may-not-happen)
 - [Take the samples to pandas or a spreadsheet](#take-the-samples-to-pandas-or-a-spreadsheet)
 - [Forecast a delivery date from the team's real throughput](#forecast-a-delivery-date-from-the-teams-real-throughput)
 - [Run and adapt a scenario from the catalogue](#run-and-adapt-a-scenario-from-the-catalogue)
@@ -122,6 +123,36 @@ Because the seed is fixed, the same model gives the same answer on every run, an
     curl -fsSL https://raw.githubusercontent.com/eferro/uncertain-bc/main/install.sh | sh
     ubc --assert 'P(days > 50) < 0.1' model.ubc
 ```
+
+## Model a risk, an incident or a missed date that may or may not happen
+
+Name the event with a comparison, then multiply by what it costs when it happens. A comparison of uncertain values keeps its outcome in every sample, 1 where it happened and 0 where it did not, and prints as the probability that it happens. A delivery that takes 20 to 45 days, with a 10k to 30k penalty if it takes more than 40:
+
+```console
+$ ubc --echo -e 'days = 20 to 45' -e 'late = days > 40' -e 'penalty = late * (10k to 30k)' -e 'P(penalty > 0)' -e 'mean(penalty)'
+days = ≈ 30   90% [20 … 44.5]   98% [16 … 54]   ▂▄▅▆██▇▆▅▄▃▃▂▂▁▁
+late = 0.12
+penalty = ≈ 0   90% [0 … 18.1k]   98% [0 … 26k]   █▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+0.12
+2056.707126
+```
+
+The penalty is 0 in the 88 % of samples where the delivery was on time, so its median is 0, and it is paid in 12 % of them. Its mean, about 2k, is what the risk costs on average; the 90 % interval shows what a bad outcome looks like.
+
+When the event has no cause in the model, draw it with its probability, which can be a range itself. A security incident with a 5 % to 25 % chance a year and an impact of 100k to 1M:
+
+```console
+$ ubc --echo -e 'hit = uniform(0, 1) < (5% to 25%)' -e 'loss = hit * (100k to 1M)' -e 'P(loss > 0)' -e 'mean(loss)' -e 'P(loss > 500k)'
+hit = 0.12
+loss = ≈ 0   90% [0 … 384k]   98% [0 … 790k]   █▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+0.12
+48466.17808
+0.03
+$ ubc --assert 'P(loss > 500k) < 0.02' -e 'hit = uniform(0, 1) < (5% to 25%)' -e 'loss = hit * (100k to 1M)'
+ubc: --assert P(loss > 500k) < 0.02 failed: 0.03 < 0.02
+```
+
+`hit = binomial(1, 0.1)` draws the same kind of event and prints as a summary instead of a probability. Do not write `P(...) * impact`: `P` turns the event into one number, so the loss becomes a fraction of the impact in every sample and is never 0. For something that happens several times a year, count the occurrences instead (`poisson(rate)`). The [modelling guide](MODELLING.md#7-events-that-may-or-may-not-happen) explains the difference, and the [risk scenarios](../scenarios/README.md) compute the annual loss expectancy.
 
 ## Take the samples to pandas or a spreadsheet
 

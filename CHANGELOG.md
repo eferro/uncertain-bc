@@ -4,6 +4,14 @@ All notable changes to `ubc` are documented in this file. The format follows [Ke
 
 ## [Unreleased]
 
+### Fixed
+
+- Assigning a comparison of uncertain values keeps its samples (#41). `hit = uniform(0, 1) < 0.1` used to bind the probability `0.1`, so `hit * (50k to 500k)` was a tenth of the impact in every sample and `P(hit * (50k to 500k) > 0)` was `1`; now `hit` is an event, 1 in the samples where the comparison holds and 0 elsewhere, and that probability is about `0.1`. An event still prints as a probability (results, `--echo`, `:vars`, `--json`, `--plain`), so the output of models that do not compute with an assigned comparison is unchanged. The same applies to `--set 'hit=...'`, to `last` after a comparison and to a function whose body is a comparison, which now prints a probability. `--samples-out` writes an event as a `0`/`1` column, `--sens` counts it as a driver, and `--assert hit` checks it like a comparison.
+
+### Added
+
+- Documentation for events that may or may not happen ("if it happens, it costs X"): a section in the modelling guide with a typical mistake, a how-to for risks, incidents and missed dates, and a table in the reference of what a comparison gives in each position.
+
 ## [1.1.0] - 2026-11-23
 
 ### Added

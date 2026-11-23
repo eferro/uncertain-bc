@@ -1,0 +1,49 @@
+exec ubc --echo model.ubc
+stdout '^hit = 0\.10\nloss = ≈ 0   90% \[0 … 155k\]   98% \[0 … 410k\]   \S+\n0\.10\n$'
+
+exec ubc -e 'P((uniform(0, 1) < 0.1) * (50k to 500k) > 0)'
+stdout '^0\.10\n$'
+
+exec ubc --echo -e 'hit = uniform(0, 1) < 0.1' -e 'hit'
+stdout '^hit = 0\.10\n0\.10\n$'
+
+exec ubc --json --echo -e 'hit = uniform(0, 1) < 0.1'
+stdout '^\{"name":"hit","kind":"probability","value":0\.0984\}\n$'
+
+exec ubc --plain -e 'hit = uniform(0, 1) < 0.1' -e 'hit'
+stdout '^0\.0984\n$'
+
+exec ubc --set 'hit=uniform(0, 1) < 0.1' --echo model.ubc
+stdout '^hit = 0\.10\nloss = ≈ 0   90% \[0 … 155k\]'
+stdout '\n0\.10\n$'
+
+exec ubc -e 'uniform(0, 1) < 0.2' -e 'last * 1'
+stdout '^0\.20\n≈ 0   90% \[0 … 1\]'
+
+exec ubc -e 'above(x, t) = x > t' -e 'above(0 to 10, 5)'
+stdout '^0\.50\n$'
+
+exec ubc -e 'ok = 3 > 2' -e 'ok * 10'
+stdout '^10\n$'
+
+exec ubc --samples 5 --samples-out out.csv -e 'hit = uniform(0, 1) < 0.5'
+cmp out.csv want.csv
+
+exec ubc --sens loss model.ubc
+stdout '^  hit  \+1\.00 '
+
+exec ubc --assert 'hit' -e 'hit = 0 to 10 > -100'
+! exec ubc --assert 'hit' -e 'hit = 0 to 10 > 5'
+stderr '^ubc: --assert hit failed: 0\.50\n$'
+
+-- model.ubc --
+hit = uniform(0, 1) < 0.1
+loss = hit * (50k to 500k)
+P(loss > 0)
+-- want.csv --
+hit
+1
+0
+0
+0
+1

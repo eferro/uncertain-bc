@@ -73,3 +73,4 @@ Template: Status, Effective date, Deciders, then Context, Decision, Consequences
 | [0063](0063-scenario-output-checked-in-the-scenario.md) | Every scenario ends with its output, checked by the test suite (complements 0030) | Accepted | 2026-11-23 |
 | [0064](0064-no-tui-with-sliders.md) | No TUI with sliders | Accepted | 2026-11-23 |
 | [0065](0065-no-units-in-the-language.md) | No units in the language; conversion constants in the shared formulas (supersedes 0008) | Accepted | 2026-11-23 |
+| [0066](0066-an-assigned-comparison-keeps-its-samples.md) | An assigned comparison keeps its samples as an event, shown as a probability (amends 0028) | Accepted | 2026-11-23 |

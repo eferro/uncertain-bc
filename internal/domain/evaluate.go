@@ -139,7 +139,7 @@ func (s statement) execute(env Env) (Value, error) {
 	if s.name != "" && env.overridden[s.name] {
 		return env.variables[s.name], nil
 	}
-	value, err := s.evaluate(env)
+	value, err := s.expr.evaluate(env)
 	if err != nil {
 		return nil, err
 	}
@@ -154,13 +154,4 @@ func (s statement) binding() string {
 		return "last"
 	}
 	return s.name
-}
-
-// evaluate reports a bare top-level comparison as a probability (SPEC §4 rule 5).
-func (s statement) evaluate(env Env) (Value, error) {
-	value, err := s.expr.evaluate(env)
-	if _, isComparison := s.expr.(comparison); isComparison && err == nil {
-		return Probability(mean(value)), nil
-	}
-	return value, err
 }

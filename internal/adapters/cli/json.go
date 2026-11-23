@@ -40,8 +40,8 @@ func jsonLine(value domain.Value, name string, quantiles []float64) string {
 			N: len(v), Dropped: v.Dropped(),
 			Quantiles: quantilesJSON(v, quantiles),
 		}
-	case domain.Probability:
-		object = numberJSON{Name: name, Kind: "probability", Value: finite(float64(v))}
+	case domain.Probability, domain.Event:
+		object = numberJSON{Name: name, Kind: "probability", Value: finite(chance(v))}
 	case domain.Scalar:
 		object = numberJSON{Name: name, Kind: "scalar", Value: finite(float64(v))}
 	}

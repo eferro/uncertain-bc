@@ -129,7 +129,7 @@ $ ubc -e '[3, 5, 8, 13]'
 
 ### Comparisons and probabilities
 
-`< > <= >= == !=` compare two values. Between plain numbers they give `1` (true) or `0` (false); with an uncertain value they give, sample by sample, how often the comparison holds, printed as a probability. `P(...)` turns a comparison into a number you can compute with:
+`< > <= >= == !=` compare two values. Between plain numbers they give `1` (true) or `0` (false). With an uncertain value they give an **event**: `1` in the samples where the comparison holds and `0` where it does not. An event keeps those samples wherever it goes, and wherever it is shown it prints as a probability, the share of samples where it holds. `P(...)` turns a comparison into that probability, a plain number you can compute with:
 
 ```console
 $ ubc -e '2 > 1' -e '1 == 2'
@@ -139,6 +139,33 @@ $ ubc -e 'x = 10 to 20' -e 'x > 15'
 0.39
 $ ubc -e 'x = 10 to 20' -e 'P(x > 15) * 100'
 38.54
+```
+
+| You write | You get | It shows as |
+|---|---|---|
+| `x > 15` on its own line | the event (`last` holds it) | `0.39` |
+| `slow = x > 15` | `slow` holds the event, its samples kept | `slow = 0.39` (REPL, `--echo`, `:vars`, `--json`, `--plain`) |
+| `slow * 100`, `(x > 15) * 100` | 0 or 100 in each sample | a summary, `≈ 0   90% [0 … 100]` |
+| `P(slow)`, `P(x > 15)` | the probability, a plain number | `0.39` |
+| `above(x, t) = x > t` | each call returns an event | its probability |
+| `--set 'slow=x > 15'` | the event, as in an assignment | `slow = 0.39` with `--echo` |
+| `--assert slow` | holds when the event holds in every sample | the probability when it fails |
+| `--sens`, `--samples-out` | the 0/1 samples | rank correlations; a `0`/`1` column |
+
+```console
+$ ubc -e 'x = 10 to 20' -e 'slow = x > 15' -e 'slow' -e 'slow * 100' -e 'P(slow)'
+0.39
+≈ 0   90% [0 … 100]   98% [0 … 100]   █▁▁▁▁▁▁▁▁▁▁▁▁▁▁▅
+0.39
+```
+
+Because an event keeps its samples, you can name something that may or may not happen and multiply by what it costs when it does: `loss` below is 0 in the 90 % of samples where `hit` did not happen. If you want the probability as a number, use `P(...)`: `P(uniform(0, 1) < 0.1) * (50k to 500k)` is a tenth of the cost in every sample, a different question. The [modelling guide](MODELLING.md#7-events-that-may-or-may-not-happen) explains when to use which.
+
+```console
+$ ubc --echo -e 'hit = uniform(0, 1) < 0.1' -e 'loss = hit * (50k to 500k)' -e 'P(loss > 0)'
+hit = 0.10
+loss = ≈ 0   90% [0 … 155k]   98% [0 … 410k]   █▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+0.10
 ```
 
 ## Built-in functions

@@ -27,6 +27,13 @@ func TestVars_ListsEachVariableWithItsSummary(t *testing.T) {
 	assert.Regexp(t, `^y = ≈ \S+   90% `, lines[4])
 }
 
+func TestVars_ShowsAnAssignedComparison_AsItsProbability(t *testing.T) {
+	got := interactive(t, "hit = 0 to 10 > 5\n:vars\n")
+
+	lines := strings.Split(got.stdout, "\n")
+	assert.Regexp(t, `^ubc> hit = 0\.\d\d$`, lines[1])
+}
+
 func TestSeed_RestartsTheRandomStream(t *testing.T) {
 	reseeded := interactive(t, ":seed 2\n1 to 2\n")
 	fresh := interactive(t, "1 to 2\n", "-s", "2")
