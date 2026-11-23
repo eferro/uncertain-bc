@@ -24,9 +24,9 @@ cost_per_hour = 0.5 to 2          # one environment (app, database, preview URL)
 working_days = 21                 # working days in a month; rule of thumb
 
 # Calculation
-environment_hours = prs_per_day * working_days * hours_alive     # hours of environments a month
-alive = environment_hours / (30 * 24)                            # environments up at the same time on average (Little's law)
-monthly_cost = environment_hours * cost_per_hour                 # the monthly bill
+environment_hours = prs_per_day * working_days * hours_alive           # hours of environments a month
+alive = environment_hours / (days_per_month * hours_per_calendar_day)  # environments up at the same time on average (Little's law)
+monthly_cost = environment_hours * cost_per_hour                       # the monthly bill
 
 # Result
 alive

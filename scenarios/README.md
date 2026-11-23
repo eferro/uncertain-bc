@@ -19,7 +19,7 @@ Every scenario ends with its **output block**: what `ubc --scenario <area>/<name
 
 ## Index
 
-`ubc` has no units: amounts are in euros in most scenarios and in dollars in the cloud ones, the currency providers bill in. To use your own currency, change the numbers; the calculation stays the same. Every assumption says in its comment where its range comes from, and each scenario's `# Sources:` line names the published references it relies on, or says that the ranges come from typical experience when there is none.
+`ubc` has no units: amounts are in euros in most scenarios and in dollars in the cloud ones, the currency providers bill in. To use your own currency, change the numbers; the calculation stays the same. Time conversions use the named constants of the [shared formulas](#reusable-formulas) (`hours_per_day`, `working_days_per_year`, `months_per_year`…), never a bare `60` or `12`; the [modelling guide](../docs/MODELLING.md#5-units) explains them. Every assumption says in its comment where its range comes from, and each scenario's `# Sources:` line names the published references it relies on, or says that the ranges come from typical experience when there is none.
 
 ### Start here
 
@@ -121,7 +121,7 @@ Five scenarios, one per area, that show what the catalogue does:
 $ ubc --scenario formulas my-model.ubc
 ```
 
-Inside the model, call them with plain or uncertain arguments, for example `lead_time(15 to 30, 3 to 6)` or `npv(50k, 2k to 4k, 0.01, 36)`. The test suite runs every scenario after `formulas.ubc`, as `--scenario` does, so a scenario may use them.
+Inside the model, call them with plain or uncertain arguments, for example `lead_time(15 to 30, 3 to 6)` or `npv(50k, 2k to 4k, 0.01, 36)`. The file opens with conversion constants, each saying whether it counts working or calendar time (`minutes_per_hour`, `hours_per_day`, `hours_per_calendar_day`, `days_per_week`, `days_per_month`, `working_days_per_year`, `working_weeks_per_year`, `weeks_per_year`, `months_per_year`); use them instead of magic numbers, and change one for your organisation with `--set`, for example `--set 'hours_per_day = 7.5'`. The test suite runs every scenario after `formulas.ubc`, as `--scenario` does, so a scenario may use them.
 
 ## Template
 

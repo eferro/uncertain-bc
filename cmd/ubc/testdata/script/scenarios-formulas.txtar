@@ -6,11 +6,44 @@ exec ubc --scenario formulas check.ubc
 cmp stdout check.out
 ! stderr .
 
+exec ubc --scenario formulas constants.ubc
+cmp stdout constants.out
+! stderr .
+
+exec ubc --set 'working_days_per_year = 200' --scenario formulas -e 'working_weeks_per_year'
+stdout '^40\n\z'
+! stderr .
+
+exec ubc --echo --scenario formulas
+stdout '^hours_per_day = 8\n'
+stdout '^weeks_per_year = 52\n'
+! stderr .
+
 exec ubc --scenario formulas uncertain.ubc
 stdout '^lead_time\(15 to 30, 3 to 6\) = ≈ 4\.99 '
 stdout '^npv\(50k, 2k to 4k, 0\.01, 36\) = ≈ 34\.9k '
 ! stderr .
 
+-- constants.ubc --
+minutes_per_hour
+hours_per_day
+hours_per_calendar_day
+days_per_week
+days_per_month
+working_days_per_year
+working_weeks_per_year
+weeks_per_year
+months_per_year
+-- constants.out --
+minutes_per_hour = 60
+hours_per_day = 8
+hours_per_calendar_day = 24
+days_per_week = 5
+days_per_month = 30
+working_days_per_year = 220
+working_weeks_per_year = 44
+weeks_per_year = 52
+months_per_year = 12
 -- uncertain.ubc --
 lead_time(15 to 30, 3 to 6)
 npv(50k, 2k to 4k, 0.01, 36)

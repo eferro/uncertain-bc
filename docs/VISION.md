@@ -149,7 +149,7 @@ Key decisions:
 5. **Heavy tails.** Lognormals with wide ranges produce huge outliers that break histograms and means. Mitigation: clip histogram axes to p1–p99 and say so.
 6. **Name searchability.** "ubc" alone is dominated by the University of British Columbia. The repo name "uncertain-bc" carries discovery; see section 10.
 7. **Decided:** `to` is lognormal for positive ranges and normal otherwise (ADR 0004).
-8. **Decided:** units (`€`, `h`, `kWh`) are out of scope until a new ADR says otherwise (ADR 0008).
+8. **Decided:** no units (`€`, `h`, `kWh`) in the language; units live in names and comments, and the shared formulas provide conversion constants (ADR 0065, superseding ADR 0008).
 
 ## 9. Roadmap
 
@@ -163,7 +163,7 @@ Key decisions:
 | Command-line UX ✅ (v0.6.0) | `--echo`, `--hist`, `--quantiles`, `--watch`, shell completion (ADR 0025) |
 | Installation ✅ (v0.7.x) | Install scripts, `.deb`/`.rpm`/`.apk`, Homebrew, Scoop (ADR 0026) |
 | Modelling and scenarios ✅ | `--set`, `--assert`, `--data`, `--samples-out`, `--sens`, `--interval`, `poisson`/`binomial`, the 98 % interval, the tutorial and the scenario catalogue |
-| 5. Maybe | Units (ADR 0008). A TUI with sliders was discarded (ADR 0064) |
+| 5. Maybe ✅ | Closed with nothing open: units stay out of the language, with conversion constants in the shared formulas instead (ADR 0065); a TUI with sliders was discarded (ADR 0064) |
 
 ## 10. Name
 

@@ -20,18 +20,16 @@
 # Assumptions
 people = 5 to 12                  # engineers who work on the affected code; count them
 hours_lost = 1 to 4               # hours each loses a week to workarounds, slow changes, bugs; typical experience
-weeks_per_year = 44               # working weeks, minus holidays; rule of thumb
 hourly_salary = 30 to 60          # gross salary per hour (yearly salary / ~1700 hours); use your own payroll
 overhead = 1.25 to 1.4            # taxes, benefits and equipment on top of the salary; rule of thumb: 25-40%
 fix_weeks = 4 to 16               # engineer-weeks to fix it; ask the people who know the code
-hours_per_week = 40               # working hours in an engineer-week; a usual full-time week
 recovered = 60% to 90%            # share of the lost hours the fix gives back; typical experience
 
 # Calculation
-hour_cost = loaded_cost(hourly_salary, overhead)                 # what an hour of a person costs the company
-yearly_cost = people * hours_lost * weeks_per_year * hour_cost    # the cost of not fixing it, every year
-fix_cost = fix_weeks * hours_per_week * hour_cost                 # the cost of fixing it once
-yearly_saving = yearly_cost * recovered                           # what the fix gives back every year
+hour_cost = loaded_cost(hourly_salary, overhead)                        # what an hour of a person costs the company
+yearly_cost = people * hours_lost * working_weeks_per_year * hour_cost  # the cost of not fixing it, every year
+fix_cost = fix_weeks * days_per_week * hours_per_day * hour_cost        # the cost of fixing it once
+yearly_saving = yearly_cost * recovered                                 # what the fix gives back every year
 
 # Result
 yearly_cost

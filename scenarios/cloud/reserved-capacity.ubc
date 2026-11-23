@@ -24,7 +24,7 @@ discount = 20% to 35%             # discount for committing for a year; check yo
 # Calculation
 on_demand = usage                                                     # paying on demand for everything
 committed = commitment * (1 - discount) + max(usage - commitment, 0)  # the commitment, plus any usage above it
-savings = (on_demand - committed) * 12                                # a year of savings; negative when the commitment is wasted
+savings = (on_demand - committed) * months_per_year                   # a year of savings; negative when the commitment is wasted
 
 # Result
 savings

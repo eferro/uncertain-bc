@@ -1,6 +1,6 @@
 # Modelling guide
 
-How to estimate well with `ubc`. The [tutorial](TUTORIAL.md) teaches the language; this guide is about the numbers you type into it: what a range claims, which shape to choose, how ranges combine, the mistakes that make a model lie, and how much to trust the simulation itself.
+How to estimate well with `ubc`. The [tutorial](TUTORIAL.md) teaches the language; this guide is about the numbers you type into it: what a range claims, which shape to choose, how ranges combine, the mistakes that make a model lie, how to keep units straight without units in the language, and how much to trust the simulation itself.
 
 Like the tutorial, every output below is checked against the binary by the test suite. Run the commands from the root of the repository.
 
@@ -110,7 +110,7 @@ $ ubc -e 'hours = 2 to 6' -e 'minutes = 30 to 90' -e 'hours + minutes' -e 'hours
 ≈ 4.4   90% [2.83 … 6.82]   98% [2.3 … 8.5]   ▂▄▆▇██▇▅▄▃▃▂▂▁▁▁
 ```
 
-Pick one unit per quantity, convert on the way in, and say it in the variable's comment or name (`hours`, `cost_eur`, `latency_ms`).
+Pick one unit per quantity, convert on the way in, and say it in the variable's comment or name (`hours`, `cost_eur`, `latency_ms`); [section 5](#5-units) shows how.
 
 **Mean vs median.** The `≈` value is the median: half the outcomes are below it. For a lognormal the mean is higher, and for a wide one much higher:
 
@@ -126,7 +126,51 @@ The mean is eight times the median, and only 15 % of outcomes reach it. Use the 
 
 **Heavy tails.** A range whose ends are a factor of a thousand apart, like `1k to 1M`, says you do not know the order of magnitude; its 98 % interval reaches past 4M. Multiplying several wide ranges makes the tail longer still. That may be true, and then it is the most important thing the model tells you: look at the 98 % interval and at `P(x > limit)`, not only at the middle. If it is not true, the range is too wide: find out more about the quantity that drives it (`--sens` ranks them).
 
-## 5. Monte Carlo noise
+## 5. Units
+
+`ubc` has no units, by decision ([ADR 0065](adr/0065-no-units-in-the-language.md)): every number is a plain number, and keeping track of what it measures is up to the model. Three habits do most of the work.
+
+**Name the unit.** Put it in the variable's name or in its comment: `delay_weeks`, `price_eur_kwh`, `latency_ms`, `rate = 40 to 90   # euros an hour`. A reader, and you in three months, should not have to guess.
+
+**One unit per quantity, one period per model.** Convert once, where the number comes in, not inside every formula. Keep rates and durations in the same period: a monthly cost with a number of months, a weekly throughput with a deadline in weeks.
+
+**Convert with named constants, not magic numbers.** The shared formulas that every scenario loads (`--scenario formulas`, see the [scenario catalogue](../scenarios/README.md#reusable-formulas)) start with the usual conversions. Each one says whether it counts working time, what people put in, or calendar time, what a clock, a bill or an SLO window counts:
+
+| Constant | Value | Counts |
+|---|---|---|
+| `minutes_per_hour` | 60 | both |
+| `hours_per_day` | 8 | working hours in a working day |
+| `hours_per_calendar_day` | 24 | calendar |
+| `days_per_week` | 5 | working days |
+| `days_per_month` | 30 | calendar, the month of a bill or an SLO |
+| `working_days_per_year` | 220 | after weekends, public holidays and leave |
+| `working_weeks_per_year` | 44 | `working_days_per_year / days_per_week` |
+| `weeks_per_year` | 52 | calendar |
+| `months_per_year` | 12 | both |
+
+A daily stand-up of six people, in hours a year:
+
+```console
+$ ubc --scenario formulas -e 'standup_minutes = 10 to 25' -e 'people = 6' -e 'yearly_hours = standup_minutes / minutes_per_hour * people * working_days_per_year' -e 'yearly_hours'
+≈ 348   90% [220 … 544]   98% [180 … 670]   ▂▄▆▇██▇▅▅▄▃▂▂▂▁▁
+```
+
+Working and calendar time are far apart, so pick the one the quantity really counts. A year of a server that is always on against a year of one engineer:
+
+```console
+$ ubc --scenario formulas -e 'months_per_year * days_per_month * hours_per_calendar_day' -e 'working_days_per_year * hours_per_day'
+8640
+1760
+```
+
+The constants are ordinary variables, so `--set` adapts them to your organisation, and the ones computed from them follow:
+
+```console
+$ ubc --set 'working_days_per_year = 200' --scenario formulas -e 'working_weeks_per_year'
+40
+```
+
+## 6. Monte Carlo noise
 
 `ubc` computes with 5000 random samples, so every result carries a little noise of its own, on top of the uncertainty you typed. The fixed seed hides it: the same model prints the same numbers on every run. Changing the seed shows how much of a result is noise:
 

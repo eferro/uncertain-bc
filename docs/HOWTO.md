@@ -184,6 +184,15 @@ To see the assumptions you can change, add `--echo`, which also prints every ass
 
 ```console
 $ ubc --echo --scenario team/replace-a-person
+minutes_per_hour = 60
+hours_per_day = 8
+hours_per_calendar_day = 24
+days_per_week = 5
+days_per_month = 30
+working_days_per_year = 220
+working_weeks_per_year = 44
+weeks_per_year = 52
+months_per_year = 12
 candidates = ≈ 9.5   90% [6 … 14.8]   98% [4.9 … 19]   ▂▄▆▇██▇▅▅▄▃▂▂▂▁▁
 hours_per_candidate = ≈ 4.88   90% [3.02 … 7.96]   98% [2.4 … 9.8]   ▃▅▇██▇▇▆▄▄▃▂▂▂▁▁
 interviewer_cost = ≈ 66.9   90% [50.2 … 91]   98% [44 … 103]   ▂▃▅▆▇█▇▆▆▅▄▃▂▂▂▁
@@ -200,7 +209,7 @@ total = ≈ 61.1k   90% [37.8k … 100k]   98% [30k … 122k]   ▃▅▆██�
 P(total > 50k) = 0.75
 ```
 
-The first eight are the assumptions, the rest are calculations. Replace the ones you know better with `--set`, as in [Use my own numbers](#use-my-own-numbers); a faster hiring process, for example:
+The first nine are the conversion constants of the shared formulas (`hours_per_day`, `weeks_per_year`…), which every scenario can use; then come the scenario's eight assumptions and its calculations. Replace the ones you know better with `--set`, as in [Use my own numbers](#use-my-own-numbers); a faster hiring process, for example:
 
 ```console
 $ ubc --set 'vacancy_months = 1 to 3' --scenario team/replace-a-person

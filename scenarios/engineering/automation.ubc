@@ -20,15 +20,14 @@
 # Assumptions
 minutes_saved = 2 to 10           # minutes the task takes by hand each time; time it yourself
 runs_per_week = 2 to 8            # times a week someone does it; count them in your logs or tracker
-weeks_per_year = 44               # working weeks, minus holidays; rule of thumb
 years = 5                         # horizon, as in the xkcd 1205 table
 build_hours = 16 to 60            # hours to write and test the automation; typical experience
 maintenance_hours = 4 to 16       # hours a year keeping it working as things around it change; typical experience
 
 # Calculation
-hours_saved = minutes_saved * runs_per_week * weeks_per_year * years / 60   # time no longer spent by hand
-hours_spent = build_hours + maintenance_hours * years                       # time spent on the automation
-net_hours = hours_saved - hours_spent                                       # positive means it was worth it
+hours_saved = minutes_saved * runs_per_week * working_weeks_per_year * years / minutes_per_hour  # time no longer spent by hand
+hours_spent = build_hours + maintenance_hours * years                                            # time spent on the automation
+net_hours = hours_saved - hours_spent                                                            # positive means it was worth it
 
 # Result
 hours_saved

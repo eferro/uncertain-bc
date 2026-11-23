@@ -23,7 +23,7 @@ increase = 15%                    # the proposed increase; your decision
 lost = 3% to 12%                  # share of customers who leave because of it; ask the ones who complained last time
 
 # Calculation
-before = customers * price * 12                                  # yearly revenue today
+before = customers * price * months_per_year                     # yearly revenue today
 after = before * (1 - lost) * (1 + increase)                     # fewer customers paying more
 gain = after - before                                            # what the change adds a year
 breakeven = increase / (1 + increase)                            # the share we can lose before it stops paying

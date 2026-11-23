@@ -7,6 +7,8 @@ All notable changes to `ubc` are documented in this file. The format follows [Ke
 ### Added
 
 - Every scenario ends with the output its run command prints, as a comment checked by the test suite, so you can read the answer without running it.
+- Conversion constants in the shared formulas (`minutes_per_hour`, `hours_per_day`, `working_days_per_year`, `weeks_per_year`, `months_per_year`…), each saying whether it counts working or calendar time; the scenarios use them instead of magic numbers, and `--set` adapts them. `ubc --echo --scenario NAME` now prints them first.
+- A section on units in the modelling guide: `ubc` keeps no units, by decision; name them, keep them consistent and convert with the constants.
 
 ## [1.0.0] - 2026-11-23
 

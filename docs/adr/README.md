@@ -15,7 +15,7 @@ Template: Status, Effective date, Deciders, then Context, Decision, Consequences
 | [0005](0005-deterministic-seed-by-default.md) | Deterministic RNG seed by default | Accepted | 2026-11-21 |
 | [0006](0006-bc-like-cli-with-honest-summary-output.md) | bc-like CLI with an honest one-line summary | Accepted | 2026-11-21 |
 | [0007](0007-name-the-binary-ubc-and-the-project-uncertain-bc.md) | Name the binary `ubc` and the project `uncertain-bc` | Accepted | 2026-11-21 |
-| [0008](0008-units-out-of-the-mvp.md) | Keep units out of the MVP | Accepted | 2026-11-21 |
+| [0008](0008-units-out-of-the-mvp.md) | Keep units out of the MVP | Superseded by [0065](0065-no-units-in-the-language.md) | 2026-11-21 |
 | [0009](0009-stdlib-testing-with-testify-assertions.md) | stdlib `testing` with testify assertions | Accepted | 2026-11-21 |
 | [0010](0010-hexagonal-architecture.md) | Hexagonal architecture | Accepted | 2026-11-21 |
 | [0011](0011-makefile-as-single-entry-point-and-git-hooks.md) | Makefile as the single entry point, enforced by git hooks | Accepted | 2026-11-21 |
@@ -72,3 +72,4 @@ Template: Status, Effective date, Deciders, then Context, Decision, Consequences
 | [0062](0062-version-1-and-its-stability-promise.md) | Version 1.0.0 and its stability promise (amends 0015) | Accepted | 2026-11-23 |
 | [0063](0063-scenario-output-checked-in-the-scenario.md) | Every scenario ends with its output, checked by the test suite (complements 0030) | Accepted | 2026-11-23 |
 | [0064](0064-no-tui-with-sliders.md) | No TUI with sliders | Accepted | 2026-11-23 |
+| [0065](0065-no-units-in-the-language.md) | No units in the language; conversion constants in the shared formulas (supersedes 0008) | Accepted | 2026-11-23 |

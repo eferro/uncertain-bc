@@ -20,7 +20,7 @@
 
 # Assumptions
 slo = 99.9%                       # the availability objective; pick yours, as in the SRE book
-minutes_per_month = 43200         # 30 days, the SLO window
+minutes_per_month = days_per_month * hours_per_calendar_day * minutes_per_hour   # a 30-day month, the SLO window
 incidents_per_month = 1 to 4      # incidents that break the SLO's indicator; typical experience, count your postmortems
 minutes_per_incident = 10 to 60   # impact start to mitigation; DORA: elite teams restore in under an hour
 affected_share = 20% to 80%       # share of the requests that fail during an incident; typical experience

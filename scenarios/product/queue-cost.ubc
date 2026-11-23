@@ -24,9 +24,9 @@ cod_per_item = 500 to 3k          # average weekly cost of delay of one of them;
 throughput = 4 to 7               # items the team finishes a week; read it from your tracker
 
 # Calculation
-wait = lead_time(queued, throughput)               # weeks an item spends in the queues (Little's law)
-weekly_cost = queued * cod_per_item                # value lost every week the queues stay this long
-yearly_cost = delay_cost(weekly_cost, 52)          # the same over a year
+wait = lead_time(queued, throughput)                   # weeks an item spends in the queues (Little's law)
+weekly_cost = queued * cod_per_item                    # value lost every week the queues stay this long
+yearly_cost = delay_cost(weekly_cost, weeks_per_year)  # the same over a year
 
 # Result
 wait

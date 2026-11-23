@@ -25,7 +25,7 @@
 balancer_down = 0.01% to 0.05%    # share of the time the load balancer is down; see its provider's SLA
 instance_down = 0.2% to 2%        # time one instance is down, deploys included; typical experience, see your monitoring
 database_down = 0.05% to 0.3%     # time the single database is down; typical experience, see your monitoring
-minutes_per_month = 43200         # 30 days
+minutes_per_month = days_per_month * hours_per_calendar_day * minutes_per_hour   # a 30-day month
 
 # Calculation
 balancer = 1 - balancer_down                                                # availability of each piece

@@ -23,11 +23,10 @@ flaky_rate = 3% to 10%            # runs failing on a flaky test; Micco (2016): 
 retries = 1 to 2                  # reruns until it goes green; typical experience
 pipeline_minutes = 10 to 25       # how long a run takes; look at your CI
 check_minutes = 5 to 20           # time spent making sure the failure is flaky, not real; typical experience
-days_per_year = 220               # working days; rule of thumb
 
 # Calculation
-flaky_runs = builds_per_day * flaky_rate * days_per_year                       # runs a year that fail for no reason
-hours_lost = flaky_runs * (check_minutes + retries * pipeline_minutes) / 60    # checking and waiting for the reruns
+flaky_runs = builds_per_day * flaky_rate * working_days_per_year                           # runs a year that fail for no reason
+hours_lost = flaky_runs * (check_minutes + retries * pipeline_minutes) / minutes_per_hour  # checking and waiting for the reruns
 
 # Result
 flaky_runs

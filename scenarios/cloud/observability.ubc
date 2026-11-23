@@ -22,11 +22,10 @@ gb_per_service = 0.5 to 3         # gigabytes of logs a service writes a day; ty
 ingest_price = 0.3 to 1.5         # dollars per gigabyte ingested; check your vendor's public price list
 retention_days = 15 to 30         # days the logs stay searchable; from your retention settings
 storage_price = 0.03 to 0.1       # dollars per gigabyte kept searchable a month; check your vendor's public price list
-days = 30                         # days in a month
 
 # Calculation
 daily_gb = services * gb_per_service                       # gigabytes ingested a day
-ingest = daily_gb * days * ingest_price                    # ingesting a month of logs
+ingest = daily_gb * days_per_month * ingest_price          # ingesting a month of logs
 storage = daily_gb * retention_days * storage_price        # keeping the retention window searchable
 monthly_cost = ingest + storage                            # the monthly bill
 

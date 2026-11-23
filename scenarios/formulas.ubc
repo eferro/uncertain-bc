@@ -6,9 +6,25 @@
 #   ubc --scenario <area>/<name>
 #   ubc --scenario formulas my-model.ubc
 #
-# Every argument can be a plain number or an uncertain one ("a to b"). Keep
-# the time units consistent: a monthly rate with a number of months, a weekly
-# cost of delay with a duration in weeks.
+# Every argument can be a plain number or an uncertain one ("a to b"). ubc
+# has no units (ADR 0065): keep them consistent, a monthly rate with a number
+# of months, a weekly cost of delay with a duration in weeks, and convert
+# with the constants below.
+
+# Conversions
+
+# Working time is what people put in; calendar time is what a clock, a bill
+# or an SLO window counts. Each constant says which one it is. Override one
+# for your context with --set, for example --set 'hours_per_day = 7.5'.
+minutes_per_hour = 60
+hours_per_day = 8                 # working hours in a working day
+hours_per_calendar_day = 24       # calendar: servers, bills, SLO windows
+days_per_week = 5                 # working days in a week
+days_per_month = 30               # calendar: the usual month of a bill or an SLO
+working_days_per_year = 220       # after weekends, public holidays and leave; rule of thumb
+working_weeks_per_year = working_days_per_year / days_per_week
+weeks_per_year = 52               # calendar
+months_per_year = 12
 
 # People
 

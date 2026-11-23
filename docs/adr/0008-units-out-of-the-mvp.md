@@ -1,6 +1,6 @@
 # ADR 0008: Keep units out of the MVP
 
-- Status: Accepted
+- Status: Superseded by [ADR 0065](0065-no-units-in-the-language.md)
 - Effective date: 2026-11-21
 - Deciders: eduardo.ferro
 

@@ -29,7 +29,7 @@ hour_cost = 50 to 90              # loaded cost of an hour; rule of thumb: salar
 
 # Calculation
 time_to_fill = sourcing_weeks + interview_weeks + notice_weeks          # weeks until the new hire starts
-screening = cvs_screened * minutes_per_cv / 60                          # hours spent reading applications
+screening = cvs_screened * minutes_per_cv / minutes_per_hour            # hours spent reading applications
 interviewing = candidates * hours_per_candidate                         # hours spent interviewing
 process_hours = screening + interviewing + coordination_hours           # every hour the process takes
 process_cost = process_hours * hour_cost                                # what those hours cost

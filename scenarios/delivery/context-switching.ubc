@@ -18,14 +18,13 @@
 people = 6                        # engineers in the team; your own team
 interruptions = 3 to 10           # interruptions per person a day: messages, questions, meetings; typical experience
 minutes_lost = 10 to 25           # to get back into the task; Gloria Mark et al. (CHI 2008), commonly quoted as ~23
-hours_per_day = 8                 # working hours in a day; your contracts
 salary = 50k to 80k               # gross yearly salary; your payroll or local salary surveys
 overhead = 1.25 to 1.4            # taxes, benefits and equipment on top of salary; rule of thumb 25-40%
 
 # Calculation
-lost_hours = interruptions * minutes_lost / 60               # hours a person loses a day
-lost_share = lost_hours / hours_per_day                      # share of the working day
-team_hours_week = lost_hours * people * 5                    # hours the whole team loses a week
+lost_hours = interruptions * minutes_lost / minutes_per_hour  # hours a person loses a day
+lost_share = lost_hours / hours_per_day                       # share of the working day
+team_hours_week = lost_hours * people * days_per_week         # hours the whole team loses a week
 yearly_cost = people * loaded_cost(salary, overhead) * lost_share   # what those hours cost a year
 
 # Result

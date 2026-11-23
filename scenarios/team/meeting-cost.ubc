@@ -24,10 +24,10 @@ hourly_salary = 30 to 60          # gross salary per hour (yearly salary / ~1700
 overhead = 1.25 to 1.4            # taxes, benefits and equipment on top of salary; rule of thumb 25-40%
 
 # Calculation
-hour_cost = loaded_cost(hourly_salary, overhead)                # what an hour of a person costs the company
-hours_per_meeting = attendees * (minutes + refocus_minutes) / 60 # person-hours one meeting takes
-yearly_hours = hours_per_meeting * meetings_per_year            # person-hours in a year
-yearly_cost = yearly_hours * hour_cost                          # what those hours cost
+hour_cost = loaded_cost(hourly_salary, overhead)                                # what an hour of a person costs the company
+hours_per_meeting = attendees * (minutes + refocus_minutes) / minutes_per_hour  # person-hours one meeting takes
+yearly_hours = hours_per_meeting * meetings_per_year                            # person-hours in a year
+yearly_cost = yearly_hours * hour_cost                                          # what those hours cost
 
 # Result
 yearly_hours
