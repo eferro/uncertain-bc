@@ -4,11 +4,17 @@ All notable changes to `ubc` are documented in this file. The format follows [Ke
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-11-23
+
 ### Added
 
 - Every scenario ends with the output its run command prints, as a comment checked by the test suite, so you can read the answer without running it.
 - Conversion constants in the shared formulas (`minutes_per_hour`, `hours_per_day`, `working_days_per_year`, `weeks_per_year`, `months_per_year`…), each saying whether it counts working or calendar time; the scenarios use them instead of magic numbers, and `--set` adapts them. `ubc --echo --scenario NAME` now prints them first.
 - A section on units in the modelling guide: `ubc` keeps no units, by decision; name them, keep them consistent and convert with the constants.
+
+### Removed
+
+- The idea of a TUI with sliders is dropped from the roadmap ([ADR 0064](https://github.com/eferro/uncertain-bc/blob/main/docs/adr/0064-no-tui-with-sliders.md)).
 
 ## [1.0.0] - 2026-11-23
 
@@ -121,7 +127,8 @@ First stable version: from now on the language, flags, REPL commands, `--json` a
 - Syntax errors report their position.
 - `ubc --version`, and release binaries for Linux, macOS and Windows.
 
-[Unreleased]: https://github.com/eferro/uncertain-bc/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/eferro/uncertain-bc/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/eferro/uncertain-bc/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/eferro/uncertain-bc/compare/v0.7.2...v1.0.0
 [0.7.2]: https://github.com/eferro/uncertain-bc/compare/v0.7.1...v0.7.2
 [0.7.1]: https://github.com/eferro/uncertain-bc/compare/v0.7.0...v0.7.1
