@@ -4,6 +4,8 @@ All notable changes to `ubc` are documented in this file. The format follows [Ke
 
 ## [Unreleased]
 
+## [1.1.1] - 2026-11-23
+
 ### Fixed
 
 - Assigning a comparison of uncertain values keeps its samples (#41). `hit = uniform(0, 1) < 0.1` used to bind the probability `0.1`, so `hit * (50k to 500k)` was a tenth of the impact in every sample and `P(hit * (50k to 500k) > 0)` was `1`; now `hit` is an event, 1 in the samples where the comparison holds and 0 elsewhere, and that probability is about `0.1`. An event still prints as a probability (results, `--echo`, `:vars`, `--json`, `--plain`), so the output of models that do not compute with an assigned comparison is unchanged. The same applies to `--set 'hit=...'`, to `last` after a comparison and to a function whose body is a comparison, which now prints a probability. `--samples-out` writes an event as a `0`/`1` column, `--sens` counts it as a driver, and `--assert hit` checks it like a comparison.
@@ -135,7 +137,8 @@ First stable version: from now on the language, flags, REPL commands, `--json` a
 - Syntax errors report their position.
 - `ubc --version`, and release binaries for Linux, macOS and Windows.
 
-[Unreleased]: https://github.com/eferro/uncertain-bc/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/eferro/uncertain-bc/compare/v1.1.1...HEAD
+[1.1.1]: https://github.com/eferro/uncertain-bc/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/eferro/uncertain-bc/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/eferro/uncertain-bc/compare/v0.7.2...v1.0.0
 [0.7.2]: https://github.com/eferro/uncertain-bc/compare/v0.7.1...v0.7.2
