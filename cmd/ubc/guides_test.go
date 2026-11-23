@@ -13,7 +13,10 @@ import (
 )
 
 func TestGuides_EveryConsoleBlockMatchesTheBinary(t *testing.T) {
-	for _, guide := range []string{"docs/TUTORIAL.md", "docs/MODELLING.md", "docs/REFERENCE.md", "docs/HOWTO.md", "README.md"} {
+	for _, guide := range []string{
+		"docs/TUTORIAL.md", "docs/MODELLING.md", "docs/REFERENCE.md", "docs/HOWTO.md", "README.md",
+		"claude-plugin/skills/ubc/SKILL.md", "claude-plugin/skills/ubc/references/language.md",
+	} {
 		t.Run(guide, func(t *testing.T) {
 			archive, err := guideArchive(repoDoc(t, guide))
 			require.NoError(t, err)

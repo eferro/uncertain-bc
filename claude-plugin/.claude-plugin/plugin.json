@@ -1,0 +1,10 @@
+{
+  "name": "ubc",
+  "description": "Estimates with ranges instead of point guesses, using the ubc Monte Carlo calculator",
+  "author": {
+    "name": "Eduardo Ferro"
+  },
+  "homepage": "https://eferro.github.io/uncertain-bc/",
+  "repository": "https://github.com/eferro/uncertain-bc",
+  "license": "MIT"
+}

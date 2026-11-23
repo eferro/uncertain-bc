@@ -66,7 +66,7 @@ check-binary: ## Build the static binary with a known version and smoke-test it
 	scripts/checks/binary-smoke.sh $(BIN) v0.0.0-smoke
 
 check-scripts: ## Lint every shell script with shellcheck (runs in CI, where shellcheck is installed)
-	shellcheck install.sh scripts/hooks/* scripts/checks/*.sh
+	shellcheck install.sh claude-plugin/skills/ubc/scripts/*.sh scripts/hooks/* scripts/checks/*.sh
 
 scenario-outputs: ## Rewrite the output block at the end of every scenario after an intended output change (ADR 0063)
 	go test ./cmd/ubc -count=1 -run '^TestScenarios_EveryScenarioEndsWithItsOutput$$' -args -update-scenario-outputs

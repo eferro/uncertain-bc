@@ -48,6 +48,21 @@ scoop install ubc
 
 Check it works with `ubc --version`. To pin a version with the scripts, set `UBC_VERSION=0.7.0`; to choose the directory, `UBC_INSTALL_DIR=~/bin`. The binaries are not signed: the script, Homebrew and Scoop installs avoid the warnings; if you download an archive with a browser, macOS needs `xattr -d com.apple.quarantine ubc` and Windows SmartScreen needs "More info → Run anyway". Shell completion (bash, zsh, fish): `source <(ubc --completion bash)` in your shell's startup file; Homebrew installs it for you.
 
+## Use it from Claude Code
+
+This repository is also a [Claude Code](https://code.claude.com) plugin marketplace with a `ubc` skill. With it, Claude uses `ubc` on its own whenever an answer rests on guessed numbers: a cost, an effort or a delivery date, a risk, a cloud bill, a Fermi problem. It writes the model as a `.ubc` file you can keep and change, runs it, and answers with the probability that matters to you instead of a single number built on guesses. The skill checks that ubc 1.1.1 or later is installed; when it is not, it offers to install the latest release into `~/.local/bin` with the install script above (Linux and macOS, checksum verified, no sudo).
+
+Install the plugin from a Claude Code session:
+
+```text
+/plugin marketplace add eferro/uncertain-bc
+/plugin install ubc@uncertain-bc
+```
+
+The same from the shell is `claude plugin marketplace add eferro/uncertain-bc` and then `claude plugin install ubc@uncertain-bc`; on Claude Code 2.1.275 or later one step is enough: `/plugin install ubc --marketplace eferro/uncertain-bc`. Add `--scope project` to the shell command to share it with everyone who works in a repository. Plugins from marketplaces you add yourself do not update on their own: run `claude plugin marketplace update uncertain-bc`, or turn on auto-update for the marketplace under Marketplaces in `/plugin`.
+
+Without the plugin system, copy [`claude-plugin/skills/ubc`](claude-plugin/skills/ubc/SKILL.md) to `~/.claude/skills/ubc` for every project, or to a project's `.claude/skills/ubc`.
+
 ## Get started in three commands
 
 Ask a question with `-e`. Variables keep their uncertainty, and `P(...)` says how likely something is:

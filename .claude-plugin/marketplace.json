@@ -1,0 +1,14 @@
+{
+  "name": "uncertain-bc",
+  "description": "Claude Code plugins of ubc, the bc-like calculator for uncertain numbers",
+  "owner": {
+    "name": "Eduardo Ferro"
+  },
+  "plugins": [
+    {
+      "name": "ubc",
+      "source": "./claude-plugin",
+      "description": "Estimates with ranges instead of point guesses, using the ubc Monte Carlo calculator"
+    }
+  ]
+}

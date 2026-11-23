@@ -24,13 +24,13 @@ func archiveName(version string) string {
 	return fmt.Sprintf("ubc_%s_%s_%s.tar.gz", version, runtime.GOOS, runtime.GOARCH)
 }
 
-func fakeArchive(t *testing.T) []byte {
+func fakeArchive(t *testing.T, binary string) []byte {
 	t.Helper()
 	var buf bytes.Buffer
 	gz := gzip.NewWriter(&buf)
 	tw := tar.NewWriter(gz)
-	require.NoError(t, tw.WriteHeader(&tar.Header{Name: "ubc", Mode: 0o755, Size: int64(len(fakeBinary))}))
-	_, err := tw.Write([]byte(fakeBinary))
+	require.NoError(t, tw.WriteHeader(&tar.Header{Name: "ubc", Mode: 0o755, Size: int64(len(binary))}))
+	_, err := tw.Write([]byte(binary))
 	require.NoError(t, err)
 	require.NoError(t, tw.Close())
 	require.NoError(t, gz.Close())
@@ -44,7 +44,12 @@ type fakeGitHub struct {
 
 func newFakeGitHub(t *testing.T, version string, corrupt bool) *httptest.Server {
 	t.Helper()
-	archive := fakeArchive(t)
+	return newFakeRelease(t, version, fakeBinary, corrupt)
+}
+
+func newFakeRelease(t *testing.T, version, binary string, corrupt bool) *httptest.Server {
+	t.Helper()
+	archive := fakeArchive(t, binary)
 	sum := sha256.Sum256(archive)
 	if corrupt {
 		sum[0] ^= 0xff
