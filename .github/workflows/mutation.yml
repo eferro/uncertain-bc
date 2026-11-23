@@ -1,0 +1,23 @@
+name: Mutation
+
+# The gremlins gate (85 % efficacy on internal/domain) runs weekly and on
+# demand instead of on every push, because it takes about ten minutes
+# (ADR 0067). Run it by hand before a release if the domain changed.
+on:
+  schedule:
+    - cron: "0 5 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  mutation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-go@d8cbb8045d7f43706b9177cceb36c1f91a6644d5 # v7.1.0
+        with:
+          go-version-file: go.mod
+      - run: make local-setup
+      - run: make test-mutation

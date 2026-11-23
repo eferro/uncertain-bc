@@ -1,6 +1,6 @@
 # Mutation testing
 
-`make test-mutation` runs [gremlins](https://github.com/go-gremlins/gremlins) on `internal/domain` and fails below 85% test efficacy (ADR 0012, ADR 0020). CI runs it on every push. While developing, mutate the changed code by hand with the `mutation-testing` skill before each commit (ADR 0021).
+`make test-mutation` runs [gremlins](https://github.com/go-gremlins/gremlins) on `internal/domain` and fails below 85% test efficacy (ADR 0012, ADR 0020). The `Mutation` workflow runs it every week and on demand, not on every push (ADR 0067); run it before a release if `internal/domain` changed since its last run. While developing, mutate the changed code by hand with the `mutation-testing` skill before each commit (ADR 0021).
 
 ## Equivalent mutants
 
