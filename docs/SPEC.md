@@ -228,4 +228,4 @@ These hold with the default seed and sample count.
 
 ## 10. Out of scope
 
-Not supported today, by decision: units (ADR 0008), symbolic distributions, correlation between distinct ranges, a TUI with sliders, Squiggle compatibility, Unicode identifiers.
+Not supported today, by decision: units (ADR 0008), symbolic distributions, correlation between distinct ranges, a TUI with sliders (ADR 0064), Squiggle compatibility, Unicode identifiers.

@@ -163,7 +163,7 @@ Key decisions:
 | Command-line UX ✅ (v0.6.0) | `--echo`, `--hist`, `--quantiles`, `--watch`, shell completion (ADR 0025) |
 | Installation ✅ (v0.7.x) | Install scripts, `.deb`/`.rpm`/`.apk`, Homebrew, Scoop (ADR 0026) |
 | Modelling and scenarios ✅ | `--set`, `--assert`, `--data`, `--samples-out`, `--sens`, `--interval`, `poisson`/`binomial`, the 98 % interval, the tutorial and the scenario catalogue |
-| 5. Maybe | Units, interactive sliders (Guesstimate-style "calculators") in a TUI |
+| 5. Maybe | Units (ADR 0008). A TUI with sliders was discarded (ADR 0064) |
 
 ## 10. Name
 

@@ -71,3 +71,4 @@ Template: Status, Effective date, Deciders, then Context, Decision, Consequences
 | [0061](0061-documentation-website-with-mkdocs.md) | A documentation website built by MkDocs and deployed to GitHub Pages | Accepted | 2026-11-22 |
 | [0062](0062-version-1-and-its-stability-promise.md) | Version 1.0.0 and its stability promise (amends 0015) | Accepted | 2026-11-23 |
 | [0063](0063-scenario-output-checked-in-the-scenario.md) | Every scenario ends with its output, checked by the test suite (complements 0030) | Accepted | 2026-11-23 |
+| [0064](0064-no-tui-with-sliders.md) | No TUI with sliders | Accepted | 2026-11-23 |
