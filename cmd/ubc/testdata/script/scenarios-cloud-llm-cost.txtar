@@ -1,8 +1,3 @@
-exec ubc --scenario cloud/llm-cost
-stdout '^cost_per_request = ≈ 0\.00746 '
-stdout '^monthly_cost = ≈ 1470 '
-stdout '^P\(monthly_cost > 3k\) = 0\.18\n\z'
-! stderr .
 exec ubc --set 'input_tokens = 300 to 1k' --scenario cloud/llm-cost
 stdout '^P\(monthly_cost > 3k\) = 0\.07\n\z'
 exec ubc --sens monthly_cost --scenario cloud/llm-cost

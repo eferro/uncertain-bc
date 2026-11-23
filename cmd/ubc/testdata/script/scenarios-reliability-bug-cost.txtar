@@ -1,9 +1,3 @@
-exec ubc --scenario reliability/bug-cost
-stdout '^review_cost = ≈ 56\.3 '
-stdout '^qa_cost = ≈ 306 '
-stdout '^production_cost = ≈ 5730 '
-stdout '^L40: 0\.80\n\z'
-! stderr .
 exec ubc --set 'customer_impact = 200 to 2k' --scenario reliability/bug-cost
 stdout '^L40: 0\.18\n\z'
 exec ubc --sens production_cost --scenario reliability/bug-cost

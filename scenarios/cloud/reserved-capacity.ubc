@@ -30,3 +30,8 @@ savings = (on_demand - committed) * 12                                # a year o
 savings
 P(usage < commitment)             # how likely are we to pay for capacity we do not use?
 P(savings > 0)                    # how likely is the commitment to come out cheaper?
+
+# Output (seed 1, 5000 samples):
+#   savings = ≈ 129k   90% [-83.3k … 197k]   98% [-160k … 230k]   ▁▁▂▂▂▂▃▃▃▃▃▅█▇▄▂
+#   P(usage < commitment) = 0.53
+#   P(savings > 0) = 0.83

@@ -1,9 +1,3 @@
-exec ubc --scenario delivery/littles-law
-stdout '^lead = ≈ 4 '
-stdout '^lead_limited = ≈ 1\.51 '
-stdout '^weeks_saved = ≈ 2\.48 '
-stdout '^P\(lead_limited <= target\) = 0\.95\n\z'
-! stderr .
 exec ubc --set 'wip_limit = 5' --scenario delivery/littles-law
 stdout '^lead_limited = ≈ 0\.947 '
 stdout '^P\(lead_limited <= target\) = 1\n\z'

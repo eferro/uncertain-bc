@@ -1,8 +1,3 @@
-exec ubc --scenario engineering/flaky-tests
-stdout '^flaky_runs = ≈ 585 '
-stdout '^hours_lost = ≈ 327 '
-stdout '^P\(hours_lost > 300\) = 0\.56\n\z'
-! stderr .
 exec ubc --set 'flaky_rate = 0.5% to 2%' --scenario engineering/flaky-tests
 stdout '^P\(hours_lost > 300\) = <0\.01\n\z'
 exec ubc --sens hours_lost --scenario engineering/flaky-tests

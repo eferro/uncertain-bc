@@ -34,3 +34,8 @@ net_hours = hours_saved - hours_spent                                       # po
 hours_saved
 hours_spent
 P(net_hours > 0)                  # how likely is automating it to save more time than it takes?
+
+# Output (seed 1, 5000 samples):
+#   hours_saved = ≈ 65.3   90% [22.8 … 186]   98% [14 … 290]   ▅██▇▅▄▃▂▂▂▂▁▁▁▁▁
+#   hours_spent = ≈ 73.8   90% [45.4 … 123]   98% [36 … 160]   ▂▄▇███▇▅▄▃▃▂▂▂▁▁
+#   P(net_hours > 0) = 0.43

@@ -33,3 +33,9 @@ lifetime_value
 payback
 ratio
 P(payback <= 12)                  # how likely is the payback to stay within 12 months?
+
+# Output (seed 1, 5000 samples):
+#   lifetime_value = ≈ 4850   90% [2100 … 11k]   98% [1400 … 16k]   ▄▇██▇▅▄▃▃▂▂▁▂▁▁▁
+#   payback = ≈ 10.3   90% [4.5 … 23.6]   98% [3 … 34]   ▄▇██▇▅▄▃▃▂▂▂▁▁▁▁
+#   ratio = ≈ 4.81   90% [1.59 … 14.2]   98% [1 … 24]   ▅█▇▅▄▃▃▂▂▁▁▁▁▁▁▁
+#   P(payback <= 12) = 0.62

@@ -33,3 +33,9 @@ wait
 weekly_cost
 yearly_cost
 P(yearly_cost > 1M)               # how likely are the queues to cost more than 1M euros a year?
+
+# Output (seed 1, 5000 samples):
+#   wait = ≈ 3.26   90% [1.77 … 5.97]   98% [1.3 … 7.9]   ▃▅▇██▇▅▅▃▃▂▂▂▁▁▁
+#   weekly_cost = ≈ 20.9k   90% [7490 … 59.1k]   98% [4700 … 93k]   ▅██▆▄▄▃▂▂▂▁▁▁▁▁▁
+#   yearly_cost = ≈ 1.09M   90% [390k … 3.07M]   98% [240k … 4.8M]   ▅██▆▄▄▃▂▂▂▁▁▁▁▁▁
+#   P(yearly_cost > 1M) = 0.56

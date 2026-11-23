@@ -35,3 +35,8 @@ yearly_cost = hours_lost * hour_cost                                            
 hours_lost
 yearly_cost
 P(yearly_cost > 100k)             # how likely is the slow pipeline to cost more than 100k euros a year?
+
+# Output (seed 1, 5000 samples):
+#   hours_lost = ≈ 1850   90% [774 … 4450]   98% [520 … 6300]   ▄▇█▇▆▅▄▃▂▂▂▂▁▁▁▁
+#   yearly_cost = ≈ 103k   90% [39.9k … 264k]   98% [26k … 370k]   ▄▇█▇▆▅▄▃▂▂▂▂▁▁▁▁
+#   P(yearly_cost > 100k) = 0.52

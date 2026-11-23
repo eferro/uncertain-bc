@@ -32,3 +32,8 @@ build = build_cost * (1 + maintenance * years)                 # building it and
 buy
 build
 P(build < buy)                    # how likely is building to be the cheaper option?
+
+# Output (seed 1, 5000 samples):
+#   buy = ≈ 260k   90% [155k … 442k]   98% [120k … 550k]   ▃▅▇███▇▅▄▃▃▂▂▂▁▁
+#   build = ≈ 312k   90% [192k … 509k]   98% [150k … 620k]   ▃▄▆▇██▆▆▅▃▃▂▂▂▁▁
+#   P(build < buy) = 0.33

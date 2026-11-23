@@ -32,3 +32,8 @@ yearly_cost = people * loaded_cost(salary, overhead) * lost_share   # what those
 team_hours_week
 yearly_cost
 P(lost_share > 0.25)              # how likely do interruptions eat more than a quarter of the day?
+
+# Output (seed 1, 5000 samples):
+#   team_hours_week = ≈ 43.3   90% [20.5 … 90.1]   98% [15 … 130]   ▄▆██▇▆▅▄▃▃▂▂▂▁▁▁
+#   yearly_cost = ≈ 90.5k   90% [40.7k … 196k]   98% [29k … 270k]   ▄▇██▇▆▅▃▃▂▂▂▁▁▁▁
+#   P(lost_share > 0.25) = 0.23

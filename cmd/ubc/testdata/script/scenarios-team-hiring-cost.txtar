@@ -1,9 +1,3 @@
-exec ubc --scenario team/hiring-cost
-stdout '^time_to_fill = ≈ 12 '
-stdout '^process_hours = ≈ 79\.6 '
-stdout '^process_cost = ≈ 5330 '
-stdout '^P\(time_to_fill > 13\) = 0\.38\n\z'
-! stderr .
 exec ubc --set 'notice_weeks = 2 to 4' --scenario team/hiring-cost
 stdout '^P\(time_to_fill > 13\) = 0\.04\n\z'
 exec ubc --sens time_to_fill --scenario team/hiring-cost

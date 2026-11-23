@@ -38,3 +38,9 @@ fine
 breach_cost
 yearly_loss
 P(breach_cost > 5M)               # how likely is one breach to cost more than 5M euros?
+
+# Output (seed 1, 5000 samples):
+#   fine = ≈ 203k   90% [36.7k … 1.13M]   98% [16k … 2.3M]   █▅▃▂▂▂▁▁▁▁▁▁▁▁▁▁
+#   breach_cost = ≈ 4.86M   90% [1.12M … 22M]   98% [640k … 45M]   █▆▄▃▂▂▁▁▁▁▁▁▁▁▁▁
+#   yearly_loss = ≈ 483k   90% [95.7k … 2.46M]   98% [51k … 5.3M]   █▅▃▂▂▁▁▁▁▁▁▁▁▁▁▁
+#   P(breach_cost > 5M) = 0.49

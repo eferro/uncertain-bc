@@ -1,9 +1,3 @@
-exec ubc --scenario product/tam-sam-som
-stdout '^tam = ≈ 1\.38B '
-stdout '^sam = ≈ 389M '
-stdout '^som = ≈ 8\.75M '
-stdout '^P\(som > 10M\) = 0\.42\n\z'
-! stderr .
 exec ubc --set 'serviceable = 5% to 10%' --scenario product/tam-sam-som
 stdout '^P\(som > 10M\) = <0\.01\n\z'
 exec ubc --sens som --scenario product/tam-sam-som

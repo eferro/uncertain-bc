@@ -33,3 +33,8 @@ hours_lost = flaky_runs * (check_minutes + retries * pipeline_minutes) / 60    #
 flaky_runs
 hours_lost
 P(hours_lost > 300)               # how likely do flaky tests waste more than 300 hours a year?
+
+# Output (seed 1, 5000 samples):
+#   flaky_runs = ≈ 585   90% [272 … 1260]   98% [190 … 1800]   ▄▆██▇▆▄▄▃▂▂▂▂▁▁▁
+#   hours_lost = ≈ 327   90% [132 … 795]   98% [92 … 1090]   ▄▇██▆▅▄▃▃▂▂▂▂▁▁▁
+#   P(hours_lost > 300) = 0.56

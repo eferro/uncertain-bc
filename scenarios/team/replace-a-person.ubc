@@ -34,3 +34,7 @@ total = interviewing + hiring_fees + vacancy + ramp_up
 # Result
 total
 P(total > 50k)                    # how likely is it to cost more than 50k euros?
+
+# Output (seed 1, 5000 samples):
+#   total = ≈ 61.1k   90% [37.8k … 100k]   98% [30k … 122k]   ▃▅▆██▇▇▆▅▄▃▂▂▂▁▁
+#   P(total > 50k) = 0.75

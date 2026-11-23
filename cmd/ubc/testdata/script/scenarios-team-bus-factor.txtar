@@ -1,8 +1,3 @@
-exec ubc --scenario team/bus-factor
-stdout '^impact = ≈ 54\.7k '
-stdout '^yearly_risk = ≈ 6970 '
-stdout '^L34: 0\.73\n\z'
-! stderr .
 exec ubc --set 'recovery_months = 1 to 2' --scenario team/bus-factor
 stdout '^L34: 0\.21\n\z'
 exec ubc --sens yearly_risk --scenario team/bus-factor

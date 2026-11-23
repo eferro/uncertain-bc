@@ -39,3 +39,9 @@ time_to_fill
 process_hours
 process_cost
 P(time_to_fill > 13)              # how likely is the seat to stay empty for more than three months (13 weeks)?
+
+# Output (seed 1, 5000 samples):
+#   time_to_fill = ≈ 12   90% [7.98 … 19.4]   98% [6.8 … 26]   ▃▅███▆▅▄▃▂▂▂▁▁▁▁
+#   process_hours = ≈ 79.6   90% [52.1 … 126]   98% [45 … 160]   ▃▅▇██▇▆▅▄▃▂▂▂▁▁▁
+#   process_cost = ≈ 5330   90% [3210 … 9290]   98% [2600 … 11.9k]   ▃▅▇██▇▆▅▃▃▂▂▂▁▁▁
+#   P(time_to_fill > 13) = 0.38

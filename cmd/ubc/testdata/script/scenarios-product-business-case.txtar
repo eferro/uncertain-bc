@@ -1,8 +1,3 @@
-exec ubc --scenario product/business-case
-stdout '^yearly_revenue = ≈ 80\.7k '
-stdout '^net = ≈ 45\.5k '
-stdout '^P\(net > 0\) = 0\.68\n\z'
-! stderr .
 exec ubc --set 'conversion = 5% to 15%' --scenario product/business-case
 stdout '^P\(net > 0\) = 0\.87\n\z'
 exec ubc --sens net --scenario product/business-case

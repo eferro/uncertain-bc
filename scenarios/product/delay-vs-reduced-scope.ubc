@@ -30,3 +30,8 @@ reduced = delay_cost(weekly_value * (1 - reduced_share), rest_weeks) + two_relea
 delay
 reduced
 P(reduced < delay)                # how likely is the reduced scope to lose less value?
+
+# Output (seed 1, 5000 samples):
+#   delay = ≈ 109k   90% [53.8k … 221k]   98% [40k … 300k]   ▃▆▇█▇▆▅▄▃▃▂▂▂▁▁▁
+#   reduced = ≈ 71k   90% [33k … 147k]   98% [23k … 210k]   ▃▆▇█▇▆▅▄▃▂▂▂▁▁▁▁
+#   P(reduced < delay) = 0.83

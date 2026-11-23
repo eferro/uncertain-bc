@@ -31,3 +31,8 @@ bill_later = team_later * (1 + unused) * per_seat         # the monthly bill the
 team_later
 bill_later
 P(bill_later > 20k)               # how likely are the seats to cost more than 20k dollars a month in two years?
+
+# Output (seed 1, 5000 samples):
+#   team_later = ≈ 64.4   90% [50.8 … 101]   98% [47 … 139]   ▅██▆▄▄▃▂▂▂▁▁▁▁▁▁
+#   bill_later = ≈ 16.2k   90% [10.4k … 27.6k]   98% [8700 … 39k]   ▃▆██▇▆▄▃▃▂▂▂▁▁▁▁
+#   P(bill_later > 20k) = 0.24

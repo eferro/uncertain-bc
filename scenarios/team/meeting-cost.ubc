@@ -33,3 +33,8 @@ yearly_cost = yearly_hours * hour_cost                          # what those hou
 yearly_hours
 yearly_cost
 P(yearly_cost > 30k)              # how likely is the meeting to cost more than 30k euros a year?
+
+# Output (seed 1, 5000 samples):
+#   yearly_hours = ≈ 457   90% [366 … 566]   98% [330 … 630]   ▂▃▄▅▆▇██▇▅▄▄▃▂▂▁
+#   yearly_cost = ≈ 25.7k   90% [16.9k … 38.8k]   98% [14k … 48k]   ▂▄▆███▇▆▅▄▃▂▂▂▁▁
+#   P(yearly_cost > 30k) = 0.27

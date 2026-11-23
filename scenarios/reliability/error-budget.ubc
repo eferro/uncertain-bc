@@ -36,3 +36,9 @@ allowed_minutes
 expected_minutes
 budget_used
 P(expected_minutes > allowed_minutes)   # how likely are we to overspend the error budget this month?
+
+# Output (seed 1, 5000 samples):
+#   allowed_minutes = 43.2
+#   expected_minutes = ≈ 29   90% [13.2 … 82.1]   98% [10 … 140]   ▅█▆▅▃▃▂▂▂▁▁▁▁▁▁▁
+#   budget_used = ≈ 0.67   90% [0.306 … 1.9]   98% [0.23 … 3.1]   ▅█▆▅▃▃▂▂▂▁▁▁▁▁▁▁
+#   L38: 0.25

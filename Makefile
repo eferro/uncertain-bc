@@ -20,7 +20,7 @@ MUTATION_MEMORY_KB := 4000000
 DOCS_VENV := $(TOOLS)/docs-venv
 MKDOCS := $(DOCS_VENV)/bin/mkdocs
 
-.PHONY: help local-setup test test-pkg coverage format lint check-test-style check-architecture check-binary check-scripts secrets-scan test-mutation validate build release-check release-snapshot release-notes docs
+.PHONY: help local-setup test test-pkg coverage format lint check-test-style check-architecture check-binary check-scripts scenario-outputs secrets-scan test-mutation validate build release-check release-snapshot release-notes docs
 
 help: ## List available targets
 	@grep -hE '^[a-zA-Z_-]+:.*## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*## "} {printf "  %-20s %s\n", $$1, $$2}'
@@ -67,6 +67,9 @@ check-binary: ## Build the static binary with a known version and smoke-test it
 
 check-scripts: ## Lint every shell script with shellcheck (runs in CI, where shellcheck is installed)
 	shellcheck install.sh scripts/hooks/* scripts/checks/*.sh
+
+scenario-outputs: ## Rewrite the output block at the end of every scenario after an intended output change (ADR 0063)
+	go test ./cmd/ubc -count=1 -run '^TestScenarios_EveryScenarioEndsWithItsOutput$$' -args -update-scenario-outputs
 
 validate: lint check-test-style check-architecture coverage check-binary ## Everything CI checks; run before every commit
 

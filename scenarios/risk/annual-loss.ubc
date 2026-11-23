@@ -36,3 +36,9 @@ loss_before
 loss_after
 net_benefit
 P(net_benefit > 0)                # how likely is the mitigation to pay off?
+
+# Output (seed 1, 5000 samples):
+#   loss_before = ≈ 34.9k   90% [8710 … 139k]   98% [4800 … 250k]   ██▆▄▃▂▂▂▁▁▁▁▁▁▁▁
+#   loss_after = ≈ 11.1k   90% [2550 … 48.2k]   98% [1300 … 89k]   █▇▅▃▃▂▂▁▁▁▁▁▁▁▁▁
+#   net_benefit = ≈ -8250   90% [-33.7k … 61.3k]   98% [-47k … 150k]   ▂▅█▇▄▃▂▂▂▁▁▁▁▁▁▁
+#   P(net_benefit > 0) = 0.36

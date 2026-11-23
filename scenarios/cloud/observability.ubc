@@ -34,3 +34,8 @@ monthly_cost = ingest + storage                            # the monthly bill
 daily_gb
 monthly_cost
 P(monthly_cost > 1.5k)            # how likely is observability to cost more than 1.5k dollars a month?
+
+# Output (seed 1, 5000 samples):
+#   daily_gb = ≈ 41.9   90% [15 … 118]   98% [9.4 … 190]   ▅██▆▄▄▃▂▂▂▁▁▁▁▁▁
+#   monthly_cost = ≈ 902   90% [252 … 3260]   98% [140 … 5700]   ▇█▆▄▃▃▂▂▂▁▁▁▁▁▁▁
+#   P(monthly_cost > 1.5k) = 0.27

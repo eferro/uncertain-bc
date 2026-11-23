@@ -28,3 +28,8 @@ cost = delay_cost(weekly_value, delay_weeks)       # value lost over the whole d
 weekly_value
 cost
 P(cost > 100k)                    # how likely is the delay to cost more than 100k euros?
+
+# Output (seed 1, 5000 samples):
+#   weekly_value = ≈ 11.9k   90% [5550 … 25.7k]   98% [4000 … 35k]   ▄▆▇█▇▆▄▄▃▂▂▂▁▁▁▁
+#   cost = ≈ 82.6k   90% [32.3k … 213k]   98% [22k … 310k]   ▅██▇▅▅▄▃▂▂▂▁▁▁▁▁
+#   P(cost > 100k) = 0.38

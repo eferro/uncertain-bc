@@ -1,8 +1,3 @@
-exec ubc --scenario product/buy-vs-build
-stdout '^buy = ≈ 260k '
-stdout '^build = ≈ 312k '
-stdout '^P\(build < buy\) = 0\.33\n\z'
-! stderr .
 exec ubc --set 'seats = 50 to 100' --scenario product/buy-vs-build
 stdout '^P\(build < buy\) = 0\.01\n\z'
 exec ubc --sens build --scenario product/buy-vs-build

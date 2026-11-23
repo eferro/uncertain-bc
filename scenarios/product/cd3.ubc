@@ -36,3 +36,9 @@ cd3_search
 cd3_export
 cd3_billing
 P(cd3_export > max(cd3_search, cd3_billing))      # how likely is the export to be the right first pick?
+
+# Output (seed 1, 5000 samples):
+#   cd3_search = ≈ 1520   90% [807 … 2870]   98% [610 … 3900]   ▃▅▇██▆▅▄▃▃▂▂▁▁▁▁
+#   cd3_export = ≈ 2010   90% [929 … 4350]   98% [670 … 6200]   ▄▇██▇▅▄▃▃▂▂▂▁▁▁▁
+#   cd3_billing = ≈ 1200   90% [533 … 2680]   98% [390 … 3800]   ▄▆█▇▆▅▄▄▃▂▂▂▁▁▁▁
+#   L38: 0.58

@@ -31,3 +31,8 @@ infra_share = cost_per_customer / price                        # the share of th
 cost_per_customer
 infra_share
 P(infra_share > 30%)              # how likely is infrastructure to take more than 30% of the price?
+
+# Output (seed 1, 5000 samples):
+#   cost_per_customer = ≈ 69.7   90% [41.7 … 114]   98% [33 … 150]   ▃▄▆█▇▇▇▅▄▄▃▂▂▁▁▁
+#   infra_share = ≈ 0.232   90% [0.139 … 0.382]   98% [0.11 … 0.49]   ▃▄▆█▇▇▇▅▄▄▃▂▂▁▁▁
+#   P(infra_share > 30%) = 0.21

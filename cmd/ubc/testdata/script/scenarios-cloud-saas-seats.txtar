@@ -1,8 +1,3 @@
-exec ubc --scenario cloud/saas-seats
-stdout '^team_later = ≈ 64\.4 '
-stdout '^bill_later = ≈ 16\.2k '
-stdout '^P\(bill_later > 20k\) = 0\.24\n\z'
-! stderr .
 exec ubc --set 'growth = 0.2% to 1%' --scenario cloud/saas-seats
 stdout '^P\(bill_later > 20k\) = <0\.01\n\z'
 exec ubc --sens bill_later --scenario cloud/saas-seats

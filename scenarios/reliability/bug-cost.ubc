@@ -38,3 +38,9 @@ review_cost
 qa_cost
 production_cost
 P(production_cost > 10 * qa_cost) # how likely is a production bug to cost more than ten times one caught in QA?
+
+# Output (seed 1, 5000 samples):
+#   review_cost = ≈ 56.3   90% [25.7 … 119]   98% [17 … 170]   ▃▇██▇▆▅▄▃▂▂▂▁▁▁▁
+#   qa_cost = ≈ 306   90% [153 … 615]   98% [110 … 800]   ▃▆███▇▆▅▄▃▂▂▂▂▁▁
+#   production_cost = ≈ 5730   90% [2080 … 22.1k]   98% [1300 … 38k]   ▇█▅▄▃▂▂▁▁▁▁▁▁▁▁▁
+#   L40: 0.80

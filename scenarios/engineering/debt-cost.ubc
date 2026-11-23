@@ -37,3 +37,8 @@ yearly_saving = yearly_cost * recovered                           # what the fix
 yearly_cost
 fix_cost
 P(fix_cost < yearly_saving)       # how likely is the fix to pay for itself within a year?
+
+# Output (seed 1, 5000 samples):
+#   yearly_cost = ≈ 38.1k   90% [15.7k … 91.9k]   98% [10k … 140k]   ▄▇█▇▆▄▄▃▂▂▂▂▁▁▁▁
+#   fix_cost = ≈ 18k   90% [8100 … 38.6k]   98% [6000 … 52k]   ▄▆██▇▆▅▄▃▃▂▂▂▁▁▁
+#   P(fix_cost < yearly_saving) = 0.75

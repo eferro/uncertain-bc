@@ -26,3 +26,8 @@ yearly_cost = leavers * replacement_cost                        # each leaver ha
 leavers
 yearly_cost
 P(yearly_cost > 500k)             # how likely is attrition to cost more than 500k euros this year?
+
+# Output (seed 1, 5000 samples):
+#   leavers = ≈ 5.07   90% [3.2 … 7.91]   98% [2.6 … 9.7]   ▂▄▆▇██▇▅▅▄▃▂▂▂▁▁
+#   yearly_cost = ≈ 318k   90% [168k … 604k]   98% [120k … 780k]   ▃▅███▇▆▄▄▃▂▂▂▁▁▁
+#   P(yearly_cost > 500k) = 0.12

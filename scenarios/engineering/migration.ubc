@@ -35,3 +35,8 @@ cost = people_cost + parallel_months * parallel_monthly_cost             # plus 
 engineer_weeks
 cost
 P(cost > budget)                  # how likely is the migration to exceed the budget?
+
+# Output (seed 1, 5000 samples):
+#   engineer_weeks = ≈ 57.2   90% [26.7 … 126]   98% [19 … 180]   ▄▇█▇▇▅▄▄▃▂▂▂▁▁▁▁
+#   cost = ≈ 144k   90% [74.6k … 280k]   98% [57k … 360k]   ▃▆▇██▇▅▄▃▃▃▂▂▂▁▁
+#   P(cost > budget) = 0.46

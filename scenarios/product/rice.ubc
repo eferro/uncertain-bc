@@ -35,3 +35,8 @@ integrations = reach_integrations * impact_integrations / effort_integrations  #
 onboarding
 integrations
 P(onboarding > integrations)      # how likely is the onboarding revamp to score higher?
+
+# Output (seed 1, 5000 samples):
+#   onboarding = ≈ 546   90% [198 … 1440]   98% [130 … 2300]   ▅██▇▆▄▃▂▂▂▁▁▁▁▁▁
+#   integrations = ≈ 234   90% [78.7 … 693]   98% [47 … 1100]   ▅█▇▆▄▃▃▂▂▂▁▁▁▁▁▁
+#   P(onboarding > integrations) = 0.82

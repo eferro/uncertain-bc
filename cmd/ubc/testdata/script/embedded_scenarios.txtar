@@ -8,7 +8,7 @@ stdout '^cloud/cost-per-customer +What does the infrastructure for one customer 
 ! stderr .
 
 exec ubc --scenario team/replace-a-person
-cmp stdout $WORK/replace.out
+stdout '^P\(total > 50k\) = '
 ! stderr .
 
 exec ubc --set 'vacancy_months = 1 to 3' --scenario team/replace-a-person -e 'P(total > 40k)'
@@ -38,6 +38,3 @@ stdout 'compgen -W "formulas cloud/cost-per-customer .* team/team-capacity"'
 
 -- model.ubc --
 lead_time(20, 4)
--- replace.out --
-total = ≈ 61.1k   90% [37.8k … 100k]   98% [30k … 122k]   ▃▅▆██▇▇▆▅▄▃▂▂▂▁▁
-P(total > 50k) = 0.75

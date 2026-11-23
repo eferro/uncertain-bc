@@ -32,3 +32,9 @@ data_later
 bill_later
 total
 P(bill_later > 3k)                # how likely is storage to cost more than 3k dollars a month in two years?
+
+# Output (seed 1, 5000 samples):
+#   data_later = ≈ 101   90% [52.5 … 223]   98% [41 … 350]   ▄▇█▇▅▄▃▂▂▂▁▁▁▁▁▁
+#   bill_later = ≈ 2260   90% [1170 … 5060]   98% [900 … 7700]   ▄██▇▅▄▃▂▂▂▁▁▁▁▁▁
+#   total = ≈ 31.8k   90% [18.3k … 58k]   98% [14k … 75k]   ▃▆▇██▇▆▄▃▃▂▂▂▁▁▁
+#   P(bill_later > 3k) = 0.27

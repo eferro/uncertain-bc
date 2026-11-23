@@ -40,3 +40,8 @@ nines = -log10(1 - availability)                                            # 3 
 nines
 downtime_minutes
 P(availability > 99.9%)           # how likely is the service to meet a 99.9% availability target?
+
+# Output (seed 1, 5000 samples):
+#   nines = ≈ 2.8   90% [2.46 … 3.11]   98% [2.29 … 3.23]   ▁▂▂▃▄▅▇████▆▅▃▃▂
+#   downtime_minutes = ≈ 68.6   90% [33.5 … 151]   98% [25 … 220]   ▄▇█▇▆▅▄▃▂▂▂▁▁▁▁▁
+#   P(availability > 99.9%) = 0.14

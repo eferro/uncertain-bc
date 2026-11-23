@@ -34,3 +34,8 @@ monthly_cost = requests * cost_per_request                                      
 cost_per_request
 monthly_cost
 P(monthly_cost > 3k)              # how likely is the bill to exceed 3k dollars a month?
+
+# Output (seed 1, 5000 samples):
+#   cost_per_request = ≈ 0.00746   90% [0.00386 … 0.0144]   98% [0.0028 … 0.02]   ▃▅▇█▇▇▅▄▃▃▂▂▁▁▁▁
+#   monthly_cost = ≈ 1470   90% [392 … 5360]   98% [230 … 8600]   ▇█▇▅▄▃▂▂▂▂▁▁▁▁▁▁
+#   P(monthly_cost > 3k) = 0.18

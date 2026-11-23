@@ -34,3 +34,8 @@ net = (yearly_revenue - run) * years - build             # what is left after bu
 yearly_revenue
 net
 P(net > 0)                        # how likely is the feature to make money in two years?
+
+# Output (seed 1, 5000 samples):
+#   yearly_revenue = ≈ 80.7k   90% [26.3k … 245k]   98% [16k … 390k]   ▆█▇▆▄▃▂▂▂▂▂▁▁▁▁▁
+#   net = ≈ 45.5k   90% [-72.7k … 370k]   98% [-110k … 640k]   ▄██▆▅▄▃▂▂▂▂▁▁▁▁▁
+#   P(net > 0) = 0.68

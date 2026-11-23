@@ -38,3 +38,9 @@ in_house
 contractors
 outsourcing
 P(in_house < min(contractors, outsourcing))   # how likely is hiring to be the cheapest option?
+
+# Output (seed 1, 5000 samples):
+#   in_house = ≈ 328k   90% [264k … 407k]   98% [230k … 450k]   ▂▃▄▅▇███▇▆▅▃▃▂▂▁
+#   contractors = ≈ 361k   90% [277k … 472k]   98% [240k … 530k]   ▂▃▄▆▇██▇▆▅▄▃▂▂▂▁
+#   outsourcing = ≈ 476k   90% [330k … 686k]   98% [280k … 810k]   ▃▄▆▇██▇▆▅▄▃▃▂▂▂▁
+#   L40: 0.66

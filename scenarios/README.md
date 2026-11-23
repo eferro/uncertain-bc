@@ -15,6 +15,8 @@ $ ubc --scenario-source team/replace-a-person > replace-a-person.ubc
 
 Every scenario is checked by the test suite: it must evaluate without errors, be listed in its area's section of the index below, have a `# Sources:` line and a comment on every assumption, and every model the index links to must exist ([ADR 0042](../docs/adr/0042-scenario-catalogue.md), [ADR 0045](../docs/adr/0045-delivery-scenarios.md), [ADR 0055](../docs/adr/0055-catalogue-index-by-area-and-sources.md)).
 
+Every scenario ends with its **output block**: what `ubc --scenario <area>/<name>` prints with the default seed and sample count, as comments, so you can read the answer before running anything. Run it with `--set` and you will see how far the answer moves from the block. The test suite fails when a block differs from a real run; after a change that is meant to alter the output (a scenario, the formatting, the random generator), regenerate every block with `make scenario-outputs` and review the diff of `scenarios/` in the same commit. Never edit a block by hand ([ADR 0063](../docs/adr/0063-scenario-output-checked-in-the-scenario.md)).
+
 ## Index
 
 `ubc` has no units: amounts are in euros in most scenarios and in dollars in the cloud ones, the currency providers bill in. To use your own currency, change the numbers; the calculation stays the same. Every assumption says in its comment where its range comes from, and each scenario's `# Sources:` line names the published references it relies on, or says that the ranges come from typical experience when there is none.
@@ -131,6 +133,7 @@ Every scenario lives in `scenarios/<area>/<name>.ubc` and follows the same shape
 4. **Assumptions**: one variable per line, each with its range (`a to b` is a 90% confidence interval) and a comment on where the range comes from: typical experience, an industry rule of thumb or a named source.
 5. **Calculation**: each step with a short comment explaining it.
 6. **Result**: the final value, and a `P(...)` line that answers the question.
+7. **Output**: the block `make scenario-outputs` writes after the result; do not write it yourself.
 
 ```
 # Question: <what does this answer?>
@@ -153,8 +156,11 @@ Every scenario lives in `scenarios/<area>/<name>.ubc` and follows the same shape
 # Result
 <result>
 P(<result> > <threshold>)    # the answer to the question
+
+# Output (seed 1, 5000 samples):
+#   <written by make scenario-outputs>
 ```
 
 The first line, `# Question:`, and the comment lines that follow it up to the first empty `#` are what `ubc --scenarios` prints next to the name.
 
-To add a scenario: copy the template, put the file under its area (one level deep: `<area>/<name>.ubc` is what the binary embeds), add a row to its area's table in the index, and run `make validate`.
+To add a scenario: copy the template, put the file under its area (one level deep: `<area>/<name>.ubc` is what the binary embeds), add a row to its area's table in the index, run `make scenario-outputs` to append its output block, and run `make validate`.

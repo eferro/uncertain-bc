@@ -32,3 +32,8 @@ monthly_cost = environment_hours * cost_per_hour                 # the monthly b
 alive
 monthly_cost
 P(monthly_cost > 10k)             # how likely are the environments to cost more than 10k dollars a month?
+
+# Output (seed 1, 5000 samples):
+#   alive = ≈ 7.89   90% [1.97 … 32.2]   98% [1 … 60]   ██▅▃▃▂▂▁▁▁▁▁▁▁▁▁
+#   monthly_cost = ≈ 5730   90% [1210 … 27.3k]   98% [600 … 55k]   █▆▄▃▂▂▁▁▁▁▁▁▁▁▁▁
+#   P(monthly_cost > 10k) = 0.29

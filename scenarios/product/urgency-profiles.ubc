@@ -38,3 +38,10 @@ expedite
 fixed_date
 intangible
 P(fixed_date > standard)          # how likely is the fixed-date work to lose more than the standard one?
+
+# Output (seed 1, 5000 samples):
+#   standard = ≈ 19.6k   90% [8440 … 44.5k]   98% [5900 … 63k]   ▄▇██▇▆▄▃▃▂▂▁▂▁▁▁
+#   expedite = ≈ 138k   90% [58.4k … 332k]   98% [40k … 500k]   ▄▇█▆▅▄▄▃▂▂▂▁▁▁▁▁
+#   fixed_date = ≈ 0   90% [0 … 122k]   98% [0 … 200k]   █▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+#   intangible = ≈ 2360   90% [707 … 8890]   98% [420 … 19k]   ██▅▄▃▂▁▁▁▁▁▁▁▁▁▁
+#   P(fixed_date > standard) = 0.15

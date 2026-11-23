@@ -1,9 +1,3 @@
-exec ubc --scenario delivery/scope-creep
-stdout '^planned_weeks = ≈ 9\.96 '
-stdout '^weeks = ≈ 12\.7 '
-stdout '^weeks_late = ≈ 2\.42 '
-stdout '^P\(weeks > deadline\) = 0\.60\n\z'
-! stderr .
 exec ubc --set 'growth = 5% to 15%' --scenario delivery/scope-creep
 stdout '^P\(weeks > deadline\) = 0\.29\n\z'
 exec ubc --sens weeks --scenario delivery/scope-creep

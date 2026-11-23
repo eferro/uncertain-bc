@@ -30,3 +30,7 @@ weeks = backlog / weekly_rate                                              # wee
 # Result
 weeks
 P(weeks <= deadline)              # how likely is the backlog to be done within 12 weeks?
+
+# Output (seed 1, 5000 samples):
+#   weeks = ≈ 11.7   90% [9.03 … 15.8]   98% [8 … 18]   ▂▃▆▇██▇▇▅▅▃▃▂▂▂▁
+#   P(weeks <= deadline) = 0.55

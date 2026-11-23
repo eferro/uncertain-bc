@@ -31,3 +31,7 @@ capacity = real_capacity(people, available_days, focus)              # person-da
 # Result
 capacity
 P(capacity < planned)             # how likely is the team to fall short of the roadmap this quarter?
+
+# Output (seed 1, 5000 samples):
+#   capacity = ≈ 191   90% [148 … 246]   98% [130 … 280]   ▂▃▄▅▆███▆▆▄▃▃▂▂▁
+#   P(capacity < planned) = 0.35

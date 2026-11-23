@@ -1,8 +1,3 @@
-exec ubc --scenario engineering/slow-ci
-stdout '^hours_lost = ≈ 1850 '
-stdout '^yearly_cost = ≈ 103k '
-stdout '^P\(yearly_cost > 100k\) = 0\.52\n\z'
-! stderr .
 exec ubc --set 'minutes_waiting = 5 to 8' --scenario engineering/slow-ci
 stdout '^P\(yearly_cost > 100k\) = 0\.05\n\z'
 exec ubc --sens yearly_cost --scenario engineering/slow-ci

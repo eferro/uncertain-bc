@@ -33,3 +33,9 @@ tam
 sam
 som
 P(som > 10M)                      # how likely is the SOM to exceed 10M euros a year?
+
+# Output (seed 1, 5000 samples):
+#   tam = ≈ 1.38B   90% [762M … 2.49B]   98% [590M … 3.2B]   ▃▅▇██▇▆▄▄▃▂▂▂▁▁▁
+#   sam = ≈ 389M   90% [198M … 779M]   98% [140M … 1.03B]   ▃▆██▇▆▅▄▄▃▂▂▂▁▁▁
+#   som = ≈ 8.75M   90% [2.99M … 25.9M]   98% [1.8M … 40M]   ▅█▇▆▄▄▃▂▂▂▂▁▁▁▁▁
+#   P(som > 10M) = 0.42

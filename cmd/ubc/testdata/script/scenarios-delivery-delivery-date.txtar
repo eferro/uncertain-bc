@@ -1,7 +1,3 @@
-exec ubc --scenario delivery/delivery-date
-stdout '^weeks = ≈ 11\.7 '
-stdout '^P\(weeks <= deadline\) = 0\.55\n\z'
-! stderr .
 exec ubc --data throughput=weeks.txt --scenario delivery/delivery-date
 stdout '^weeks = ≈ 18\.4 '
 stdout '^P\(weeks <= deadline\) = <0\.01\n\z'

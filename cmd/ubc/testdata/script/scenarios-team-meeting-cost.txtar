@@ -1,8 +1,3 @@
-exec ubc --scenario team/meeting-cost
-stdout '^yearly_hours = ≈ 457 '
-stdout '^yearly_cost = ≈ 25\.7k '
-stdout '^P\(yearly_cost > 30k\) = 0\.27\n\z'
-! stderr .
 exec ubc --set 'attendees = 4' --scenario team/meeting-cost
 stdout '^P\(yearly_cost > 30k\) = <0\.01\n\z'
 exec ubc --sens yearly_cost --scenario team/meeting-cost

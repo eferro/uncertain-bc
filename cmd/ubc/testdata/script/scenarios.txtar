@@ -1,12 +1,5 @@
-exec ubc --scenario team/replace-a-person
-cmp stdout replace.out
-
 exec ubc --set 'vacancy_months = 1 to 3' --scenario team/replace-a-person
 stdout '^P\(total > 50k\) = 0\.43\n'
 
 exec ubc --sens total --scenario team/replace-a-person
 stdout '^sensitivity of total \(rank correlation\):\n  vacancy +\+0\.86 '
-
--- replace.out --
-total = ≈ 61.1k   90% [37.8k … 100k]   98% [30k … 122k]   ▃▅▆██▇▇▆▅▄▃▂▂▂▁▁
-P(total > 50k) = 0.75

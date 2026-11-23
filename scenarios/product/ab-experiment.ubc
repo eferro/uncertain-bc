@@ -32,3 +32,8 @@ net = gain - cost                                       # what is left once the 
 gain
 net
 P(net > 0)                        # how likely is the experiment to pay back what it costs?
+
+# Output (seed 1, 5000 samples):
+#   gain = ≈ 14.3k   90% [6410 … 31.8k]   98% [4400 … 45k]   ▃▆█▇▆▅▄▃▃▂▂▂▁▁▁▁
+#   net = ≈ -2870   90% [-17.4k … 15.8k]   98% [-26k … 28k]   ▂▂▃▄▆▇█▇▆▄▃▂▂▂▁▁
+#   P(net > 0) = 0.37

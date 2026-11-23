@@ -4,6 +4,10 @@ All notable changes to `ubc` are documented in this file. The format follows [Ke
 
 ## [Unreleased]
 
+### Added
+
+- Every scenario ends with the output its run command prints, as a comment checked by the test suite, so you can read the answer without running it.
+
 ## [1.0.0] - 2026-11-23
 
 First stable version: from now on the language, flags, REPL commands, `--json` and `--plain` output, exit codes and scenario names only change in a backwards-incompatible way with a new major version ([ADR 0062](https://github.com/eferro/uncertain-bc/blob/main/docs/adr/0062-version-1-and-its-stability-promise.md)).

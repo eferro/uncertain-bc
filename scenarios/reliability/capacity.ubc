@@ -35,3 +35,9 @@ next_peak
 nodes
 p(nodes, 0.95)                    # nodes to provision to be covered in 95% of the cases
 P(nodes > current_nodes)          # how likely is the current cluster to fall short?
+
+# Output (seed 1, 5000 samples):
+#   next_peak = ≈ 6020   90% [4080 … 8970]   98% [3400 … 10.8k]   ▂▄▆▇██▇▆▅▄▃▂▂▂▁▁
+#   nodes = ≈ 18   90% [12 … 29]   98% [10 … 38]   ▂▅▇▅█▇▆▃▄▃▂▁▂▁▁▁
+#   p(nodes, 0.95) = 29
+#   P(nodes > current_nodes) = 0.35

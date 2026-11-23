@@ -1,8 +1,3 @@
-exec ubc --scenario product/ab-experiment
-stdout '^gain = ≈ 14\.3k '
-stdout '^net = ≈ -2870 '
-stdout '^P\(net > 0\) = 0\.37\n\z'
-! stderr .
 exec ubc --set 'monthly_revenue = 50k to 100k' --scenario product/ab-experiment
 stdout '^P\(net > 0\) = <0\.01\n\z'
 exec ubc --sens net --scenario product/ab-experiment

@@ -1,8 +1,3 @@
-exec ubc --scenario cloud/cost-per-customer
-stdout '^cost_per_customer = ≈ 69\.7 '
-stdout '^infra_share = ≈ 0\.232 '
-stdout '^P\(infra_share > 30%\) = 0\.21\n\z'
-! stderr .
 exec ubc --set 'customers = 1k to 3k' --scenario cloud/cost-per-customer
 stdout '^P\(infra_share > 30%\) = 0\.03\n\z'
 exec ubc --sens cost_per_customer --scenario cloud/cost-per-customer

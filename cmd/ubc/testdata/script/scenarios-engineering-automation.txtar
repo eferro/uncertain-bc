@@ -1,8 +1,3 @@
-exec ubc --scenario engineering/automation
-stdout '^hours_saved = ≈ 65\.3 '
-stdout '^hours_spent = ≈ 73\.8 '
-stdout '^P\(net_hours > 0\) = 0\.43\n\z'
-! stderr .
 exec ubc --set 'runs_per_week = 1 to 2' --scenario engineering/automation
 stdout '^P\(net_hours > 0\) = 0\.03\n\z'
 exec ubc --sens net_hours --scenario engineering/automation

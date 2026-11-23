@@ -31,3 +31,9 @@ planned_weeks
 weeks
 weeks_late
 P(weeks > deadline)               # how likely are we to miss the date?
+
+# Output (seed 1, 5000 samples):
+#   planned_weeks = ≈ 9.96   90% [7.51 … 13.3]   98% [6.5 … 15.1]   ▂▃▄▆▇█▇▇▆▅▄▃▂▂▂▁
+#   weeks = ≈ 12.7   90% [9.07 … 18]   98% [7.9 … 22]   ▂▄▆▇██▇▆▅▄▃▂▂▂▁▁
+#   weeks_late = ≈ 2.42   90% [0.954 … 6.11]   98% [0.66 … 9.2]   ▅██▇▆▅▃▃▂▂▂▁▁▁▁▁
+#   P(weeks > deadline) = 0.60

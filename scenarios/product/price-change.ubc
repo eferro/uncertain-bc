@@ -32,3 +32,8 @@ breakeven = increase / (1 + increase)                            # the share we 
 gain
 breakeven
 P(gain > 0)                       # how likely is the price change to increase revenue?
+
+# Output (seed 1, 5000 samples):
+#   gain = ≈ 47k   90% [7730 … 72.2k]   98% [-19k … 83k]   ▁▁▁▂▂▃▃▄▅▇██▇▅▃▂
+#   breakeven = 0.1304347826
+#   P(gain > 0) = 0.97

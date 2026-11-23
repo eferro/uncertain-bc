@@ -1,8 +1,3 @@
-exec ubc --scenario delivery/context-switching
-stdout '^team_hours_week = ≈ 43\.3 '
-stdout '^yearly_cost = ≈ 90\.5k '
-stdout '^P\(lost_share > 0\.25\) = 0\.23\n\z'
-! stderr .
 exec ubc --set 'interruptions = 1 to 4' --scenario delivery/context-switching
 stdout '^P\(lost_share > 0\.25\) = <0\.01\n\z'
 exec ubc --sens lost_share --scenario delivery/context-switching

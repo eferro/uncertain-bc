@@ -1,8 +1,3 @@
-exec ubc --scenario team/onboarding
-stdout '^lost_months = ≈ 3\.7 '
-stdout '^cost = ≈ 35k '
-stdout '^P\(lost_months > 3\) = 0\.70\n\z'
-! stderr .
 exec ubc --set 'ramp_up_months = 2 to 4' --scenario team/onboarding
 stdout '^P\(lost_months > 3\) = 0\.08\n\z'
 exec ubc --sens lost_months --scenario team/onboarding

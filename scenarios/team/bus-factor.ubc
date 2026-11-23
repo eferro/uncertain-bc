@@ -32,3 +32,8 @@ yearly_risk = annual_loss(leave_rate, impact)                      # expected lo
 impact
 yearly_risk
 P(yearly_risk > cross_training)   # how likely is the risk to be worth more than spreading the knowledge?
+
+# Output (seed 1, 5000 samples):
+#   impact = ≈ 54.7k   90% [25.9k … 116k]   98% [18k … 160k]   ▃▆██▇▆▅▄▃▂▂▂▂▁▁▁
+#   yearly_risk = ≈ 6970   90% [2880 … 16.7k]   98% [2000 … 24k]   ▄▇█▇▆▅▄▃▂▂▂▂▁▁▁▁
+#   L34: 0.73

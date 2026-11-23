@@ -38,3 +38,8 @@ yearly_cost = annual_loss(incidents_per_year, incident_cost)              # inci
 incident_cost
 yearly_cost
 P(yearly_cost > 500k)             # how likely are incidents to cost more than 500k euros a year?
+
+# Output (seed 1, 5000 samples):
+#   incident_cost = ≈ 36.2k   90% [10.2k … 136k]   98% [5900 … 250k]   ▇█▆▄▃▂▂▂▁▁▁▁▁▁▁▁
+#   yearly_cost = ≈ 398k   90% [98.9k … 1.69M]   98% [53k … 3.2M]   █▇▅▄▃▂▂▁▁▁▁▁▁▁▁▁
+#   P(yearly_cost > 500k) = 0.40

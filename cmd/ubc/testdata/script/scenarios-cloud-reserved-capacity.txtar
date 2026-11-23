@@ -1,8 +1,3 @@
-exec ubc --scenario cloud/reserved-capacity
-stdout '^savings = ≈ 129k '
-stdout '^P\(usage < commitment\) = 0\.53\n'
-stdout '^P\(savings > 0\) = 0\.83\n\z'
-! stderr .
 exec ubc --set 'usage = 20k to 60k' --scenario cloud/reserved-capacity
 stdout '^P\(savings > 0\) = 0\.44\n\z'
 exec ubc --sens savings --scenario cloud/reserved-capacity

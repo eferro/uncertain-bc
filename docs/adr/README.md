@@ -70,3 +70,4 @@ Template: Status, Effective date, Deciders, then Context, Decision, Consequences
 | [0060](0060-changelog-as-the-release-notes.md) | A changelog that is also the release notes (amends 0015) | Accepted | 2026-11-22 |
 | [0061](0061-documentation-website-with-mkdocs.md) | A documentation website built by MkDocs and deployed to GitHub Pages | Accepted | 2026-11-22 |
 | [0062](0062-version-1-and-its-stability-promise.md) | Version 1.0.0 and its stability promise (amends 0015) | Accepted | 2026-11-23 |
+| [0063](0063-scenario-output-checked-in-the-scenario.md) | Every scenario ends with its output, checked by the test suite (complements 0030) | Accepted | 2026-11-23 |
