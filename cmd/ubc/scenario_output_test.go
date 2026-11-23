@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"flag"
 	"os"
 	"path/filepath"
@@ -10,8 +9,6 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-
-	"github.com/eferro/uncertain-bc/internal/adapters/cli"
 )
 
 var updateScenarioOutputs = flag.Bool("update-scenario-outputs", false,
@@ -87,11 +84,7 @@ func withOutputBlock(source, output string) string {
 
 func scenarioOutput(t *testing.T, file string) string {
 	t.Helper()
-	var stdout, stderr bytes.Buffer
-	var app cli.App
-
-	code := app.Run(scenarioArgs(scenariosDir, file), strings.NewReader(""), &stdout, &stderr)
-
-	require.Equal(t, 0, code, stderr.String())
-	return stdout.String()
+	code, stdout, stderr := runScenario(file)
+	require.Equal(t, 0, code, stderr)
+	return stdout
 }

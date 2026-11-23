@@ -28,13 +28,10 @@ func TestScenarios_EveryFileEvaluates(t *testing.T) {
 	require.NotEmpty(t, files)
 	for _, file := range files {
 		t.Run(file, func(t *testing.T) {
-			var stdout, stderr bytes.Buffer
-			var app cli.App
+			code, _, stderr := runScenario(file)
 
-			code := app.Run(scenarioArgs(scenariosDir, file), strings.NewReader(""), &stdout, &stderr)
-
-			assert.Equal(t, 0, code, stderr.String())
-			assert.Empty(t, stderr.String())
+			assert.Equal(t, 0, code, stderr)
+			assert.Empty(t, stderr)
 		})
 	}
 }
@@ -175,6 +172,13 @@ func TestBrokenLinks_ListsUbcLinksToMissingFiles(t *testing.T) {
 	broken := brokenLinks(index, root)
 
 	assert.Equal(t, []string{"team/c.ubc", "../examples/d.ubc"}, broken)
+}
+
+func runScenario(file string) (code int, stdout, stderr string) {
+	var out, errs bytes.Buffer
+	var app cli.App
+	code = app.Run(scenarioArgs(scenariosDir, file), strings.NewReader(""), &out, &errs)
+	return code, out.String(), errs.String()
 }
 
 func scenarioArgs(root, file string) []string {
