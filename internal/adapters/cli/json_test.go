@@ -2,6 +2,7 @@ package cli_test
 
 import (
 	"encoding/json"
+	"regexp"
 	"strings"
 	"testing"
 
@@ -47,6 +48,16 @@ func TestJSON_SummarisesASampleSet(t *testing.T) {
 	assert.InDelta(t, 14.14, object["median"], 0.3)
 	assert.InDelta(t, 10, object["p5"], 0.3)
 	assert.InDelta(t, 20, object["p95"], 0.6)
+}
+
+func TestJSON_RoundsEveryStatisticToTenSignificantFigures(t *testing.T) {
+	got := run(t, "", "--json", "-e", "10 to 20")
+
+	require.Equal(t, 0, got.code)
+	assert.Contains(t, got.stdout, `"median":14.15512332,`)
+	for _, number := range regexp.MustCompile(`\d+\.\d+`).FindAllString(got.stdout, -1) {
+		assert.LessOrEqual(t, len(strings.TrimLeft(strings.Replace(number, ".", "", 1), "0")), 10, number)
+	}
 }
 
 func TestJSON_PrintsOneLinePerExpression(t *testing.T) {

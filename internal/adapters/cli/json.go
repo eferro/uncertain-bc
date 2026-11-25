@@ -59,11 +59,14 @@ func marshal(object any) string {
 }
 
 // finite turns NaN and ±Inf into null, which JSON can represent.
+// finite rounds to ten significant figures so every platform prints the same
+// digits (ADR 0069).
 func finite(x float64) *float64 {
 	if !domain.IsFinite(x) {
 		return nil
 	}
-	return &x
+	rounded := roundSignificant(x, 10)
+	return &rounded
 }
 
 func quantilesJSON(v domain.SampleSet, quantiles []float64) map[string]*float64 {

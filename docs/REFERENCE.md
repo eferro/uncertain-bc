@@ -450,25 +450,25 @@ double = ≈ 28.3   90% [20 … 39.6]   98% [17 … 47]   ▂▄▅▆▇██�
 
 ### Plain
 
-`--plain` prints only the median, with full precision and no labels, for scripts:
+`--plain` prints only the median, with 10 significant figures and no labels, for scripts:
 
 ```console
 $ ubc --plain examples/homelab.ubc
-66.4979572018464
-169.18163356927604
-101.46083104992495
+66.4979572
+169.1816336
+101.460831
 ```
 
 ### JSON
 
-`--json` prints one JSON object per result, on its own line. `kind` is `samples`, `scalar` or `probability`; a labelled result carries its label as `name`. Statistics leave out non-finite samples, and values that are not finite are `null`:
+`--json` prints one JSON object per result, on its own line. `kind` is `samples`, `scalar` or `probability`; a labelled result carries its label as `name`. Numbers have 10 significant figures. Statistics leave out non-finite samples, and values that are not finite are `null`:
 
 ```console
 $ ubc --json -e 'P(normal(0, 1) > 1)' -e '2 + 2'
 {"kind":"probability","value":0.151}
 {"kind":"scalar","value":4}
 $ ubc --json --echo -e 'x = 1 to 5'
-{"name":"x","kind":"samples","median":2.2408390648919774,"mean":2.5085321845122825,"stdev":1.2886668459505415,"p1":0.7126492324906979,"p5":0.9992998523855567,"p95":4.898313091927286,"p99":6.937904093115295,"n":5000,"dropped":0}
+{"name":"x","kind":"samples","median":2.240839065,"mean":2.508532185,"stdev":1.288666846,"p1":0.7126492325,"p5":0.9992998524,"p95":4.898313092,"p99":6.937904093,"n":5000,"dropped":0}
 ```
 
 `n` is the sample count and `dropped` the number of non-finite samples. With `--interval` or `--quantiles` a `quantiles` object adds the requested percentiles. `--json` and `--plain` cannot be combined.

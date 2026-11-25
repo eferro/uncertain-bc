@@ -95,15 +95,17 @@ func format(value domain.Value, st style) string {
 	panic(fmt.Sprintf("cli: unknown value type %T", value))
 }
 
-// centralValue prints the median with full precision, for $(ubc --plain ...) (SPEC §6).
+// centralValue prints the median with ten significant figures, for
+// $(ubc --plain ...): the last bits of math.Exp and math.Log differ between
+// architectures, and the output must not (SPEC §6, ADR 0069).
 func centralValue(value domain.Value) string {
 	if s, ok := value.(domain.SampleSet); ok {
-		return shortest(s.Quantile(0.5))
+		return plain(s.Quantile(0.5))
 	}
 	if p, ok := value.(domain.Probability); ok {
-		return shortest(float64(p))
+		return plain(float64(p))
 	}
-	return shortest(float64(value.(domain.Scalar)))
+	return plain(float64(value.(domain.Scalar)))
 }
 
 // summarise leaves out the sparkline in a style without blocks, as error

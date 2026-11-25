@@ -1,6 +1,6 @@
 # ADR 0005: Deterministic RNG seed by default
 
-- Status: Accepted
+- Status: Accepted, amended by [ADR 0069](0069-machine-output-rounded-to-ten-significant-figures.md)
 - Effective date: 2026-11-21
 - Deciders: eduardo.ferro
 

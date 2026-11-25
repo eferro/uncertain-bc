@@ -8,6 +8,10 @@ All notable changes to `ubc` are documented in this file. The format follows [Ke
 
 - A Claude Code skill that lets Claude estimate with `ubc` on its own whenever an answer rests on guessed numbers, and installs `ubc` when it is missing. This repository is its plugin marketplace: `/plugin marketplace add eferro/uncertain-bc`, then `/plugin install ubc@uncertain-bc` ([ADR 0068](https://github.com/eferro/uncertain-bc/blob/main/docs/adr/0068-claude-code-skill-shipped-as-a-plugin.md)).
 
+### Fixed
+
+- `--plain` and `--json` print the same digits on every platform (#43). They printed the full float64, whose last bits depend on the architecture's `math.Exp` and `math.Log`, so Apple silicon and Linux on arm64 printed `66.49795720184639` where amd64 printed `66.4979572018464`. Their numbers now have 10 significant figures, like plain numbers in the normal output: `66.4979572` ([ADR 0069](https://github.com/eferro/uncertain-bc/blob/main/docs/adr/0069-machine-output-rounded-to-ten-significant-figures.md)).
+
 ## [1.1.1] - 2026-11-23
 
 ### Fixed

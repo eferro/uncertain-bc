@@ -78,11 +78,11 @@ func TestRun_PrintsUsageToStderr_WhenAFlagIsWrong(t *testing.T) {
 	assert.Contains(t, got.stderr, "Usage:")
 }
 
-func TestRun_PrintsOnlyTheCentralValueWithFullPrecision_WhenPlain(t *testing.T) {
-	got := run(t, "1 + 2\nx = 10 to 20\nx\nP(x > 15)\n", "--plain")
+func TestRun_PrintsOnlyTheCentralValueWithTenSignificantFigures_WhenPlain(t *testing.T) {
+	got := run(t, "1 / 3\nx = 10 to 20\nx\nP(x > 15)\n", "--plain")
 
 	assert.Equal(t, 0, got.code)
-	assert.Regexp(t, `^3\n14\.\d{6,}\n0\.\d+\n$`, got.stdout)
+	assert.Regexp(t, `^0\.3333333333\n14\.\d{6,8}\n0\.\d+\n$`, got.stdout)
 }
 
 func TestRun_PrintsTheProbability_OfAnAssignedComparison_WhenPlain(t *testing.T) {

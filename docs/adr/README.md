@@ -76,3 +76,4 @@ Template: Status, Effective date, Deciders, then Context, Decision, Consequences
 | [0066](0066-an-assigned-comparison-keeps-its-samples.md) | An assigned comparison keeps its samples as an event, shown as a probability (amends 0028) | Accepted | 2026-11-23 |
 | [0067](0067-mutation-gate-weekly-not-on-every-push.md) | The mutation gate runs weekly, not on every push (amends 0012, 0020, 0021) | Accepted | 2026-11-23 |
 | [0068](0068-claude-code-skill-shipped-as-a-plugin.md) | A Claude Code skill, shipped from this repository as a plugin | Accepted | 2026-11-23 |
+| [0069](0069-machine-output-rounded-to-ten-significant-figures.md) | `--plain` and `--json` round to 10 significant figures, the same on every platform (amends 0005) | Accepted | 2026-11-25 |
