@@ -4,6 +4,10 @@ All notable changes to `ubc` are documented in this file. The format follows [Ke
 
 ## [Unreleased]
 
+### Changed
+
+- The Claude Code skill warns against putting a shared unknown inside a function that compares options, such as the points of a trade-off curve: each call would draw its own value and the comparison would measure noise.
+
 ## [1.1.2] - 2026-11-26
 
 ### Added

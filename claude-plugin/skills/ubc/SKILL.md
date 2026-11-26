@@ -35,7 +35,15 @@ $ ubc -e '8 to 25 * 12; (8 to 25) * 12'
 ```
 
 - **The ends choose the shape.** Both positive is lognormal (durations, prices, sizes: never negative, long right tail); an end at zero or below is normal, so `0 to 10` allows negative costs. Write the smallest value you believe in, `0.5 to 10`. Changes that can go either way: `1 + (-5% to 15%)`.
-- **Different ranges are independent; a variable is one quantity.** Two costs driven by the same unknown rate must reuse one `rate` variable, or their errors cancel and the model looks more certain than it is. A range inside a user function is drawn again on every call.
+- **Different ranges are independent; a variable is one quantity.** Two costs driven by the same unknown rate must reuse one `rate` variable, or their errors cancel and the model looks more certain than it is.
+- **Keep shared unknowns out of functions.** A range inside a user function is drawn again on every call, so each call gets its own value of that unknown. That is right for an error of its own (each task's overrun); it is wrong when the calls compare options under the same unknown, such as the points of a trade-off curve (`cost(k)` for several batch sizes, team sizes or release intervals), where the comparison then measures noise. Bind the unknown to a variable and let the function read it:
+
+```console
+$ ubc -e 'cost(h) = h * (50 to 150); P(cost(10) < cost(12))'
+0.65
+$ ubc -e 'rate = 50 to 150; cost(h) = h * rate; P(cost(10) < cost(12))'
+1
+```
 - **Range ends and distribution arguments are plain numbers.** `(1 to 2) to 3` is an error; scale instead: `base * (0.8 to 1.2)`.
 - **Events replace conditionals.** A comparison of uncertain values keeps a 0/1 outcome per sample, so "if it happens, it costs X" is a product; `max(0, x)` and `min` clamp:
 
