@@ -4,6 +4,8 @@ All notable changes to `ubc` are documented in this file. The format follows [Ke
 
 ## [Unreleased]
 
+## [1.1.2] - 2026-11-26
+
 ### Added
 
 - A Claude Code skill that lets Claude estimate with `ubc` on its own whenever an answer rests on guessed numbers, and installs `ubc` when it is missing. This repository is its plugin marketplace: `/plugin marketplace add eferro/uncertain-bc`, then `/plugin install ubc@uncertain-bc` ([ADR 0068](https://github.com/eferro/uncertain-bc/blob/main/docs/adr/0068-claude-code-skill-shipped-as-a-plugin.md)).
@@ -145,7 +147,8 @@ First stable version: from now on the language, flags, REPL commands, `--json` a
 - Syntax errors report their position.
 - `ubc --version`, and release binaries for Linux, macOS and Windows.
 
-[Unreleased]: https://github.com/eferro/uncertain-bc/compare/v1.1.1...HEAD
+[Unreleased]: https://github.com/eferro/uncertain-bc/compare/v1.1.2...HEAD
+[1.1.2]: https://github.com/eferro/uncertain-bc/compare/v1.1.1...v1.1.2
 [1.1.1]: https://github.com/eferro/uncertain-bc/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/eferro/uncertain-bc/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/eferro/uncertain-bc/compare/v0.7.2...v1.0.0
