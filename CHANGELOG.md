@@ -4,6 +4,8 @@ All notable changes to `ubc` are documented in this file. The format follows [Ke
 
 ## [Unreleased]
 
+## [1.1.3] - 2026-11-27
+
 ### Changed
 
 - The Claude Code skill warns against putting a shared unknown inside a function that compares options, such as the points of a trade-off curve: each call would draw its own value and the comparison would measure noise.
@@ -151,7 +153,8 @@ First stable version: from now on the language, flags, REPL commands, `--json` a
 - Syntax errors report their position.
 - `ubc --version`, and release binaries for Linux, macOS and Windows.
 
-[Unreleased]: https://github.com/eferro/uncertain-bc/compare/v1.1.2...HEAD
+[Unreleased]: https://github.com/eferro/uncertain-bc/compare/v1.1.3...HEAD
+[1.1.3]: https://github.com/eferro/uncertain-bc/compare/v1.1.2...v1.1.3
 [1.1.2]: https://github.com/eferro/uncertain-bc/compare/v1.1.1...v1.1.2
 [1.1.1]: https://github.com/eferro/uncertain-bc/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/eferro/uncertain-bc/compare/v1.0.0...v1.1.0
